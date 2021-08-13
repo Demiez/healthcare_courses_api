@@ -1,15 +1,11 @@
 import { Application, Request, Response } from 'express';
+import { APP_ROOT, APP_ROOT_MESSAGE } from '../contants';
 import { StandardResponseViewModel } from '../view-models';
 
 export default (app: Application) => {
-  app.get('/', (req: Request, res: Response) => {
+  app.get(APP_ROOT, (req: Request, res: Response) => {
     res
       .status(200)
-      .send(
-        new StandardResponseViewModel(
-          'Root Endpoint Healthcare Courses API',
-          'success'
-        )
-      );
+      .send(new StandardResponseViewModel(APP_ROOT_MESSAGE, 'success'));
   });
 };

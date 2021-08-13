@@ -2,6 +2,7 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import 'mocha';
 import app from '../../src/app';
+import { APP_ROOT, APP_ROOT_MESSAGE } from '../../src/core/contants';
 import { StandardResponseViewModel } from '../../src/core/view-models';
 
 chai.use(chaiHttp);
@@ -14,7 +15,7 @@ function checkRootEndpointResponseBody(body: StandardResponseViewModel) {
   body.should.haveOwnProperty('status');
   body.status.should.be.a('string');
 
-  body.message.should.equal('Root Endpoint Healthcare Courses API');
+  body.message.should.equal(APP_ROOT_MESSAGE);
   body.status.should.equal('success');
 }
 
@@ -22,7 +23,7 @@ describe(':: rootRoute', () => {
   it('should respond with HTTP 200 status', async () => {
     const res = await chai
       .request(app)
-      .get('/')
+      .get(APP_ROOT)
       .catch((err) => {
         if (err.response) {
           return err.response as Response;
@@ -37,7 +38,7 @@ describe(':: rootRoute', () => {
   it('should respond with correct message and status', async () => {
     const res = await chai
       .request(app)
-      .get('/')
+      .get(APP_ROOT)
       .catch((err) => {
         if (err.response) {
           return err.response as Response;
