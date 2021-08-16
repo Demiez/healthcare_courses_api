@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ApiOperationGet, ApiPath } from 'swagger-express-ts';
 import BaseController from '../../../core/abstract/base-controller';
-import { StandardResponseViewModel } from '../../../core/view-models';
+import { ModuleMtc_MtcService } from '../services/mtc.service';
 
 @ApiPath({
   description: 'Mtc controller',
@@ -28,40 +28,31 @@ class MtcController extends BaseController {
     },
   })
   public async getAllMtcs(req: Request, res: Response) {
-    const result = new StandardResponseViewModel('Show all mtcs', 'success');
+    const result = ModuleMtc_MtcService.getAllMtcs();
 
     return super.sendSuccessResponse(res, result);
   }
 
   public async getMtc(req: Request, res: Response) {
-    const result = new StandardResponseViewModel(
-      `Show mtc by Id: ${req.params.mtcId}`,
-      'success'
-    );
+    const result = ModuleMtc_MtcService.getMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }
 
   public async createMtc(req: Request, res: Response) {
-    const result = new StandardResponseViewModel('Create new mtc', 'success');
+    const result = ModuleMtc_MtcService.createMtc();
 
     return super.sendSuccessResponse(res, result);
   }
 
   public async updateMtc(req: Request, res: Response) {
-    const result = new StandardResponseViewModel(
-      `Update mtc by Id: ${req.params.mtcId}`,
-      'success'
-    );
+    const result = ModuleMtc_MtcService.updateMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }
 
   public async deleteMtc(req: Request, res: Response) {
-    const result = new StandardResponseViewModel(
-      `Delete mtc by Id: ${req.params.mtcId}`,
-      'success'
-    );
+    const result = ModuleMtc_MtcService.deleteMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }
