@@ -1,6 +1,6 @@
 import { Application, Request, Response } from 'express';
 import { ModuleMtc_MtcRoutes } from '../../modules/module.mtc';
-import { APP_ROOT, APP_ROOT_MESSAGE } from '../contants';
+import { APP_ROOT, APP_ROOT_MESSAGE } from '../constants';
 import { StandardResponseViewModel } from '../view-models';
 
 export default (app: Application) => {

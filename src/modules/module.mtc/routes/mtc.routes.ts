@@ -1,5 +1,5 @@
 import { Application, Request, Response } from 'express';
-import { APP_ROOT } from '../../../core/contants';
+import { APP_ROOT } from '../../../core/constants';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
 import { ModuleMtc_MtcController } from '../controllers/mtc.controller';
 

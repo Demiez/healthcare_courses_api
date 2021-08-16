@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as core from 'express-serve-static-core';
 import * as swagger from 'swagger-express-ts';
-import { APP_ROOT } from '../src/core/contants';
+import { APP_ROOT } from '../src/core/constants';
 const packageJson = require('../package.json');
 
 export function registerSwagger(app: core.Express) {

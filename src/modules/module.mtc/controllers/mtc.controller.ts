@@ -19,7 +19,7 @@ class MtcController extends BaseController {
       },
       500: {
         description: `
-        INTERNAL_SERVER_ERROR: ModuleMtc_MtcController:__getMtcs
+        INTERNAL_SERVER_ERROR: ModuleMtc_MtcController:__getAllMtcs
         `,
       },
     },

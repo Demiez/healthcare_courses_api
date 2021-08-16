@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import 'mocha';
 import app from '../../src/app';
-import { APP_ROOT, APP_ROOT_MESSAGE } from '../../src/core/contants';
+import { APP_ROOT, APP_ROOT_MESSAGE } from '../../src/core/constants';
 import { StandardResponseViewModel } from '../../src/core/view-models';
 
 chai.use(chaiHttp);
