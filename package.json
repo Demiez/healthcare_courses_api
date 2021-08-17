@@ -13,6 +13,7 @@
     "test:mutation": "stryker run",
     "stryker:init": "stryker init",
     "dev": "nodemon",
+    "start": "node dist/src/server.js",
     "prod": "yarn build && yarn start",
     "tsc": "tsc"
   },
@@ -32,8 +33,8 @@
     "express": "^4.17.1",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
-    "swagger-express-ts": "^1.1.0",
-    "swagger-ui-dist": "^4.0.0-beta.2"
+    "swagger-express-ts": "1.1.0",
+    "swagger-ui-dist": "3.20.9"
   },
   "devDependencies": {
     "@stryker-mutator/core": "^4.1.2",

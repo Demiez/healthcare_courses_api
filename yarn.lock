@@ -2632,15 +2632,15 @@ surrial@~2.0.2:
   resolved "https://registry.yarnpkg.com/surrial/-/surrial-2.0.2.tgz#739afbc9821ebf6aa4e3e9f32abf0021b73ef2b3"
   integrity sha512-YQ0XyrdBI8Kx10lIK81zOGXdGtc0P+3FTqEtCdaKzfEJKJWDju2QPp+XhzihmN2KOTRDtkKSyQQXZHYP+SqapA==
 
-swagger-express-ts@^1.1.0:
+swagger-express-ts@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/swagger-express-ts/-/swagger-express-ts-1.1.0.tgz#6de97fe3173e5a8ddd0653b00e5c5225c3c3bdb1"
   integrity sha512-XgvEi4pp36rfXbHRT58uwsC50AxU8oVgFX3p3rEYlGZH8UV0srvZ8xFD7inNwZLKqbLtiRbjHLugGxggJnfHiw==
 
-swagger-ui-dist@^4.0.0-beta.2:
-  version "4.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.0.0-beta.2.tgz#19bf079ad9d3d1ecb5e8d0d7e9a4dce3e49359f9"
-  integrity sha512-HJ+S9XReb5H63io1zY/BM+sz1mnO9E3bv2mUEG15nCqL9lfOZsduvv6qOUzTq6TCSKEUYVYw1q8GsfzZfV+yDA==
+swagger-ui-dist@3.20.9:
+  version "3.20.9"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-3.20.9.tgz#a1b8d443a02ce4ef52dbecedc5b186182bbb6780"
+  integrity sha512-tlDVMtwpvA0QPxyda2paAPVR5UDNZI77LaEn/EZdhHLbmvBHACU3j6CTIV/wZSbc6qhpPdNrTB9dD3EDFue98Q==
 
 term-size@^2.1.0:
   version "2.2.1"
