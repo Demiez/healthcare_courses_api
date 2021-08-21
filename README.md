@@ -98,6 +98,13 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 - Protect against http param polution
 - Use cors to make API public (for now)
 
+## Logging
+
+- Use winston library
+- Implement logging for info and error events
+- Add transports both for console and file (./logs)
+- Differentiate development and production logging application?
+
 ## Documentation
 
 - Use Swagger to create API spec
