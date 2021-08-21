@@ -1,4 +1,5 @@
 import { StandardResponseViewModel } from '../../../core/view-models';
+import { CreateMtcRequestModel } from '../request-models';
 
 class MtcService {
   public getAllMtcs(): StandardResponseViewModel {
@@ -9,7 +10,9 @@ class MtcService {
     return new StandardResponseViewModel(`Show mtc by Id: ${mtcId}`, 'success');
   }
 
-  public createMtc(): StandardResponseViewModel {
+  public createMtc(
+    requestModel: CreateMtcRequestModel
+  ): StandardResponseViewModel {
     return new StandardResponseViewModel('Create new mtc', 'success');
   }
 

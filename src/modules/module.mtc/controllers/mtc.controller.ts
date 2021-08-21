@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { ApiOperationGet, ApiPath } from 'swagger-express-ts';
+import { ApiOperationGet, ApiOperationPost, ApiPath } from 'swagger-express-ts';
 import BaseController from '../../../core/abstract/base-controller';
+import { CreateMtcRequestModel } from '../request-models';
 import { ModuleMtc_MtcService } from '../services/mtc.service';
 
 @ApiPath({
@@ -39,8 +40,34 @@ class MtcController extends BaseController {
     return super.sendSuccessResponse(res, result);
   }
 
+  @ApiOperationPost({
+    path: '',
+    summary: 'Creates MTC in Database',
+    parameters: {
+      body: {
+        required: true,
+        model: 'CreateMtcRequestModel',
+      },
+    },
+    responses: {
+      200: { model: 'StandardResponseViewModel' },
+      403: {
+        description: `BaseErrorSubCodes.INVALID_INPUT_PARAMS_IS_BAD_VALUE, ["field is not valid"]`,
+      },
+      500: {
+        description: `
+        INTERNAL_SERVER_ERROR: ModuleMtc_MtcController:__getAllMtcs
+        `,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
   public async createMtc(req: Request, res: Response) {
-    const result = ModuleMtc_MtcService.createMtc();
+    const requestModel = new CreateMtcRequestModel(req.body);
+
+    const result = ModuleMtc_MtcService.createMtc(requestModel);
 
     return super.sendSuccessResponse(res, result);
   }

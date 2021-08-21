@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import { MongooseLocationTypesEnum } from '../../../core/enums';
 import { CareerTypesEnum } from '../enums/career-types.enum';
 
-interface IGeoJsonLocation {
+export interface IGeoJsonLocation {
   type: string;
   coordinates: Array<number>;
   formattedAddress: string;
