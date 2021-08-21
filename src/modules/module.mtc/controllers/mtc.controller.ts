@@ -52,11 +52,19 @@ class MtcController extends BaseController {
     responses: {
       200: { model: 'StandardResponseViewModel' },
       403: {
-        description: `BaseErrorSubCodes.INVALID_INPUT_PARAMS_IS_BAD_VALUE, ["field is not valid"]`,
+        description: `
+        { "errorCode": "INVALID_INPUT_PARAMS", 
+          "errorDetails": [
+            {
+              "field": ["email"]
+            }
+          ], 
+          "type": "FORBIDDEN" },
+        `,
       },
       500: {
         description: `
-        INTERNAL_SERVER_ERROR: ModuleMtc_MtcController:__getAllMtcs
+        INTERNAL_SERVER_ERROR: ModuleMtc_MtcController:__createMtc
         `,
       },
     },

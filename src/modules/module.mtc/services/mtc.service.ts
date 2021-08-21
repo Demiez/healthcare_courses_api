@@ -1,4 +1,6 @@
+import { BaseErrorCodes, ForbiddenError } from '../../../core/errors';
 import { StandardResponseViewModel } from '../../../core/view-models';
+import { CreateMtcRequestModelValidator } from '../../module.validation';
 import { CreateMtcRequestModel } from '../request-models';
 
 class MtcService {
@@ -13,6 +15,12 @@ class MtcService {
   public createMtc(
     requestModel: CreateMtcRequestModel
   ): StandardResponseViewModel {
+    const errors = CreateMtcRequestModelValidator.validate(requestModel);
+
+    if (errors.length) {
+      throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
+    }
+
     return new StandardResponseViewModel('Create new mtc', 'success');
   }
 
