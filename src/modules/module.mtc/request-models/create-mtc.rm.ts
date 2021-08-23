@@ -5,6 +5,7 @@ import {
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
 import { IGeoJsonLocation } from '../data-models/mtc.dm';
+import { CareerTypesEnum } from '../enums/career-types.enum';
 
 @ApiModel({
   name: 'CreateMtcRequestModel',
@@ -30,35 +31,39 @@ export class CreateMtcRequestModel {
   public email: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
+  public address: string = undefined;
+
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public location: IGeoJsonLocation = undefined;
 
   @ApiModelProperty({
     type: SwaggerDefinitionConstant.ARRAY,
     itemType: SwaggerDefinitionConstant.STRING,
+    enum: Object.values(CareerTypesEnum),
     required: true,
   })
-  public careers: Array<string> = undefined;
+  public careers: Array<CareerTypesEnum> = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.NUMBER, required: true })
-  public averageRating: number = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.NUMBER })
+  public averageRating?: number = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.NUMBER, required: true })
-  public averageCost: number = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.NUMBER })
+  public averageCost?: number = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
-  public photo: string = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING })
+  public photo?: string = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN, required: true })
-  public housing: boolean = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN })
+  public housing?: boolean = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN, required: true })
-  public jobAssistance: boolean = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN })
+  public jobAssistance?: boolean = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN, required: true })
-  public jobGuarantee: boolean = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN })
+  public jobGuarantee?: boolean = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN, required: true })
-  public acceptGiBill: boolean = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN })
+  public acceptGiBill?: boolean = undefined;
 
   constructor(body: any) {
     const pickedBody = pick(body, keys(this));

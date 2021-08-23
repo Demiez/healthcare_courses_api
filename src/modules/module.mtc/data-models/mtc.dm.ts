@@ -57,7 +57,6 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     required: true,
     maxlength: [500, 'Description can not be more than 50 characters'],
   },
-  // validate for url
   website: {
     type: String,
     trim: true,
