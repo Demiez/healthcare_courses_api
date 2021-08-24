@@ -1,9 +1,12 @@
+import { Service } from 'typedi';
 import { BaseErrorCodes, ForbiddenError } from '../../../core/errors';
+import { logger } from '../../../core/utils';
 import { StandardResponseViewModel } from '../../../core/view-models';
 import { CreateMtcRequestModelValidator } from '../../module.validation';
 import { CreateMtcRequestModel } from '../request-models';
 
-class MtcService {
+@Service()
+export class MtcService {
   public getAllMtcs(): StandardResponseViewModel {
     return new StandardResponseViewModel('Show all mtcs', 'success');
   }
@@ -37,6 +40,10 @@ class MtcService {
       'success'
     );
   }
+
+  public logInfo() {
+    logger.info('info');
+  }
 }
 
-export const ModuleMtc_MtcService: MtcService = new MtcService();
+// export const ModuleMtc_MtcService: MtcService = new MtcService();

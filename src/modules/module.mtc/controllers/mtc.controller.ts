@@ -1,15 +1,21 @@
 import { Request, Response } from 'express';
 import { ApiOperationGet, ApiOperationPost, ApiPath } from 'swagger-express-ts';
+import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
 import { CreateMtcRequestModel } from '../request-models';
-import { ModuleMtc_MtcService } from '../services/mtc.service';
+import { MtcService } from '../services/mtc.service';
 
 @ApiPath({
   description: 'Mtc controller',
   name: 'Mtc controller',
   path: `/mtcs`,
 })
-class MtcController extends BaseController {
+@Service()
+export class MtcController extends BaseController {
+  constructor(private readonly mtcService: MtcService) {
+    super();
+  }
+
   @ApiOperationGet({
     path: '',
     summary: 'Responds with info about all mtcs',
@@ -19,9 +25,7 @@ class MtcController extends BaseController {
         description: `BaseErrorSubCodes.INVALID_INPUT_PARAMS_IS_BAD_VALUE, ["field is not valid"]`,
       },
       500: {
-        description: `
-        INTERNAL_SERVER_ERROR: ModuleMtc_MtcController:__getAllMtcs
-        `,
+        description: `INTERNAL_SERVER_ERROR: MtcController:__getAllMtcs`,
       },
     },
     security: {
@@ -29,13 +33,13 @@ class MtcController extends BaseController {
     },
   })
   public async getAllMtcs(req: Request, res: Response) {
-    const result = ModuleMtc_MtcService.getAllMtcs();
+    const result = this.mtcService.getAllMtcs();
 
     return super.sendSuccessResponse(res, result);
   }
 
   public async getMtc(req: Request, res: Response) {
-    const result = ModuleMtc_MtcService.getMtc(req.params.mtcId);
+    const result = this.mtcService.getMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }
@@ -64,7 +68,7 @@ class MtcController extends BaseController {
       },
       500: {
         description: `
-        INTERNAL_SERVER_ERROR: ModuleMtc_MtcController:__createMtc
+        INTERNAL_SERVER_ERROR: MtcController:__createMtc
         `,
       },
     },
@@ -75,22 +79,22 @@ class MtcController extends BaseController {
   public async createMtc(req: Request, res: Response) {
     const requestModel = new CreateMtcRequestModel(req.body);
 
-    const result = ModuleMtc_MtcService.createMtc(requestModel);
+    const result = this.mtcService.createMtc(requestModel);
 
     return super.sendSuccessResponse(res, result);
   }
 
   public async updateMtc(req: Request, res: Response) {
-    const result = ModuleMtc_MtcService.updateMtc(req.params.mtcId);
+    const result = this.mtcService.updateMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }
 
   public async deleteMtc(req: Request, res: Response) {
-    const result = ModuleMtc_MtcService.deleteMtc(req.params.mtcId);
+    const result = this.mtcService.deleteMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }
 }
 
-export const ModuleMtc_MtcController: MtcController = new MtcController();
+// export const ModuleMtc_MtcController: MtcController = new MtcController();

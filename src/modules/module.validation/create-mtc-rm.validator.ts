@@ -100,15 +100,15 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     if (jobAssistance) {
-      this.validateBooleanField(housing, 'jobAssistance');
+      this.validateBooleanField(jobAssistance, 'jobAssistance');
     }
 
     if (jobGuarantee) {
-      this.validateBooleanField(housing, 'jobGuarantee');
+      this.validateBooleanField(jobGuarantee, 'jobGuarantee');
     }
 
     if (acceptGiBill) {
-      this.validateBooleanField(housing, 'acceptGiBill');
+      this.validateBooleanField(acceptGiBill, 'acceptGiBill');
     }
 
     return this.errors;
