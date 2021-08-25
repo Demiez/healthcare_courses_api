@@ -37,6 +37,7 @@
     "reflect-metadata": "^0.1.13",
     "swagger-express-ts": "1.1.0",
     "swagger-ui-dist": "3.20.9",
+    "typedi": "^0.10.0",
     "uuid": "^8.3.2",
     "validator": "^13.6.0",
     "winston": "^3.3.3"
