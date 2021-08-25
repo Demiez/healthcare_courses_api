@@ -96,5 +96,3 @@ export class MtcController extends BaseController {
     return super.sendSuccessResponse(res, result);
   }
 }
-
-// export const ModuleMtc_MtcController: MtcController = new MtcController();

@@ -45,5 +45,3 @@ export class MtcService {
     logger.info('info');
   }
 }
-
-// export const ModuleMtc_MtcService: MtcService = new MtcService();
