@@ -24,4 +24,8 @@ export class ErrorCodes extends BaseErrorCodes {
   public static get RECORD_NOT_FOUND() {
     return 'RECORD_NOT_FOUND';
   }
+
+  public static get MTC_NAME_IS_ALREADY_REGISTERED() {
+    return 'MTC_NAME_IS_ALREADY_REGISTERED';
+  }
 }

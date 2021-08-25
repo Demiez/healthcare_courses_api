@@ -79,11 +79,11 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     type: {
       type: String,
       enum: [MongooseLocationTypesEnum.POINT],
-      required: true,
+      // required: true,
     },
     coordinates: {
       type: [Number],
-      required: true,
+      // required: true,
       index: '2dsphere',
     },
     formattedAddress: String,

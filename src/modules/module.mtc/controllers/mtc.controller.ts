@@ -54,16 +54,19 @@ export class MtcController extends BaseController {
       },
     },
     responses: {
-      200: { model: 'StandardResponseViewModel' },
+      200: { model: 'MtcViewModel' },
       403: {
         description: `
-        { "errorCode": "INVALID_INPUT_PARAMS", 
-          "errorDetails": [
-            {
-              "field": ["email"]
-            }
-          ], 
-          "type": "FORBIDDEN" },
+        { 
+          "errorCode": "INVALID_INPUT_PARAMS", 
+          "errorDetails": [ { "field": ["field_name"] } ], 
+          "type": "FORBIDDEN" 
+        },
+        { 
+          "errorCode": "MTC_NAME_IS_ALREADY_REGISTERED",
+          "errorDetails": ["MTC with such name is already registered"],
+          "type": "FORBIDDEN"
+        }
         `,
       },
       500: {
@@ -79,7 +82,7 @@ export class MtcController extends BaseController {
   public async createMtc(req: Request, res: Response) {
     const requestModel = new CreateMtcRequestModel(req.body);
 
-    const result = this.mtcService.createMtc(requestModel);
+    const result = await this.mtcService.createMtc(requestModel);
 
     return super.sendSuccessResponse(res, result);
   }

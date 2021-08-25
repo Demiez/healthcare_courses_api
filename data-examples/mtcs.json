@@ -1,0 +1,77 @@
+[
+  {
+    "_id": "672ce2db-9d9e-4632-ad78-677a41c57804",
+    "user": "f11cecbf-ac45-4c08-ac19-e5cfdb8db24a",
+    "name": "Genesis Medical Training Center",
+    "slug": "genesis-medical-training-center",
+    "description": "Genesis Medical Training Center’s (GMTC) Mission is to provide allied-health education of clinical knowledge & skills to all students, regardless of their backgrounds.",
+    "website": "https://www.genesismedicaltraining.com",
+    "phone": "(718) 747-8680",
+    "email": "edu.gmtc@gmail.com",
+    "address": "91-31 Queens Blvd Suite 201 Elmhurst, NY 11373",
+    "careers": [
+      "EKG Technician",
+      "Phlebotomy Technician",
+      "Patient Care Technician",
+      "Certified Nurse Aide",
+      "Personal Care Aide",
+      "Home Health Aide",
+      "BLS/CPR"
+    ],
+    "housing": true,
+    "jobAssistance": true,
+    "jobGuarantee": false,
+    "acceptGiBill": true
+  },
+  {
+    "_id": "c27279fe-a299-4199-8b32-cb5166c3734e",
+    "user": "2047c963-af75-4440-93af-7f704873fa8a",
+    "name": "New York Medical Career Training Center",
+    "slug": "new-york-medical-career-training-center",
+    "description": "In 1997 Doctor Nand Panjwani opened the New York Medical Career Training Center. His love and dedication for the medical field inspired him to provide training to people who are willing to dedicate themselves to the medical field. Dr. Panjwani believes he must provide quality training to his students in order for him to be successful",
+    "website": "https://www.nymedtraining.com",
+    "phone": "(212) 947-4444",
+    "email": "vijipanjwani@nymedtraining.com",
+    "address": "500 8th Ave. Suite 5N New York, NY 10018",
+    "careers": [
+      "Medical Assistant",
+      "EKG Technician",
+      "Patient Care Technician",
+      "Nurse Assistant",
+      "Dialysis Technician",
+      "Medical Billing",
+      "Medical Office Administration",
+      "Phlebotomy Technician",
+      "Certified Nurse Aide"
+    ],
+    "housing": false,
+    "jobAssistance": true,
+    "jobGuarantee": false,
+    "acceptGiBill": true
+  },
+  {
+    "_id": "296c11a7-d3c4-4f70-bc94-0d939b347f61",
+    "user": "614dc456-835f-4c2d-b7b7-7ab94a2ae8a0",
+    "name": "Professional Medical Training Center",
+    "slug": "professional-medical-training-center",
+    "description": "Professional Medical Training Center (PMTC) is a growing allied health school that focuses on training and educating adults so that they can enter into the medical field. PMTC has campuses in Florence, SC and Conway, SC.",
+    "website": "https://www.pmtcflorence.com",
+    "phone": "(843) 678-9135",
+    "email": "pmtc.cna@gmail.com",
+    "address": "2229 S. Irby St. Florence, SC 29505",
+    "careers": [
+      "Nurse Assistant",
+      "Medical Assistant",
+      "EKG Technician",
+      "BLS/CPR",
+      "Medical Coding",
+      "Pharmacy Technician",
+      "Phlebotomy Technician",
+      "Medical Office Administration"
+    ],
+    "housing": false,
+    "jobAssistance": true,
+    "jobGuarantee": false,
+    "acceptGiBill": true
+  }
+]

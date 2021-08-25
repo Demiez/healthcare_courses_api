@@ -1,9 +1,14 @@
 import { Service } from 'typedi';
-import { BaseErrorCodes, ForbiddenError } from '../../../core/errors';
-import { logger } from '../../../core/utils';
+import {
+  BaseErrorCodes,
+  ErrorCodes,
+  ForbiddenError,
+} from '../../../core/errors';
 import { StandardResponseViewModel } from '../../../core/view-models';
 import { CreateMtcRequestModelValidator } from '../../module.validation';
+import { MtcModel } from '../data-models/mtc.dm';
 import { CreateMtcRequestModel } from '../request-models';
+import { MtcViewModel } from '../view-models';
 
 @Service()
 export class MtcService {
@@ -15,16 +20,26 @@ export class MtcService {
     return new StandardResponseViewModel(`Show mtc by Id: ${mtcId}`, 'success');
   }
 
-  public createMtc(
-    requestModel: CreateMtcRequestModel
-  ): StandardResponseViewModel {
+  public async createMtc(requestModel: CreateMtcRequestModel): Promise<any> {
     const errors = CreateMtcRequestModelValidator.validate(requestModel);
 
     if (errors.length) {
       throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
     }
 
-    return new StandardResponseViewModel('Create new mtc', 'success');
+    const isMtcRegistered = await this.isMtcNameRegistered(requestModel.name);
+
+    if (isMtcRegistered) {
+      throw new ForbiddenError(ErrorCodes.MTC_NAME_IS_ALREADY_REGISTERED, [
+        'MTC with such name is already registered',
+      ]);
+    }
+
+    const newMtc = new MtcModel(requestModel);
+
+    await newMtc.save();
+
+    return new MtcViewModel(newMtc);
   }
 
   public updateMtc(mtcId: string): StandardResponseViewModel {
@@ -41,7 +56,9 @@ export class MtcService {
     );
   }
 
-  public logInfo() {
-    logger.info('info');
+  private async isMtcNameRegistered(mtcName: string) {
+    const mtc = await MtcModel.findOne({ name: mtcName }, '_id name');
+
+    return mtc !== null;
   }
 }

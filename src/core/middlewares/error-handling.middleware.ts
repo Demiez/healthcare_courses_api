@@ -3,6 +3,7 @@ import { ErrorResponseTypes } from '../enums/error-response-types.enum';
 import {
   BaseErrorCodes,
   ErrorResponse,
+  InternalServerError,
   PostbackUniversalError,
 } from '../errors';
 

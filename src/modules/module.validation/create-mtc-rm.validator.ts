@@ -64,14 +64,14 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
       this.errors.push(new FieldIsBadModel('email'));
     }
 
-    if (!isString(address) || description.trim().length > MTC_ADDRESS_LENGTH) {
+    if (!isString(address) || address.trim().length > MTC_ADDRESS_LENGTH) {
       this.errors.push(new FieldIsBadModel('address'));
     }
 
     // TODO : specific location validation (GeoJson)
-    if (!location) {
-      this.errors.push(new FieldIsBadModel('location'));
-    }
+    // if (!location) {
+    //   this.errors.push(new FieldIsBadModel('location'));
+    // }
 
     if (
       !careers ||
