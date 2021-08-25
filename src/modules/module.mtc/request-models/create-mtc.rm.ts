@@ -4,8 +4,8 @@ import {
   ApiModelProperty,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
-import { IGeoJsonLocation } from '../data-models/mtc.dm';
 import { CareerTypesEnum } from '../enums/career-types.enum';
+import { MtcLocationViewModel } from '../view-models';
 
 @ApiModel({
   name: 'CreateMtcRequestModel',
@@ -33,8 +33,8 @@ export class CreateMtcRequestModel {
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public address: string = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
-  public location: IGeoJsonLocation = undefined;
+  @ApiModelProperty({ model: 'MtcLocationViewModel', required: true })
+  public location: MtcLocationViewModel = undefined;
 
   @ApiModelProperty({
     type: SwaggerDefinitionConstant.ARRAY,

@@ -6,12 +6,12 @@ import { CareerTypesEnum } from '../enums/career-types.enum';
 export interface IGeoJsonLocation {
   type: string;
   coordinates: Array<number>;
-  formattedAddress: string;
-  street: string;
-  city: string;
-  state: string;
-  zipcode: string;
-  country: string;
+  formattedAddress?: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  zipcode?: string;
+  country?: string;
 }
 
 export interface IMtcDocument extends Document {
