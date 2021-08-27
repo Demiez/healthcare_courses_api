@@ -21,7 +21,7 @@ export const logger = createLogger({
   transports: [new transports.File({ filename: `./logs/${date}-log.log` })],
 });
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   logger.add(
     new transports.Console({
       format: format.combine(
