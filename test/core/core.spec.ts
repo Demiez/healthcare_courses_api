@@ -11,7 +11,7 @@ import { StandardResponseViewModel } from '../../src/core/view-models';
 chai.use(chaiHttp);
 chai.should();
 
-function checkRootEndpointResponseBody(body: StandardResponseViewModel) {
+const checkRootEndpointResponseBody = (body: StandardResponseViewModel) => {
   body.should.haveOwnProperty('message');
   body.message.should.be.a('string');
 
@@ -20,13 +20,14 @@ function checkRootEndpointResponseBody(body: StandardResponseViewModel) {
 
   body.message.should.equal(APP_ROOT_MESSAGE);
   body.status.should.equal('success');
-}
+};
 
 let mongo: MongoMockHelper;
 
 before(async () => {
   mongo = new MongoMockHelper();
   await mongo.openConnection();
+  logger.info('Testing started');
   sinon.stub(logger, 'error');
   sinon.stub(logger, 'info');
 });

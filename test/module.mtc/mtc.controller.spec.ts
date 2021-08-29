@@ -5,6 +5,7 @@ import { Query } from 'mongoose';
 import { v4 } from 'uuid';
 import app from '../../src/app';
 import { APP_ROOT } from '../../src/core/constants';
+import { ErrorCodes } from '../../src/core/errors';
 import { MtcModel } from '../../src/modules/module.mtc/data-models/mtc.dm';
 import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
 import { CreateMtcRequestModel } from '../../src/modules/module.mtc/request-models';
@@ -18,7 +19,7 @@ const globalData = {
   mtcName01: '',
 };
 
-function checkCreateMtcResponseBody(body: MtcViewModel) {
+const checkCreateMtcResponseBody = (body: MtcViewModel) => {
   body.should.have.property('id');
   body.id.should.be.a('string');
 
@@ -74,14 +75,15 @@ function checkCreateMtcResponseBody(body: MtcViewModel) {
 
   body.should.have.property('acceptGiBill');
   body.acceptGiBill.should.be.a('boolean');
-}
+};
 
-function checkErrorResponse(res: Response, resStatus: number) {
+const checkBaseErrorResponse = (res: Response, resStatus: number) => {
   res.status.should.equal(resStatus);
   res.body.should.be.an('object');
-  res.body.should.have.property('errorCode');
-  res.body.should.have.property('errorDetails');
-}
+  res.body.should.have.property('errorCode').that.is.a('string');
+  res.body.should.have.property('errorDetails').that.is.an('array');
+  res.body.should.have.property('type').that.is.a('string');
+};
 
 describe.only('MTC Controller', () => {
   before(async () => {
@@ -125,7 +127,13 @@ describe.only('MTC Controller', () => {
           }
         });
 
-      checkErrorResponse(res as Response, 403);
+      checkBaseErrorResponse(res as Response, 403);
+      res.body.errorCode.should.equal(
+        ErrorCodes.MTC_NAME_IS_ALREADY_REGISTERED
+      );
+      res.body.errorDetails[0].should.equal(
+        'MTC with such name is already registered'
+      );
     });
   });
 });
