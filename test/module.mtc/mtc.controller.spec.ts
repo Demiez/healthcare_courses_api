@@ -1,5 +1,6 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
+import { cloneDeep } from 'lodash';
 import 'mocha';
 import { Query } from 'mongoose';
 import { v4 } from 'uuid';
@@ -85,7 +86,7 @@ const checkBaseErrorResponse = (res: Response, resStatus: number) => {
   res.body.should.have.property('type').that.is.a('string');
 };
 
-describe.only('MTC Controller', () => {
+describe('MTC Controller', () => {
   before(async () => {
     await setupData();
   });
@@ -112,6 +113,38 @@ describe.only('MTC Controller', () => {
       res.body.should.be.an('object');
       checkCreateMtcResponseBody(res.body);
       globalData.mtcName01 = (res.body as MtcViewModel).name;
+    });
+
+    it('Create mtc with invalid fields in request model', async () => {
+      const invalidRequestModel = Object.assign(
+        cloneDeep(globalData.createMtcRequestModel),
+        {
+          name: 1,
+          careers: ['NON_EXISTING_CAREER_01', 'NON_EXISTING_CAREER_02'],
+        }
+      );
+
+      const res = await chai
+        .request(app)
+        .post(`${APP_ROOT}/mtcs`)
+        .send(invalidRequestModel)
+        .catch((err) => {
+          if (err.response) {
+            return err.response as Response;
+          } else {
+            throw err;
+          }
+        });
+
+      checkBaseErrorResponse(res as Response, 403);
+      res.body.errorCode.should.equal(ErrorCodes.INVALID_INPUT_PARAMS);
+      res.body.errorDetails.length.should.equal(2);
+      res.body.errorDetails[0].should.deep.equal({
+        field: 'name',
+      });
+      res.body.errorDetails[1].should.deep.equal({
+        field: 'careers',
+      });
     });
 
     it('Create mtc with already existing name', async () => {
