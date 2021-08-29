@@ -12,7 +12,8 @@
     "no-var-requires": false,
     "ban-types": false,
     "object-literal-sort-keys": false,
-    "variable-name": false
+    "variable-name": false,
+    "no-unused-expression": false
   },
   "rulesDirectory": []
 }

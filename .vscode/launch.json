@@ -20,7 +20,7 @@
         "-u",
         "bdd",
         "--timeout",
-        "999999",
+        "1000000",
         "--colors",
         "--recursive",
         "${workspaceFolder}/test/**/*.ts"

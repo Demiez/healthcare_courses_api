@@ -2,9 +2,10 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import 'mocha';
 import * as mongoose from 'mongoose';
+import * as sinon from 'sinon';
 import app from '../../src/app';
 import { APP_ROOT, APP_ROOT_MESSAGE } from '../../src/core/constants';
-import { MongoMockHelper } from '../../src/core/utils';
+import { logger, MongoMockHelper } from '../../src/core/utils';
 import { StandardResponseViewModel } from '../../src/core/view-models';
 
 chai.use(chaiHttp);
@@ -26,9 +27,12 @@ let mongo: MongoMockHelper;
 before(async () => {
   mongo = new MongoMockHelper();
   await mongo.openConnection();
+  sinon.stub(logger, 'error');
+  sinon.stub(logger, 'info');
 });
 
 after(async () => {
+  sinon.restore();
   await mongo.closeConnection();
 });
 
