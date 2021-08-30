@@ -1,5 +1,6 @@
 import { isArray, isEmpty, isInteger, isNumber, isString } from 'lodash';
 import validator from 'validator';
+import { convertVariableToString } from '../../core/utils';
 import { FieldIsBadModel } from '../../core/view-models';
 import {
   MTC_ADDRESS_LENGTH,
@@ -36,29 +37,17 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
       acceptGiBill,
     } = requestModel;
 
-    this.validateName(name, this.variableToString({ name }));
+    this.validateName(name, convertVariableToString({ name }));
     // TODO? : add specific slug check
-    this.validateSlug(slug, this.variableToString({ slug }));
+    this.validateSlug(slug, convertVariableToString({ slug }));
     this.validateDescription(
       description,
-      this.variableToString({ description })
+      convertVariableToString({ description })
     );
-
-    if (!website || !validator.isURL(website)) {
-      this.errors.push(new FieldIsBadModel('website'));
-    }
-
-    if (!isString(phone) || phone.trim().length > MTC_PHONE_LENGTH) {
-      this.errors.push(new FieldIsBadModel('phone'));
-    }
-
-    if (!email || !validator.isEmail(email)) {
-      this.errors.push(new FieldIsBadModel('email'));
-    }
-
-    if (!isString(address) || address.trim().length > MTC_ADDRESS_LENGTH) {
-      this.errors.push(new FieldIsBadModel('address'));
-    }
+    this.validateWebsite(website, convertVariableToString({ website }));
+    this.validatePhone(phone, convertVariableToString({ phone }));
+    this.validateEmail(email, convertVariableToString({ email }));
+    this.validateAddress(address, convertVariableToString({ address }));
 
     // TODO : specific location validation (GeoJson)
     // if (!location) {
@@ -150,8 +139,8 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
   }
 
-  private static validateWebsite(website: string) {
-    const error = this.validateStringField(website, 'website');
+  private static validateWebsite(website: string, fieldName: string) {
+    const error = this.validateStringField(website, fieldName);
 
     if (error) {
       this.errors.push(error);
@@ -160,9 +149,57 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
 
     if (!validator.isURL(website)) {
       this.errors.push(
+        new FieldIsBadModel(fieldName, `Please provide valid URL`)
+      );
+    }
+  }
+
+  private static validatePhone(phone: string, fieldName: string) {
+    const error = this.validateStringField(phone, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
+    if (phone.trim().length > MTC_PHONE_LENGTH) {
+      this.errors.push(
         new FieldIsBadModel(
-          'website',
-          `Cannot be more than ${MTC_DESCRIPTION_LENGTH} characters`
+          fieldName,
+          `Cannot be more than ${MTC_PHONE_LENGTH} characters`
+        )
+      );
+    }
+  }
+
+  private static validateEmail(email: string, fieldName: string) {
+    const error = this.validateStringField(email, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
+    if (!validator.isEmail(email)) {
+      this.errors.push(
+        new FieldIsBadModel(fieldName, `Please provide valid email`)
+      );
+    }
+  }
+
+  private static validateAddress(address: string, fieldName: string) {
+    const error = this.validateStringField(address, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
+    if (address.trim().length > MTC_ADDRESS_LENGTH) {
+      this.errors.push(
+        new FieldIsBadModel(
+          fieldName,
+          `Cannot be more than ${MTC_ADDRESS_LENGTH} characters`
         )
       );
     }
