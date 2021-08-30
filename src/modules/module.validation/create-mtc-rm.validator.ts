@@ -36,21 +36,13 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
       acceptGiBill,
     } = requestModel;
 
-    if (!isString(name) || name.trim().length > MTC_NAME_LENGTH) {
-      this.errors.push(new FieldIsBadModel('name'));
-    }
-
+    this.validateName(name, this.variableToString({ name }));
     // TODO? : add specific slug check
-    if (!isString(slug)) {
-      this.errors.push(new FieldIsBadModel('slug'));
-    }
-
-    if (
-      !isString(description) ||
-      description.trim().length > MTC_DESCRIPTION_LENGTH
-    ) {
-      this.errors.push(new FieldIsBadModel('description'));
-    }
+    this.validateSlug(slug, this.variableToString({ slug }));
+    this.validateDescription(
+      description,
+      this.variableToString({ description })
+    );
 
     if (!website || !validator.isURL(website)) {
       this.errors.push(new FieldIsBadModel('website'));
@@ -112,6 +104,68 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     return this.errors;
+  }
+
+  private static validateName(name: string, fieldName: string) {
+    const error = this.validateStringField(name, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
+    if (name.trim().length > MTC_NAME_LENGTH) {
+      this.errors.push(
+        new FieldIsBadModel(
+          fieldName,
+          `Cannot be more than ${MTC_NAME_LENGTH} characters`
+        )
+      );
+    }
+  }
+
+  private static validateSlug(slug: string, fieldName: string) {
+    const error = this.validateStringField(slug, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+    }
+  }
+
+  private static validateDescription(description: string, fieldName: string) {
+    const error = this.validateStringField(description, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
+    if (description.trim().length > MTC_DESCRIPTION_LENGTH) {
+      this.errors.push(
+        new FieldIsBadModel(
+          fieldName,
+          `Cannot be more than ${MTC_DESCRIPTION_LENGTH} characters`
+        )
+      );
+    }
+  }
+
+  private static validateWebsite(website: string) {
+    const error = this.validateStringField(website, 'website');
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
+    if (!validator.isURL(website)) {
+      this.errors.push(
+        new FieldIsBadModel(
+          'website',
+          `Cannot be more than ${MTC_DESCRIPTION_LENGTH} characters`
+        )
+      );
+    }
   }
 
   private static validateCareers(careers: Array<CareerTypesEnum>) {

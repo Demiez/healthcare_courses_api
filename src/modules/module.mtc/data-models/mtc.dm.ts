@@ -45,7 +45,7 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     trim: true,
     required: true,
     unique: true,
-    maxlength: [50, 'Name can not be more than 50 characters'],
+    maxlength: [50, 'Name cannot be more than 50 characters'],
   },
   slug: {
     type: String,
@@ -55,7 +55,7 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     type: String,
     trim: true,
     required: true,
-    maxlength: [500, 'Description can not be more than 50 characters'],
+    maxlength: [500, 'Description cannot be more than 50 characters'],
   },
   website: {
     type: String,
@@ -101,7 +101,7 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
   averageRating: {
     type: Number,
     min: [1, 'Rating must be at least 1'],
-    max: [10, 'Rating can not be more than 10'],
+    max: [10, 'Rating cannot be more than 10'],
   },
   averageCost: Number,
   photo: {

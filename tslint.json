@@ -5,7 +5,7 @@
   "rules": {
     "array-type": [true, "generic"],
     "no-string-literal": false,
-    "object-literal-shorthand": [true, "never"],
+    "object-literal-shorthand": [false, "never"],
     "only-arrow-functions": false,
     "interface-name": false,
     "max-classes-per-file": false,
