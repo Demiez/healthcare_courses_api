@@ -1,4 +1,4 @@
-import { isArray, isEmpty, isInteger, isNumber, isString } from 'lodash';
+import { isArray, isEmpty, isNil } from 'lodash';
 import validator from 'validator';
 import { convertVariableToString } from '../../core/utils';
 import { FieldIsBadModel } from '../../core/view-models';
@@ -54,42 +54,69 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     //   this.errors.push(new FieldIsBadModel('location'));
     // }
 
-    if (
-      !careers ||
-      !isArray(careers) ||
-      isEmpty(careers) ||
-      !this.validateCareers(careers)
-    ) {
-      this.errors.push(new FieldIsBadModel('careers'));
-    }
+    this.validateCareers(careers, convertVariableToString({ careers }));
 
     // Optional fields
-    if (averageRating) {
-      this.validateAverageRating(averageRating);
+    if (!isNil(averageRating)) {
+      this.validateAverageRating(
+        averageRating,
+        convertVariableToString({ averageRating })
+      );
     }
 
-    if (averageCost) {
-      this.validateAverageCost(averageCost);
+    if (!isNil(averageCost)) {
+      this.validateAverageCost(
+        averageCost,
+        convertVariableToString({ averageCost })
+      );
     }
 
     if (photo) {
-      this.validatePhoto(photo);
+      this.validatePhoto(photo, convertVariableToString({ photo }));
     }
 
-    if (housing) {
-      this.validateBooleanField(housing, 'housing');
+    if (!isNil(housing)) {
+      const error = this.validateBooleanField(
+        housing,
+        convertVariableToString({ housing })
+      );
+
+      if (error) {
+        this.errors.push(error);
+      }
     }
 
-    if (jobAssistance) {
-      this.validateBooleanField(jobAssistance, 'jobAssistance');
+    if (!isNil(jobAssistance)) {
+      const error = this.validateBooleanField(
+        jobAssistance,
+        convertVariableToString({ jobAssistance })
+      );
+
+      if (error) {
+        this.errors.push(error);
+      }
     }
 
-    if (jobGuarantee) {
-      this.validateBooleanField(jobGuarantee, 'jobGuarantee');
+    if (!isNil(jobGuarantee)) {
+      const error = this.validateBooleanField(
+        jobGuarantee,
+        convertVariableToString({ jobGuarantee })
+      );
+
+      if (error) {
+        this.errors.push(error);
+      }
     }
 
-    if (acceptGiBill) {
-      this.validateBooleanField(acceptGiBill, 'acceptGiBill');
+    if (!isNil(acceptGiBill)) {
+      const error = this.validateBooleanField(
+        acceptGiBill,
+        convertVariableToString({ acceptGiBill })
+      );
+
+      if (error) {
+        this.errors.push(error);
+      }
     }
 
     return this.errors;
@@ -205,38 +232,71 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
   }
 
-  private static validateCareers(careers: Array<CareerTypesEnum>) {
+  private static validateCareers(
+    careers: Array<CareerTypesEnum>,
+    fieldName: string
+  ) {
+    if (!careers || !isArray(careers) || isEmpty(careers)) {
+      this.errors.push(
+        new FieldIsBadModel(
+          fieldName,
+          'Please provide at least one career in list'
+        )
+      );
+      return;
+    }
+
     const allowedValues = Object.values(CareerTypesEnum);
 
-    const isValid = careers.every((career) => {
-      if (!allowedValues.includes(career)) {
-        return false;
-      }
-      return true;
-    });
+    const isValidCareerList = careers.every((career) =>
+      allowedValues.includes(career)
+    );
 
-    return isValid;
+    if (!isValidCareerList) {
+      this.errors.push(
+        new FieldIsBadModel(fieldName, 'There must be only valid careers')
+      );
+    }
   }
 
-  private static validateAverageRating(averageRating: number) {
+  private static validateAverageRating(
+    averageRating: number,
+    fieldName: string
+  ) {
+    const error = this.validateNumberField(averageRating, fieldName, true);
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
     if (
-      !isInteger(averageRating) ||
       averageRating < MTC_AVERAGE_RATING_MIN_VALUE ||
       averageRating > MTC_AVERAGE_RATING_MAX_VALUE
     ) {
-      this.errors.push(new FieldIsBadModel('averageRating'));
+      this.errors.push(new FieldIsBadModel(fieldName, 'Must be from 1 to 10'));
     }
   }
 
-  private static validateAverageCost(averageCost: number) {
-    if (!isNumber(averageCost) || averageCost < 0) {
-      this.errors.push(new FieldIsBadModel('averageCost'));
+  private static validateAverageCost(averageCost: number, fieldName: string) {
+    const error = this.validateNumberField(averageCost, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+      return;
+    }
+
+    if (averageCost < 0) {
+      this.errors.push(new FieldIsBadModel(fieldName, 'Cannot be less than 0'));
     }
   }
 
-  private static validatePhoto(photo: string) {
-    if (!isString(photo)) {
-      this.errors.push(new FieldIsBadModel('photo'));
+  private static validatePhoto(photo: string, fieldName: string) {
+    const error = this.validateStringField(photo, fieldName);
+
+    if (error) {
+      this.errors.push(error);
+      return;
     }
   }
 }

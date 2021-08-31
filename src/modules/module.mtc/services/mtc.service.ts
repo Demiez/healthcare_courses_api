@@ -27,8 +27,6 @@ export class MtcService {
       throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
     }
 
-    // remove
-    return new StandardResponseViewModel(`MTC created`, 'success');
     const isMtcRegistered = await this.isMtcNameRegistered(requestModel.name);
 
     if (isMtcRegistered) {

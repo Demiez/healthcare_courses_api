@@ -1,4 +1,4 @@
-import { isBoolean, isNil, isNumber, isString } from 'lodash';
+import { isBoolean, isInteger, isNil, isNumber, isString } from 'lodash';
 import { FieldIsBadModel } from '../../core/view-models';
 
 const PROVIDE_VALUE_MESSAGE = 'Please provide value';
@@ -16,13 +16,21 @@ export class BaseValidator {
     }
   }
 
-  protected static validateNumberField(value: number, fieldName: string) {
+  protected static validateNumberField(
+    value: number,
+    fieldName: string,
+    isIntegerValue?: boolean
+  ) {
     if (isNil(value)) {
       return new FieldIsBadModel(fieldName, PROVIDE_VALUE_MESSAGE);
     }
 
     if (!isNumber(value)) {
       return new FieldIsBadModel(fieldName, `Must be a number`);
+    }
+
+    if (isIntegerValue && !isInteger(value)) {
+      return new FieldIsBadModel(fieldName, `Must be an integer`);
     }
   }
 
