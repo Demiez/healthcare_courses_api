@@ -3,7 +3,7 @@ import { FieldIsBadModel } from '../../core/view-models';
 
 const PROVIDE_VALUE_MESSAGE = 'Please provide value';
 
-export class BaseValidator {
+export abstract class BaseValidator {
   protected static errors: Array<FieldIsBadModel>;
 
   protected static validateStringField(value: string, fieldName: string) {
