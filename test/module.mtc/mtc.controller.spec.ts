@@ -141,9 +141,11 @@ describe('MTC Controller', () => {
       res.body.errorDetails.length.should.equal(2);
       res.body.errorDetails[0].should.deep.equal({
         field: 'name',
+        message: 'Must be a string',
       });
       res.body.errorDetails[1].should.deep.equal({
         field: 'careers',
+        message: 'There must be only valid careers',
       });
     });
 
