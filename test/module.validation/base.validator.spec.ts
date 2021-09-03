@@ -1,40 +1,59 @@
 import * as chai from 'chai';
-import chaiHttp = require('chai-http');
-import { isEmpty } from 'lodash';
 import 'mocha';
-import * as mongoose from 'mongoose';
 import * as sinon from 'sinon';
-// import sinonChai = require('sinon-chai');
 import * as sinonChai from 'sinon-chai';
 import { v4 } from 'uuid';
-import app from '../../src/app';
-import { APP_ROOT, APP_ROOT_MESSAGE } from '../../src/core/constants';
-import { logger, MongoMockHelper } from '../../src/core/utils';
 import {
+  generateRandomBoolean,
   generateRandomInteger,
   generateRandomNumber,
 } from '../../src/core/utils';
+import { FieldIsBadModel } from '../../src/core/view-models';
 import { BaseValidator } from '../../src/modules/module.validation';
+import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
 
 chai.use(sinonChai);
-chai.should();
-
 const expect = chai.expect;
 
 const globalData = {
-  stringValue: v4(),
+  stringValue: `string-value-${v4()}`,
   numberValue: generateRandomNumber(0, 10),
   integerValue: generateRandomInteger(0, 10),
-  booleanValue: true,
-  fieldName: 'Field Name',
+  booleanValue: generateRandomBoolean(),
+  fieldName: `field-name-${v4()}`,
 };
+
+function testNoArgsProvidedCase(spiedMethod: Function) {
+  expect(spiedMethod).calledOnce;
+  expect(spiedMethod).calledWithExactly(undefined, undefined);
+  expect(spiedMethod).throw;
+}
+
+function testNoValueProvidedCase(spiedMethod: Function) {
+  expect(spiedMethod).calledOnce;
+  expect(spiedMethod).calledWithExactly(undefined, globalData.fieldName);
+  expect(spiedMethod).returned(
+    new FieldIsBadModel(
+      globalData.fieldName,
+      BaseValidationMessagesEnum.PROVIDE_VALUE_MESSAGE
+    )
+  );
+}
 
 describe.only('UT - Base validator', () => {
   const sandbox = sinon.createSandbox();
 
   class BaseValidatorTester extends BaseValidator {
-    public static testStringValidation(value: string, fieldName: string) {
+    public static testValidateStringField(value: string, fieldName: string) {
       return this.validateStringField(value, fieldName);
+    }
+
+    public static testValidateNumberField(
+      value: number,
+      fieldName: string,
+      isIntegerValue?: boolean
+    ) {
+      return this.validateNumberField(value, fieldName, isIntegerValue);
     }
 
     constructor() {
@@ -43,31 +62,155 @@ describe.only('UT - Base validator', () => {
   }
 
   describe(':: method validateStringField', () => {
-    // let baseValidatorTesterSpy: sinon.SinonSpy;
-
     beforeEach(async () => {
-      sandbox.spy(BaseValidatorTester, 'testStringValidation');
+      sandbox.spy(BaseValidatorTester, 'testValidateStringField');
     });
 
     afterEach(async () => {
       sandbox.restore();
     });
 
-    it('should validate valid data', async () => {
-      BaseValidatorTester.testStringValidation(
+    it('should process valid data', async () => {
+      BaseValidatorTester.testValidateStringField(
         globalData.stringValue,
         globalData.fieldName
       );
 
-      // sinon.assert.calledOnce(TestBaseValidator.testStringValidation);
-
-      // BaseValidatorTester.testStringValidation.should.be.calledOnce;
-      expect(BaseValidatorTester.testStringValidation).to.be.calledOnce;
-      expect(BaseValidatorTester.testStringValidation).to.have.been.calledWith(
+      expect(BaseValidatorTester.testValidateStringField).calledOnce;
+      expect(BaseValidatorTester.testValidateStringField).calledWithExactly(
         globalData.stringValue,
         globalData.fieldName
       );
-      expect(BaseValidatorTester.testStringValidation).returned(void 0);
+      expect(BaseValidatorTester.testValidateStringField).returned(void 0);
+    });
+
+    it('should throw error when no args provided', async () => {
+      BaseValidatorTester.testValidateStringField(undefined, undefined);
+
+      testNoArgsProvidedCase(BaseValidatorTester.testValidateStringField);
+    });
+
+    it('should return FieldIsBadModel when no value provided', async () => {
+      BaseValidatorTester.testValidateStringField(
+        undefined,
+        globalData.fieldName
+      );
+
+      testNoValueProvidedCase(BaseValidatorTester.testValidateStringField);
+    });
+
+    it('should return FieldIsBadModel when provided not a string value', async () => {
+      BaseValidatorTester.testValidateStringField(
+        globalData.numberValue as any,
+        globalData.fieldName
+      );
+
+      expect(BaseValidatorTester.testValidateStringField).calledOnce;
+      expect(BaseValidatorTester.testValidateStringField).calledWithExactly(
+        globalData.numberValue as any,
+        globalData.fieldName
+      );
+      expect(BaseValidatorTester.testValidateStringField).returned(
+        new FieldIsBadModel(
+          globalData.fieldName,
+          BaseValidationMessagesEnum.MUST_BE_STRING
+        )
+      );
+    });
+  });
+
+  describe(':: method validateNumberField', () => {
+    beforeEach(async () => {
+      sandbox.spy(BaseValidatorTester, 'testValidateNumberField');
+    });
+
+    afterEach(async () => {
+      sandbox.restore();
+    });
+
+    it('should process valid number data', async () => {
+      BaseValidatorTester.testValidateNumberField(
+        globalData.numberValue,
+        globalData.fieldName
+      );
+
+      expect(BaseValidatorTester.testValidateNumberField).calledOnce;
+      expect(BaseValidatorTester.testValidateNumberField).calledWithExactly(
+        globalData.numberValue,
+        globalData.fieldName
+      );
+      expect(BaseValidatorTester.testValidateNumberField).returned(void 0);
+    });
+
+    it('should process valid integer data', async () => {
+      BaseValidatorTester.testValidateNumberField(
+        globalData.integerValue,
+        globalData.fieldName,
+        true
+      );
+
+      expect(BaseValidatorTester.testValidateNumberField).calledOnce;
+      expect(BaseValidatorTester.testValidateNumberField).calledWithExactly(
+        globalData.integerValue,
+        globalData.fieldName,
+        true
+      );
+      expect(BaseValidatorTester.testValidateNumberField).returned(void 0);
+    });
+
+    it('should throw error when no args provided', async () => {
+      BaseValidatorTester.testValidateNumberField(undefined, undefined);
+
+      testNoArgsProvidedCase(BaseValidatorTester.testValidateNumberField);
+    });
+
+    it('should return FieldIsBadModel when no value provided', async () => {
+      BaseValidatorTester.testValidateNumberField(
+        undefined,
+        globalData.fieldName
+      );
+
+      testNoValueProvidedCase(BaseValidatorTester.testValidateNumberField);
+    });
+
+    it('should return FieldIsBadModel when provided not a number value', async () => {
+      BaseValidatorTester.testValidateNumberField(
+        globalData.stringValue as any,
+        globalData.fieldName
+      );
+
+      expect(BaseValidatorTester.testValidateNumberField).calledOnce;
+      expect(BaseValidatorTester.testValidateNumberField).calledWithExactly(
+        globalData.stringValue as any,
+        globalData.fieldName
+      );
+      expect(BaseValidatorTester.testValidateNumberField).returned(
+        new FieldIsBadModel(
+          globalData.fieldName,
+          BaseValidationMessagesEnum.MUST_BE_NUMBER
+        )
+      );
+    });
+
+    it('should return FieldIsBadModel when provided not an integer value', async () => {
+      BaseValidatorTester.testValidateNumberField(
+        globalData.numberValue,
+        globalData.fieldName,
+        true
+      );
+
+      expect(BaseValidatorTester.testValidateNumberField).calledOnce;
+      expect(BaseValidatorTester.testValidateNumberField).calledWithExactly(
+        globalData.numberValue,
+        globalData.fieldName,
+        true
+      );
+      expect(BaseValidatorTester.testValidateNumberField).returned(
+        new FieldIsBadModel(
+          globalData.fieldName,
+          BaseValidationMessagesEnum.MUST_BE_INTEGER
+        )
+      );
     });
   });
 });

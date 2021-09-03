@@ -14,3 +14,5 @@ export const generateRandomNumber = (min: number, max: number): number => {
 
   return !isInteger(number) ? number : generateRandomNumber(min, max);
 };
+
+export const generateRandomBoolean = (): boolean => Math.random() < 0.5;
