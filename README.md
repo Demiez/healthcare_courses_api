@@ -126,7 +126,9 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 ## Code Related Suggestions
 
 - Add Dependency Injection (typedi)
-- Implement unit tests with Mocha/Chai + mutation testing?
+- Implement unit tests with Mocha/Chai/Sinon
+- Implement integration tests with Mocha/Chai/Sinon
+- Add mutation testing?
 - NPM scripts for dev and production env
 - Config file for important constants
 - Use controller methods with documented descriptions/routes
