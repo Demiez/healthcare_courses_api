@@ -134,6 +134,6 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 - Use controller methods with documented descriptions/routes
 - Error handling middleware
 - Authentication middleware for protecting routes and setting user roles
-- Validation using Mongoose without external libraries???
+- Validation with information including field and clarification message
 - Use async/await (create middleware to clean up controller methods)
 - Create a database seeder to import and destroy data
