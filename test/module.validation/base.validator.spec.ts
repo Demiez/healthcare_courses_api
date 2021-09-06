@@ -56,6 +56,10 @@ describe.only('UT - Base validator', () => {
       return this.validateNumberField(value, fieldName, isIntegerValue);
     }
 
+    public static testValidateBooleanField(value: boolean, fieldName: string) {
+      return this.validateBooleanField(value, fieldName);
+    }
+
     constructor() {
       super();
     }
@@ -209,6 +213,64 @@ describe.only('UT - Base validator', () => {
         new FieldIsBadModel(
           globalData.fieldName,
           BaseValidationMessagesEnum.MUST_BE_INTEGER
+        )
+      );
+    });
+  });
+
+  describe(':: method validateBooleanField', () => {
+    beforeEach(async () => {
+      sandbox.spy(BaseValidatorTester, 'testValidateBooleanField');
+    });
+
+    afterEach(async () => {
+      sandbox.restore();
+    });
+
+    it('should process valid boolean data', async () => {
+      BaseValidatorTester.testValidateBooleanField(
+        globalData.booleanValue,
+        globalData.fieldName
+      );
+
+      expect(BaseValidatorTester.testValidateBooleanField).calledOnce;
+      expect(BaseValidatorTester.testValidateBooleanField).calledWithExactly(
+        globalData.booleanValue,
+        globalData.fieldName
+      );
+      expect(BaseValidatorTester.testValidateBooleanField).returned(void 0);
+    });
+
+    it('should throw error when no args provided', async () => {
+      BaseValidatorTester.testValidateBooleanField(undefined, undefined);
+
+      testNoArgsProvidedCase(BaseValidatorTester.testValidateBooleanField);
+    });
+
+    it('should return FieldIsBadModel when no value provided', async () => {
+      BaseValidatorTester.testValidateBooleanField(
+        undefined,
+        globalData.fieldName
+      );
+
+      testNoValueProvidedCase(BaseValidatorTester.testValidateBooleanField);
+    });
+
+    it('should return FieldIsBadModel when provided not a boolean value', async () => {
+      BaseValidatorTester.testValidateBooleanField(
+        globalData.stringValue as any,
+        globalData.fieldName
+      );
+
+      expect(BaseValidatorTester.testValidateBooleanField).calledOnce;
+      expect(BaseValidatorTester.testValidateBooleanField).calledWithExactly(
+        globalData.stringValue as any,
+        globalData.fieldName
+      );
+      expect(BaseValidatorTester.testValidateBooleanField).returned(
+        new FieldIsBadModel(
+          globalData.fieldName,
+          BaseValidationMessagesEnum.MUST_BE_BOOLEAN
         )
       );
     });
