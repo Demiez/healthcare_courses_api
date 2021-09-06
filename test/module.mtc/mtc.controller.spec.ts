@@ -17,7 +17,6 @@ chai.should();
 
 const globalData = {
   createMtcRequestModel: {} as CreateMtcRequestModel,
-  mtcName01: '',
 };
 
 const checkCreateMtcResponseBody = (body: MtcViewModel) => {
@@ -112,7 +111,6 @@ describe('MTC Controller', () => {
       res.status.should.equal(200);
       res.body.should.be.an('object');
       checkCreateMtcResponseBody(res.body);
-      globalData.mtcName01 = (res.body as MtcViewModel).name;
     });
 
     it('Create mtc with invalid fields in request model', async () => {

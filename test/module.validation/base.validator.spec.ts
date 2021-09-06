@@ -40,7 +40,7 @@ function testNoValueProvidedCase(spiedMethod: Function) {
   );
 }
 
-describe.only('UT - Base validator', () => {
+describe('UT - BaseValidator', () => {
   const sandbox = sinon.createSandbox();
 
   class BaseValidatorTester extends BaseValidator {
