@@ -16,3 +16,6 @@ export const generateRandomNumber = (min: number, max: number): number => {
 };
 
 export const generateRandomBoolean = (): boolean => Math.random() < 0.5;
+
+export const generateStringOfLength = (length: number) =>
+  new Array(length + 1).join('a');
