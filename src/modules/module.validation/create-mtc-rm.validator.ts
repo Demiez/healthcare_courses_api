@@ -13,6 +13,19 @@ import {
 import { CareerTypesEnum } from '../module.mtc/enums/career-types.enum';
 import { CreateMtcRequestModel } from '../module.mtc/request-models';
 import { BaseValidator } from './base.validator';
+import {
+  ADDRESS_LENGTH_MESSAGE,
+  AVERAGE_COST_MESSAGE,
+  AVERAGE_RATING_INTERVAL_MESSAGE,
+  DESCRIPTION_LENGTH_MESSAGE,
+  NAME_LENGTH_MESSAGE,
+  ONE_CAREER_MESSAGE,
+  PHONE_LENGTH_MESSAGE,
+  VALID_CAREER_MESSAGE,
+  VALID_EMAIL_MESSAGE,
+  VALID_SLUG_MESSAGE,
+  VALID_URL_MESSAGE,
+} from './constants';
 
 export class CreateMtcRequestModelValidator extends BaseValidator {
   public static validate(requestModel: CreateMtcRequestModel) {
@@ -38,7 +51,6 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     } = requestModel;
 
     this.validateName(name, convertVariableToString({ name }));
-    // TODO? : add specific slug check
     this.validateSlug(slug, convertVariableToString({ slug }));
     this.validateDescription(
       description,
@@ -131,12 +143,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     if (name.trim().length > MTC_NAME_LENGTH) {
-      this.errors.push(
-        new FieldIsBadModel(
-          fieldName,
-          `Cannot be more than ${MTC_NAME_LENGTH} characters`
-        )
-      );
+      this.errors.push(new FieldIsBadModel(fieldName, NAME_LENGTH_MESSAGE));
     }
   }
 
@@ -145,6 +152,10 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
 
     if (error) {
       this.errors.push(error);
+    }
+
+    if (!validator.isSlug(slug)) {
+      this.errors.push(new FieldIsBadModel(fieldName, VALID_SLUG_MESSAGE));
     }
   }
 
@@ -158,10 +169,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
 
     if (description.trim().length > MTC_DESCRIPTION_LENGTH) {
       this.errors.push(
-        new FieldIsBadModel(
-          fieldName,
-          `Cannot be more than ${MTC_DESCRIPTION_LENGTH} characters`
-        )
+        new FieldIsBadModel(fieldName, DESCRIPTION_LENGTH_MESSAGE)
       );
     }
   }
@@ -175,9 +183,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     if (!validator.isURL(website)) {
-      this.errors.push(
-        new FieldIsBadModel(fieldName, `Please provide valid URL`)
-      );
+      this.errors.push(new FieldIsBadModel(fieldName, VALID_URL_MESSAGE));
     }
   }
 
@@ -190,12 +196,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     if (phone.trim().length > MTC_PHONE_LENGTH) {
-      this.errors.push(
-        new FieldIsBadModel(
-          fieldName,
-          `Cannot be more than ${MTC_PHONE_LENGTH} characters`
-        )
-      );
+      this.errors.push(new FieldIsBadModel(fieldName, PHONE_LENGTH_MESSAGE));
     }
   }
 
@@ -208,9 +209,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     if (!validator.isEmail(email)) {
-      this.errors.push(
-        new FieldIsBadModel(fieldName, `Please provide valid email`)
-      );
+      this.errors.push(new FieldIsBadModel(fieldName, VALID_EMAIL_MESSAGE));
     }
   }
 
@@ -223,12 +222,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     if (address.trim().length > MTC_ADDRESS_LENGTH) {
-      this.errors.push(
-        new FieldIsBadModel(
-          fieldName,
-          `Cannot be more than ${MTC_ADDRESS_LENGTH} characters`
-        )
-      );
+      this.errors.push(new FieldIsBadModel(fieldName, ADDRESS_LENGTH_MESSAGE));
     }
   }
 
@@ -237,12 +231,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     fieldName: string
   ) {
     if (!careers || !isArray(careers) || isEmpty(careers)) {
-      this.errors.push(
-        new FieldIsBadModel(
-          fieldName,
-          'Please provide at least one career in list'
-        )
-      );
+      this.errors.push(new FieldIsBadModel(fieldName, ONE_CAREER_MESSAGE));
       return;
     }
 
@@ -253,9 +242,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     );
 
     if (!isValidCareerList) {
-      this.errors.push(
-        new FieldIsBadModel(fieldName, 'There must be only valid careers')
-      );
+      this.errors.push(new FieldIsBadModel(fieldName, VALID_CAREER_MESSAGE));
     }
   }
 
@@ -274,7 +261,9 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
       averageRating < MTC_AVERAGE_RATING_MIN_VALUE ||
       averageRating > MTC_AVERAGE_RATING_MAX_VALUE
     ) {
-      this.errors.push(new FieldIsBadModel(fieldName, 'Must be from 1 to 10'));
+      this.errors.push(
+        new FieldIsBadModel(fieldName, AVERAGE_RATING_INTERVAL_MESSAGE)
+      );
     }
   }
 
@@ -287,7 +276,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
     }
 
     if (averageCost < 0) {
-      this.errors.push(new FieldIsBadModel(fieldName, 'Cannot be less than 0'));
+      this.errors.push(new FieldIsBadModel(fieldName, AVERAGE_COST_MESSAGE));
     }
   }
 
