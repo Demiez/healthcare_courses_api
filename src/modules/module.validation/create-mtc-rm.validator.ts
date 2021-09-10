@@ -152,6 +152,7 @@ export class CreateMtcRequestModelValidator extends BaseValidator {
 
     if (error) {
       this.errors.push(error);
+      return;
     }
 
     if (!validator.isSlug(slug)) {

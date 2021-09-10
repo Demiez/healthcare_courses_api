@@ -1,4 +1,5 @@
 import * as chai from 'chai';
+import { clone, cloneDeep } from 'lodash';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
@@ -10,10 +11,13 @@ import {
   generateStringOfLength,
 } from '../../src/core/utils';
 import { FieldIsBadModel } from '../../src/core/view-models';
-import { MTC_NAME_LENGTH } from '../../src/modules/module.mtc/constants';
 import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
 import { CreateMtcRequestModel } from '../../src/modules/module.mtc/request-models';
 import { CreateMtcRequestModelValidator } from '../../src/modules/module.validation';
+import {
+  NAME_LENGTH_MESSAGE,
+  VALID_SLUG_MESSAGE,
+} from '../../src/modules/module.validation/constants';
 import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
 
 chai.use(sinonChai);
@@ -56,6 +60,7 @@ function testValueProvidedCase(
 
 describe.only('UT - CreateMtcRequestModelValidator', () => {
   const sandbox = sinon.createSandbox();
+  let testData: CreateMtcRequestModel;
 
   class CreateMtcRequestModelValidatorTester extends CreateMtcRequestModelValidator {
     constructor() {
@@ -77,13 +82,13 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
 
   describe(':: name validation', () => {
     it('should process valid name data', async () => {
-      CreateMtcRequestModelValidatorTester.validate(
-        globalData.createMtcRequestModel
-      );
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
 
       expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
       expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
-        globalData.createMtcRequestModel
+        testData
       );
       expect(CreateMtcRequestModelValidatorTester.validate).returned(
         globalData.defaultValidationResponse
@@ -91,62 +96,101 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
     });
 
     it('should return FieldIsBadModel when no name provided', async () => {
-      const args = Object.assign(globalData.createMtcRequestModel, {
-        name: undefined,
-      });
+      testData.name = undefined;
 
-      CreateMtcRequestModelValidatorTester.validate(args);
+      CreateMtcRequestModelValidatorTester.validate(testData);
 
       testNoValueProvidedCase(
         CreateMtcRequestModelValidatorTester.validate,
-        args,
+        testData,
         'name'
       );
     });
 
     it('should return FieldIsBadModel when name is not a string', async () => {
-      const args = Object.assign(globalData.createMtcRequestModel, {
-        name: globalData.numberValue,
-      });
+      testData.name = globalData.numberValue as any;
 
-      CreateMtcRequestModelValidatorTester.validate(args);
+      CreateMtcRequestModelValidatorTester.validate(testData);
 
       testValueProvidedCase(
         CreateMtcRequestModelValidatorTester.validate,
-        args,
+        testData,
         [new FieldIsBadModel('name', BaseValidationMessagesEnum.MUST_BE_STRING)]
       );
     });
 
     it('should not return FieldIsBadModel when name has <= 100 characters', async () => {
-      const args = Object.assign(globalData.createMtcRequestModel, {
-        name: generateStringOfLength(100),
-      });
+      testData.name = generateStringOfLength(100);
 
-      CreateMtcRequestModelValidatorTester.validate(args);
+      CreateMtcRequestModelValidatorTester.validate(testData);
 
       testValueProvidedCase(
         CreateMtcRequestModelValidatorTester.validate,
-        args
+        testData
       );
     });
 
     it('should return FieldIsBadModel when name has > 100 characters', async () => {
-      const args = Object.assign(globalData.createMtcRequestModel, {
-        name: generateStringOfLength(101),
-      });
+      testData.name = generateStringOfLength(101);
 
-      CreateMtcRequestModelValidatorTester.validate(args);
+      CreateMtcRequestModelValidatorTester.validate(testData);
 
       testValueProvidedCase(
         CreateMtcRequestModelValidatorTester.validate,
-        args,
-        [
-          new FieldIsBadModel(
-            'name',
-            `Cannot be more than ${MTC_NAME_LENGTH} characters`
-          ),
-        ]
+        testData,
+        [new FieldIsBadModel('name', NAME_LENGTH_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: slug validation', () => {
+    it('should process valid slug data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when no slug provided', async () => {
+      testData.slug = undefined;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testNoValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        'slug'
+      );
+    });
+
+    it('should return FieldIsBadModel when slug is not a string', async () => {
+      testData.slug = globalData.numberValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('slug', BaseValidationMessagesEnum.MUST_BE_STRING)]
+      );
+    });
+
+    it('should return FieldIsBadModel when slug is not a valid slug', async () => {
+      testData.slug = generateStringOfLength(10) + '_';
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('slug', VALID_SLUG_MESSAGE)]
       );
     });
   });
