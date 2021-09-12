@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import { clone, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
