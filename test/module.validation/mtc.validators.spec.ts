@@ -75,7 +75,7 @@ function testValueProvidedCase(
   expect(spiedMethod).returned(expectedReturn);
 }
 
-describe.only('UT - CreateMtcRequestModelValidator', () => {
+describe('UT - CreateMtcRequestModelValidator', () => {
   const sandbox = sinon.createSandbox();
   let testData: CreateMtcRequestModel;
 
@@ -711,6 +711,239 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
         CreateMtcRequestModelValidatorTester.validate,
         testData,
         [new FieldIsBadModel('averageCost', AVERAGE_COST_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: photo validation - optional field', () => {
+    it('should process valid photo data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when photo is not a string', async () => {
+      testData.photo = globalData.numberValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'photo',
+            BaseValidationMessagesEnum.MUST_BE_STRING
+          ),
+        ]
+      );
+    });
+  });
+
+  describe(':: housing validation - optional field', () => {
+    it('should process valid housing data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when housing is falsey but not boolean (0 value)', async () => {
+      testData.housing = 0 as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'housing',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
+      );
+    });
+
+    it('should return FieldIsBadModel when housing is not a boolean', async () => {
+      testData.housing = 'true' as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'housing',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
+      );
+    });
+  });
+
+  describe(':: jobAssistance validation - optional field', () => {
+    it('should process valid jobAssistance data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when jobAssistance is falsey but not boolean (0 value)', async () => {
+      testData.jobAssistance = 0 as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'jobAssistance',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
+      );
+    });
+
+    it('should return FieldIsBadModel when jobAssistance is not a boolean', async () => {
+      testData.jobAssistance = 'true' as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'jobAssistance',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
+      );
+    });
+  });
+
+  describe(':: jobGuarantee validation - optional field', () => {
+    it('should process valid jobGuarantee data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when jobGuarantee is falsey but not boolean (0 value)', async () => {
+      testData.jobGuarantee = 0 as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'jobGuarantee',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
+      );
+    });
+
+    it('should return FieldIsBadModel when jobGuarantee is not a boolean', async () => {
+      testData.jobGuarantee = 'true' as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'jobGuarantee',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
+      );
+    });
+  });
+
+  describe(':: acceptGiBill validation - optional field', () => {
+    it('should process valid acceptGiBill data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when acceptGiBill is falsey but not boolean (0 value)', async () => {
+      testData.acceptGiBill = 0 as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'acceptGiBill',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
+      );
+    });
+
+    it('should return FieldIsBadModel when acceptGiBill is not a boolean', async () => {
+      testData.acceptGiBill = 'true' as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'acceptGiBill',
+            BaseValidationMessagesEnum.MUST_BE_BOOLEAN
+          ),
+        ]
       );
     });
   });
