@@ -11,12 +11,19 @@ import {
   generateStringOfLength,
 } from '../../src/core/utils';
 import { FieldIsBadModel } from '../../src/core/view-models';
+import {
+  MTC_DESCRIPTION_LENGTH,
+  MTC_NAME_LENGTH,
+} from '../../src/modules/module.mtc/constants';
 import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
 import { CreateMtcRequestModel } from '../../src/modules/module.mtc/request-models';
 import { CreateMtcRequestModelValidator } from '../../src/modules/module.validation';
 import {
+  DESCRIPTION_LENGTH_MESSAGE,
   NAME_LENGTH_MESSAGE,
+  VALID_EMAIL_MESSAGE,
   VALID_SLUG_MESSAGE,
+  VALID_URL_MESSAGE,
 } from '../../src/modules/module.validation/constants';
 import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
 
@@ -25,7 +32,7 @@ const expect = chai.expect;
 
 const globalData = {
   createMtcRequestModel: {} as CreateMtcRequestModel,
-  stringValue: `string-value-${v4()}`,
+  stringValue: generateStringOfLength(10),
   numberValue: generateRandomNumber(0, 10),
   integerValue: generateRandomInteger(0, 10),
   booleanValue: generateRandomBoolean(),
@@ -119,8 +126,8 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
       );
     });
 
-    it('should not return FieldIsBadModel when name has <= 100 characters', async () => {
-      testData.name = generateStringOfLength(100);
+    it(`should not return FieldIsBadModel when name has <= ${MTC_NAME_LENGTH} characters`, async () => {
+      testData.name = generateStringOfLength(MTC_NAME_LENGTH);
 
       CreateMtcRequestModelValidatorTester.validate(testData);
 
@@ -130,8 +137,8 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
       );
     });
 
-    it('should return FieldIsBadModel when name has > 100 characters', async () => {
-      testData.name = generateStringOfLength(101);
+    it(`should return FieldIsBadModel when name has > ${MTC_NAME_LENGTH} characters`, async () => {
+      testData.name = generateStringOfLength(MTC_NAME_LENGTH + 1);
 
       CreateMtcRequestModelValidatorTester.validate(testData);
 
@@ -183,7 +190,7 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
     });
 
     it('should return FieldIsBadModel when slug is not a valid slug', async () => {
-      testData.slug = generateStringOfLength(10) + '_';
+      testData.slug = globalData.stringValue + '_';
 
       CreateMtcRequestModelValidatorTester.validate(testData);
 
@@ -191,6 +198,188 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
         CreateMtcRequestModelValidatorTester.validate,
         testData,
         [new FieldIsBadModel('slug', VALID_SLUG_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: description validation', () => {
+    it('should process valid description data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when no description provided', async () => {
+      testData.description = undefined;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testNoValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        'description'
+      );
+    });
+
+    it('should return FieldIsBadModel when description is not a string', async () => {
+      testData.description = globalData.numberValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'description',
+            BaseValidationMessagesEnum.MUST_BE_STRING
+          ),
+        ]
+      );
+    });
+
+    it(`should not return FieldIsBadModel when description has <= ${MTC_DESCRIPTION_LENGTH} characters`, async () => {
+      testData.description = generateStringOfLength(MTC_DESCRIPTION_LENGTH);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData
+      );
+    });
+
+    it(`should return FieldIsBadModel when description has > ${MTC_DESCRIPTION_LENGTH} characters`, async () => {
+      testData.description = generateStringOfLength(MTC_DESCRIPTION_LENGTH + 1);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('description', DESCRIPTION_LENGTH_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: website validation', () => {
+    it('should process valid website data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when no website provided', async () => {
+      testData.website = undefined;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testNoValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        'website'
+      );
+    });
+
+    it('should return FieldIsBadModel when website is not a string', async () => {
+      testData.website = globalData.numberValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'website',
+            BaseValidationMessagesEnum.MUST_BE_STRING
+          ),
+        ]
+      );
+    });
+
+    it('should return FieldIsBadModel when website is not a valid url', async () => {
+      testData.website = globalData.stringValue;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('website', VALID_URL_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: email validation', () => {
+    it('should process valid email data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when no email provided', async () => {
+      testData.email = undefined;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testNoValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        'email'
+      );
+    });
+
+    it('should return FieldIsBadModel when email is not a string', async () => {
+      testData.email = globalData.numberValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'email',
+            BaseValidationMessagesEnum.MUST_BE_STRING
+          ),
+        ]
+      );
+    });
+
+    it('should return FieldIsBadModel when email is not a valid email address', async () => {
+      testData.email = globalData.stringValue;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('email', VALID_EMAIL_MESSAGE)]
       );
     });
   });
