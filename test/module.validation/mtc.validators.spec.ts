@@ -12,15 +12,25 @@ import {
 } from '../../src/core/utils';
 import { FieldIsBadModel } from '../../src/core/view-models';
 import {
+  MTC_ADDRESS_LENGTH,
+  MTC_AVERAGE_RATING_MAX_VALUE,
+  MTC_AVERAGE_RATING_MIN_VALUE,
   MTC_DESCRIPTION_LENGTH,
   MTC_NAME_LENGTH,
+  MTC_PHONE_LENGTH,
 } from '../../src/modules/module.mtc/constants';
 import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
 import { CreateMtcRequestModel } from '../../src/modules/module.mtc/request-models';
 import { CreateMtcRequestModelValidator } from '../../src/modules/module.validation';
 import {
+  ADDRESS_LENGTH_MESSAGE,
+  AVERAGE_COST_MESSAGE,
+  AVERAGE_RATING_INTERVAL_MESSAGE,
   DESCRIPTION_LENGTH_MESSAGE,
   NAME_LENGTH_MESSAGE,
+  ONE_CAREER_MESSAGE,
+  PHONE_LENGTH_MESSAGE,
+  VALID_CAREER_MESSAGE,
   VALID_EMAIL_MESSAGE,
   VALID_SLUG_MESSAGE,
   VALID_URL_MESSAGE,
@@ -380,6 +390,327 @@ describe.only('UT - CreateMtcRequestModelValidator', () => {
         CreateMtcRequestModelValidatorTester.validate,
         testData,
         [new FieldIsBadModel('email', VALID_EMAIL_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: phone validation', () => {
+    it('should process valid phone data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when no phone provided', async () => {
+      testData.phone = undefined;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testNoValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        'phone'
+      );
+    });
+
+    it('should return FieldIsBadModel when phone is not a string', async () => {
+      testData.phone = globalData.numberValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'phone',
+            BaseValidationMessagesEnum.MUST_BE_STRING
+          ),
+        ]
+      );
+    });
+
+    it(`should not return FieldIsBadModel when phone has <= ${MTC_PHONE_LENGTH} characters`, async () => {
+      testData.phone = generateStringOfLength(MTC_PHONE_LENGTH);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData
+      );
+    });
+
+    it(`should return FieldIsBadModel when phone has > ${MTC_PHONE_LENGTH} characters`, async () => {
+      testData.phone = generateStringOfLength(MTC_PHONE_LENGTH + 1);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('phone', PHONE_LENGTH_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: address validation', () => {
+    it('should process valid address data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when no address provided', async () => {
+      testData.address = undefined;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testNoValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        'address'
+      );
+    });
+
+    it('should return FieldIsBadModel when address is not a string', async () => {
+      testData.address = globalData.numberValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'address',
+            BaseValidationMessagesEnum.MUST_BE_STRING
+          ),
+        ]
+      );
+    });
+
+    it(`should not return FieldIsBadModel when address has <= ${MTC_ADDRESS_LENGTH} characters`, async () => {
+      testData.address = generateStringOfLength(MTC_ADDRESS_LENGTH);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData
+      );
+    });
+
+    it(`should return FieldIsBadModel when address has > ${MTC_ADDRESS_LENGTH} characters`, async () => {
+      testData.address = generateStringOfLength(MTC_ADDRESS_LENGTH + 1);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('address', ADDRESS_LENGTH_MESSAGE)]
+      );
+    });
+  });
+
+  // TODO - add location validation unit tests
+
+  describe(':: careers validation', () => {
+    it('should process valid careers data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when no careers provided', async () => {
+      testData.careers = undefined;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('careers', ONE_CAREER_MESSAGE)]
+      );
+    });
+
+    it('should return FieldIsBadModel when careers is not an array', async () => {
+      testData.careers = {} as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('careers', ONE_CAREER_MESSAGE)]
+      );
+    });
+
+    it('should return FieldIsBadModel when careers is empty', async () => {
+      testData.careers = [];
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('careers', ONE_CAREER_MESSAGE)]
+      );
+    });
+
+    it('should return FieldIsBadModel when careers includes invalid career', async () => {
+      testData.careers.push(globalData.stringValue as any);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('careers', VALID_CAREER_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: avarageRating validation - optional field', () => {
+    it('should process valid avarageRating data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when averageRating is not a number', async () => {
+      testData.averageRating = globalData.stringValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'averageRating',
+            BaseValidationMessagesEnum.MUST_BE_NUMBER
+          ),
+        ]
+      );
+    });
+
+    it('should return FieldIsBadModel when averageRating is not an integer', async () => {
+      testData.averageRating = globalData.numberValue;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'averageRating',
+            BaseValidationMessagesEnum.MUST_BE_INTEGER
+          ),
+        ]
+      );
+    });
+
+    it(`should return FieldIsBadModel when averageRating is < ${MTC_AVERAGE_RATING_MIN_VALUE}`, async () => {
+      testData.averageRating = MTC_AVERAGE_RATING_MIN_VALUE - 1;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('averageRating', AVERAGE_RATING_INTERVAL_MESSAGE)]
+      );
+    });
+
+    it(`should return FieldIsBadModel when averageRating is > ${MTC_AVERAGE_RATING_MAX_VALUE}`, async () => {
+      testData.averageRating = MTC_AVERAGE_RATING_MAX_VALUE + 1;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('averageRating', AVERAGE_RATING_INTERVAL_MESSAGE)]
+      );
+    });
+  });
+
+  describe(':: avarageCost validation - optional field', () => {
+    it('should process valid avarageCost data', async () => {
+      testData = cloneDeep(globalData.createMtcRequestModel);
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      expect(CreateMtcRequestModelValidatorTester.validate).calledOnce;
+      expect(CreateMtcRequestModelValidatorTester.validate).calledWithExactly(
+        testData
+      );
+      expect(CreateMtcRequestModelValidatorTester.validate).returned(
+        globalData.defaultValidationResponse
+      );
+    });
+
+    it('should return FieldIsBadModel when averageCost is not a number', async () => {
+      testData.averageCost = globalData.stringValue as any;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [
+          new FieldIsBadModel(
+            'averageCost',
+            BaseValidationMessagesEnum.MUST_BE_NUMBER
+          ),
+        ]
+      );
+    });
+
+    it(`should return FieldIsBadModel when averageCost is < 0`, async () => {
+      testData.averageCost = -globalData.numberValue;
+
+      CreateMtcRequestModelValidatorTester.validate(testData);
+
+      testValueProvidedCase(
+        CreateMtcRequestModelValidatorTester.validate,
+        testData,
+        [new FieldIsBadModel('averageCost', AVERAGE_COST_MESSAGE)]
       );
     });
   });
