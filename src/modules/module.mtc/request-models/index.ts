@@ -1,1 +1,1 @@
-export * from './create-mtc.rm';
+export * from './mtc.rm';

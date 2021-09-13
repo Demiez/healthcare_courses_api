@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
-import { ApiOperationGet, ApiOperationPost, ApiPath } from 'swagger-express-ts';
+import {
+  ApiOperationGet,
+  ApiOperationPost,
+  ApiPath,
+  SwaggerDefinitionConstant,
+} from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
-import { CreateMtcRequestModel } from '../request-models';
+import { MtcRequestModel } from '../request-models';
 import { MtcService } from '../services/mtc.service';
 
 @ApiPath({
@@ -20,10 +25,7 @@ export class MtcController extends BaseController {
     path: '',
     summary: 'Responds with info about all mtcs',
     responses: {
-      200: { model: 'StandardResponseViewModel' },
-      403: {
-        description: `BaseErrorSubCodes.INVALID_INPUT_PARAMS_IS_BAD_VALUE, ["field is not valid"]`,
-      },
+      200: { model: 'MtcsViewModel' },
       500: {
         description: `INTERNAL_SERVER_ERROR: MtcController:__getAllMtcs`,
       },
@@ -33,13 +35,41 @@ export class MtcController extends BaseController {
     },
   })
   public async getAllMtcs(req: Request, res: Response) {
-    const result = this.mtcService.getAllMtcs();
+    const result = await this.mtcService.getAllMtcs();
 
     return super.sendSuccessResponse(res, result);
   }
 
+  @ApiOperationGet({
+    path: '/{mtcId}',
+    summary: 'Responds with info about mtc by id',
+    parameters: {
+      path: {
+        mtcId: {
+          name: 'mtcId',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+    },
+    responses: {
+      200: { model: 'MtcViewModel' },
+      404: {
+        description: `
+        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['mtc not found'], "type": "NOT_FOUND" },
+        `,
+      },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtc`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
   public async getMtc(req: Request, res: Response) {
-    const result = this.mtcService.getMtc(req.params.mtcId);
+    const result = await this.mtcService.getMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }
@@ -50,7 +80,7 @@ export class MtcController extends BaseController {
     parameters: {
       body: {
         required: true,
-        model: 'CreateMtcRequestModel',
+        model: 'MtcRequestModel',
       },
     },
     responses: {
@@ -80,7 +110,7 @@ export class MtcController extends BaseController {
     },
   })
   public async createMtc(req: Request, res: Response) {
-    const requestModel = new CreateMtcRequestModel(req.body);
+    const requestModel = new MtcRequestModel(req.body);
 
     const result = await this.mtcService.createMtc(requestModel);
 
@@ -88,7 +118,9 @@ export class MtcController extends BaseController {
   }
 
   public async updateMtc(req: Request, res: Response) {
-    const result = this.mtcService.updateMtc(req.params.mtcId);
+    const requestModel = new MtcRequestModel(req.body);
+
+    const result = this.mtcService.updateMtc(req.params.mtcId, requestModel);
 
     return super.sendSuccessResponse(res, result);
   }

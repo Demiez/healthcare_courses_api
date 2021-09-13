@@ -1,2 +1,2 @@
 export * from './base.validator';
-export * from './create-mtc-rm.validator';
+export * from './mtc-rm.validator';

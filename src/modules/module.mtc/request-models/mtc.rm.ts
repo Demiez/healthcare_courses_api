@@ -8,10 +8,17 @@ import { CareerTypesEnum } from '../enums/career-types.enum';
 import { MtcLocationViewModel } from '../view-models';
 
 @ApiModel({
-  name: 'CreateMtcRequestModel',
-  description: 'Create MTC Request Model',
+  name: 'MtcRequestModel',
+  description: 'MTC Request Model',
 })
-export class CreateMtcRequestModel {
+export class MtcRequestModel {
+  @ApiModelProperty({
+    description: 'Id of mtc',
+    type: SwaggerDefinitionConstant.STRING,
+    example: '00000000-1234-abcd-0000-000000000000' as any,
+  })
+  public id?: string = undefined;
+
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public name: string = undefined;
 

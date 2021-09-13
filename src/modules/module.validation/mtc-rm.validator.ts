@@ -11,7 +11,7 @@ import {
   MTC_PHONE_LENGTH,
 } from '../module.mtc/constants';
 import { CareerTypesEnum } from '../module.mtc/enums/career-types.enum';
-import { CreateMtcRequestModel } from '../module.mtc/request-models';
+import { MtcRequestModel } from '../module.mtc/request-models';
 import { BaseValidator } from './base.validator';
 import {
   ADDRESS_LENGTH_MESSAGE,
@@ -27,8 +27,8 @@ import {
   VALID_URL_MESSAGE,
 } from './constants';
 
-export class CreateMtcRequestModelValidator extends BaseValidator {
-  public static validate(requestModel: CreateMtcRequestModel) {
+export class MtcRequestModelValidator extends BaseValidator {
+  public static validate(requestModel: MtcRequestModel) {
     this.errors = [];
 
     const {

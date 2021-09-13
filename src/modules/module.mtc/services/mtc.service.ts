@@ -1,33 +1,45 @@
+import { isEmpty } from 'lodash';
 import { Service } from 'typedi';
 import {
   BaseErrorCodes,
   ErrorCodes,
   ForbiddenError,
+  NotFoundError,
 } from '../../../core/errors';
+import { IProjection } from '../../../core/interfaces';
 import { StandardResponseViewModel } from '../../../core/view-models';
-import { CreateMtcRequestModelValidator } from '../../module.validation';
-import { MtcModel } from '../data-models/mtc.dm';
-import { CreateMtcRequestModel } from '../request-models';
-import { MtcViewModel } from '../view-models';
+import { MtcRequestModelValidator } from '../../module.validation';
+import { IMtcDocument, MtcModel } from '../data-models/mtc.dm';
+import { MtcRequestModel } from '../request-models';
+import { MtcsViewModel, MtcViewModel } from '../view-models';
 
 @Service()
 export class MtcService {
-  public getAllMtcs(): StandardResponseViewModel {
-    return new StandardResponseViewModel('Show all mtcs', 'success');
-  }
+  public async getAllMtcs(): Promise<MtcsViewModel> {
+    const mtcs = await MtcModel.find();
 
-  public getMtc(mtcId: string): StandardResponseViewModel {
-    return new StandardResponseViewModel(`Show mtc by Id: ${mtcId}`, 'success');
-  }
-
-  public async createMtc(requestModel: CreateMtcRequestModel): Promise<any> {
-    const errors = CreateMtcRequestModelValidator.validate(requestModel);
-
-    if (errors.length) {
-      throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
+    if (isEmpty(mtcs)) {
+      return new MtcsViewModel();
     }
 
-    const isMtcRegistered = await this.isMtcNameRegistered(requestModel.name);
+    return new MtcsViewModel(
+      mtcs.length,
+      mtcs.map((mtc) => new MtcViewModel(mtc))
+    );
+  }
+
+  public async getMtc(mtcId: string): Promise<MtcViewModel> {
+    const mtc = await this.tryGetMtcById(mtcId);
+
+    return new MtcViewModel(mtc);
+  }
+
+  public async createMtc(requestModel: MtcRequestModel): Promise<any> {
+    this.validateMtcRequestModel(requestModel);
+
+    const isMtcRegistered = await this.checkIsMtcNameRegistered(
+      requestModel.name
+    );
 
     if (isMtcRegistered) {
       throw new ForbiddenError(ErrorCodes.MTC_NAME_IS_ALREADY_REGISTERED, [
@@ -42,11 +54,15 @@ export class MtcService {
     return new MtcViewModel(newMtc);
   }
 
-  public updateMtc(mtcId: string): StandardResponseViewModel {
-    return new StandardResponseViewModel(
-      `Update mtc by Id: ${mtcId}`,
-      'success'
-    );
+  public async updateMtc(
+    mtcId: string,
+    requestModel: MtcRequestModel
+  ): Promise<MtcViewModel> {
+    this.validateMtcRequestModel(requestModel);
+
+    const mtc = await this.tryGetMtcById(mtcId);
+
+    return new MtcViewModel(mtc);
   }
 
   public deleteMtc(mtcId: string): StandardResponseViewModel {
@@ -56,7 +72,28 @@ export class MtcService {
     );
   }
 
-  private async isMtcNameRegistered(mtcName: string) {
+  public async tryGetMtcById(
+    mtcId: String,
+    projection: string | IProjection = {}
+  ): Promise<IMtcDocument> {
+    const mtc = await MtcModel.findById(mtcId, projection);
+
+    if (!mtc) {
+      throw new NotFoundError(ErrorCodes.RECORD_NOT_FOUND, ['mtc not found']);
+    }
+
+    return mtc;
+  }
+
+  private validateMtcRequestModel(requestModel: MtcRequestModel) {
+    const errors = MtcRequestModelValidator.validate(requestModel);
+
+    if (errors.length) {
+      throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
+    }
+  }
+
+  private async checkIsMtcNameRegistered(mtcName: string) {
     const mtc = await MtcModel.findOne({ name: mtcName }, '_id name');
 
     return mtc !== null;

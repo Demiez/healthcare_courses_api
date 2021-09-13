@@ -130,4 +130,8 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
   },
 });
 
-export const MtcModel = model('Mtc', mtcSchema, 'mtcs');
+export const MtcModel: Model<IMtcDocument> = model<IMtcDocument>(
+  'Mtc',
+  mtcSchema,
+  'mtcs'
+);

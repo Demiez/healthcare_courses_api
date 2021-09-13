@@ -9,14 +9,14 @@ import { APP_ROOT } from '../../src/core/constants';
 import { ErrorCodes } from '../../src/core/errors';
 import { MtcModel } from '../../src/modules/module.mtc/data-models/mtc.dm';
 import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
-import { CreateMtcRequestModel } from '../../src/modules/module.mtc/request-models';
+import { MtcRequestModel } from '../../src/modules/module.mtc/request-models';
 import { MtcViewModel } from '../../src/modules/module.mtc/view-models';
 
 chai.use(chaiHttp);
 chai.should();
 
 const globalData = {
-  createMtcRequestModel: {} as CreateMtcRequestModel,
+  MtcRequestModel: {} as MtcRequestModel,
 };
 
 const checkCreateMtcResponseBody = (body: MtcViewModel) => {
@@ -99,7 +99,7 @@ describe('MTC Controller', () => {
       const res = await chai
         .request(app)
         .post(`${APP_ROOT}/mtcs`)
-        .send(globalData.createMtcRequestModel)
+        .send(globalData.MtcRequestModel)
         .catch((err) => {
           if (err.response) {
             return err.response as Response;
@@ -115,7 +115,7 @@ describe('MTC Controller', () => {
 
     it('Create mtc with invalid fields in request model', async () => {
       const invalidRequestModel = Object.assign(
-        cloneDeep(globalData.createMtcRequestModel),
+        cloneDeep(globalData.MtcRequestModel),
         {
           name: 1,
           careers: ['NON_EXISTING_CAREER_01', 'NON_EXISTING_CAREER_02'],
@@ -151,7 +151,7 @@ describe('MTC Controller', () => {
       const res = await chai
         .request(app)
         .post(`${APP_ROOT}/mtcs`)
-        .send(globalData.createMtcRequestModel)
+        .send(globalData.MtcRequestModel)
         .catch((err) => {
           if (err.response) {
             return err.response as Response;
@@ -172,7 +172,7 @@ describe('MTC Controller', () => {
 });
 
 async function setupData() {
-  globalData.createMtcRequestModel = new CreateMtcRequestModel({
+  globalData.MtcRequestModel = new MtcRequestModel({
     name: `mtc-name-${v4()}`,
     slug: `mtc-slug-${v4()}`,
     description: `mtc-description-${v4()}`,
