@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   ApiOperationGet,
   ApiOperationPost,
+  ApiOperationPut,
   ApiPath,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
@@ -117,10 +118,55 @@ export class MtcController extends BaseController {
     return super.sendSuccessResponse(res, result);
   }
 
+  @ApiOperationPut({
+    path: '/{mtcId}',
+    summary: 'Updates info about mtc by id',
+    parameters: {
+      path: {
+        mtcId: {
+          name: 'mtcId',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+    },
+    responses: {
+      200: { model: 'MtcViewModel' },
+      403: {
+        description: `
+        { 
+          "errorCode": "INVALID_INPUT_PARAMS", 
+          "errorDetails": [ { "field": ["field_name"] } ], 
+          "type": "FORBIDDEN" 
+        },
+        { 
+          "errorCode": "MTC_NAME_IS_ALREADY_REGISTERED",
+          "errorDetails": ["Another mtc with such name is already registered"],
+          "type": "FORBIDDEN"
+        }
+        `,
+      },
+      404: {
+        description: `
+        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['mtc not found'], "type": "NOT_FOUND" },
+        `,
+      },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtc`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
   public async updateMtc(req: Request, res: Response) {
     const requestModel = new MtcRequestModel(req.body);
 
-    const result = this.mtcService.updateMtc(req.params.mtcId, requestModel);
+    const result = await this.mtcService.updateMtc(
+      req.params.mtcId,
+      requestModel
+    );
 
     return super.sendSuccessResponse(res, result);
   }

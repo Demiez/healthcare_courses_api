@@ -10,7 +10,7 @@
     "lint:fix": "tslint --fix ./src/**/*.ts ./test/**/*.spec.ts -t verbose",
     "pretest": "cross-env NODE_ENV=test yarn build && yarn lint",
     "test": "cross-env NODE_ENV=test mocha --reporter spec --require ts-node/register test/**/*.spec.ts --timeout 1000000 --full-trace --bail",
-    "test-local": "cross-env NODE_ENV=test mocha --reporter spec --require ts-node/register test/**/*.spec.ts --timeout 1000000 --full-trace --bail",
+    "test-local": "cross-env NODE_ENV=test mocha --reporter spec --require ts-node/register test/**/*.spec.ts --timeout 1000000 -R TAP -o",
     "test:mutation": "stryker run",
     "stryker:init": "stryker init",
     "dev": "nodemon",

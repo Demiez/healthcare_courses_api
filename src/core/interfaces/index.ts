@@ -1,1 +1,1 @@
-export * from './mongo-projection.interface';
+export * from './mongo.interface';

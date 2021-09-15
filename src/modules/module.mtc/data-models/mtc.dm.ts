@@ -24,13 +24,13 @@ export interface IMtcDocument extends Document {
   email: string;
   location: IGeoJsonLocation;
   careers: Array<string>;
-  averageRating: number;
-  averageCost: number;
-  photo: string;
-  housing: boolean;
-  jobAssistance: boolean;
-  jobGuarantee: boolean;
-  acceptGiBill: boolean;
+  averageRating?: number;
+  averageCost?: number;
+  photo?: string;
+  housing?: boolean;
+  jobAssistance?: boolean;
+  jobGuarantee?: boolean;
+  acceptGiBill?: boolean;
 }
 
 interface IMtcModel extends Model<IMtcDocument> {}
