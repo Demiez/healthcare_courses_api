@@ -1,4 +1,4 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server-core';
 import * as mongoose from 'mongoose';
 import { logger } from './logger.util';
 

@@ -1,6 +1,6 @@
 {
   "name": "healthcare-courses-api",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "HEALTHCARE COURSES API",
   "main": "./dist/server.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "express": "^4.17.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
-    "mongodb-memory-server": "^7.3.6",
+    "mongodb-memory-server-core": "^7.4.0",
     "mongoose": "^5.13.7",
     "reflect-metadata": "^0.1.13",
     "swagger-express-ts": "1.1.0",
