@@ -137,3 +137,7 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 - Validation with information including field and clarification message
 - Use async/await (create middleware to clean up controller methods)
 - Create a database seeder to import and destroy data
+
+## Dependencies updates
+
+- moved from "mongodb-memory-server": "^7.3.6" to "mongodb-memory-server-core": "^7.4.0"
