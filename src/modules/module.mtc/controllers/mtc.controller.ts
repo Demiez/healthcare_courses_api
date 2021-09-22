@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import {
+  ApiOperationDelete,
   ApiOperationGet,
   ApiOperationPost,
   ApiOperationPut,
@@ -153,7 +154,7 @@ export class MtcController extends BaseController {
         `,
       },
       500: {
-        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtc`,
+        description: `INTERNAL_SERVER_ERROR: MtcController:__updateMtc`,
       },
     },
     security: {
@@ -171,8 +172,36 @@ export class MtcController extends BaseController {
     return super.sendSuccessResponse(res, result);
   }
 
+  @ApiOperationDelete({
+    path: '/{mtcId}',
+    summary: 'Delete info about mtc by id',
+    parameters: {
+      path: {
+        mtcId: {
+          name: 'mtcId',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+    },
+    responses: {
+      200: { model: 'MtcViewModel' },
+      404: {
+        description: `
+        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['mtc not found'], "type": "NOT_FOUND" },
+        `,
+      },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtc`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
   public async deleteMtc(req: Request, res: Response) {
-    const result = this.mtcService.deleteMtc(req.params.mtcId);
+    const result = await this.mtcService.deleteMtc(req.params.mtcId);
 
     return super.sendSuccessResponse(res, result);
   }

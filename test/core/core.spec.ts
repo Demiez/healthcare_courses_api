@@ -11,7 +11,10 @@ import { StandardResponseViewModel } from '../../src/core/view-models';
 chai.use(chaiHttp);
 chai.should();
 
-const checkRootEndpointResponseBody = (body: StandardResponseViewModel) => {
+const checkRootEndpointResponseBody = (body: StandardResponseViewModel<{}>) => {
+  body.should.haveOwnProperty('result');
+  body.result.should.be.an('object');
+
   body.should.haveOwnProperty('message');
   body.message.should.be.a('string');
 

@@ -82,11 +82,14 @@ export class MtcService {
     return new MtcViewModel(mtc);
   }
 
-  public deleteMtc(mtcId: string): StandardResponseViewModel {
-    return new StandardResponseViewModel(
-      `Delete mtc by Id: ${mtcId}`,
-      'success'
-    );
+  public async deleteMtc(
+    mtcId: string
+  ): Promise<StandardResponseViewModel<{}>> {
+    const mtc = await this.tryGetMtcById(mtcId);
+
+    await mtc.deleteOne();
+
+    return new StandardResponseViewModel({}, undefined, 'success');
   }
 
   public async tryGetMtcById(
