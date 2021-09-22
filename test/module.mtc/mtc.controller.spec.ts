@@ -16,10 +16,12 @@ chai.use(chaiHttp);
 chai.should();
 
 const globalData = {
-  MtcRequestModel: {} as MtcRequestModel,
+  mtcId: '',
+  mtcRequestModel: {} as MtcRequestModel,
+  totalMtcsInDB: 5,
 };
 
-const checkCreateMtcResponseBody = (body: MtcViewModel) => {
+const checkMtcResponseBody = (body: MtcViewModel) => {
   body.should.have.property('id');
   body.id.should.be.a('string');
 
@@ -85,7 +87,7 @@ const checkBaseErrorResponse = (res: Response, resStatus: number) => {
   res.body.should.have.property('type').that.is.a('string');
 };
 
-describe('MTC Controller', () => {
+describe.only('MTC Controller', () => {
   before(async () => {
     await setupData();
   });
@@ -99,7 +101,7 @@ describe('MTC Controller', () => {
       const res = await chai
         .request(app)
         .post(`${APP_ROOT}/mtcs`)
-        .send(globalData.MtcRequestModel)
+        .send(globalData.mtcRequestModel)
         .catch((err) => {
           if (err.response) {
             return err.response as Response;
@@ -110,12 +112,12 @@ describe('MTC Controller', () => {
 
       res.status.should.equal(200);
       res.body.should.be.an('object');
-      checkCreateMtcResponseBody(res.body);
+      checkMtcResponseBody(res.body);
     });
 
     it('Create mtc with invalid fields in request model', async () => {
       const invalidRequestModel = Object.assign(
-        cloneDeep(globalData.MtcRequestModel),
+        cloneDeep(globalData.mtcRequestModel),
         {
           name: 1,
           careers: ['NON_EXISTING_CAREER_01', 'NON_EXISTING_CAREER_02'],
@@ -151,7 +153,7 @@ describe('MTC Controller', () => {
       const res = await chai
         .request(app)
         .post(`${APP_ROOT}/mtcs`)
-        .send(globalData.MtcRequestModel)
+        .send(globalData.mtcRequestModel)
         .catch((err) => {
           if (err.response) {
             return err.response as Response;
@@ -169,34 +171,106 @@ describe('MTC Controller', () => {
       );
     });
   });
+
+  describe(':: GET part', () => {
+    it('Get all mtcs from DB', async () => {
+      const res = await chai
+        .request(app)
+        .get(`${APP_ROOT}/mtcs`)
+        .catch((err) => {
+          if (err.response) {
+            return err.response as Response;
+          } else {
+            throw err;
+          }
+        });
+
+      res.status.should.equal(200);
+      res.body.should.be.an('object');
+      res.body.should.haveOwnProperty('total');
+      res.body.total.should.be.a('number');
+      res.body.total.should.equal(globalData.totalMtcsInDB);
+      res.body.should.haveOwnProperty('mtcs');
+      res.body.mtcs.should.be.an('array');
+      res.body.mtcs.length.should.equal(globalData.totalMtcsInDB);
+      res.body.mtcs.forEach((mtc: MtcViewModel) => checkMtcResponseBody(mtc));
+
+      globalData.mtcId = res.body.mtcs[0].id;
+    });
+
+    it('Get mtc by invalid id', async () => {
+      const res = await chai
+        .request(app)
+        .get(`${APP_ROOT}/mtcs/${v4()}`)
+        .catch((err) => {
+          if (err.response) {
+            return err.response as Response;
+          } else {
+            throw err;
+          }
+        });
+
+      checkBaseErrorResponse(res as Response, 404);
+      res.body.errorCode.should.equal(ErrorCodes.RECORD_NOT_FOUND);
+      res.body.errorDetails[0].should.equal('mtc not found');
+    });
+
+    it('Get mtc by valid id', async () => {
+      const res = await chai
+        .request(app)
+        .get(`${APP_ROOT}/mtcs/${globalData.mtcId}`)
+        .catch((err) => {
+          if (err.response) {
+            return err.response as Response;
+          } else {
+            throw err;
+          }
+        });
+
+      res.status.should.equal(200);
+      res.body.should.be.an('object');
+      res.body.id.should.equal(globalData.mtcId);
+      checkMtcResponseBody(res.body);
+    });
+  });
 });
 
 async function setupData() {
-  globalData.MtcRequestModel = new MtcRequestModel({
-    name: `mtc-name-${v4()}`,
-    slug: `mtc-slug-${v4()}`,
-    description: `mtc-description-${v4()}`,
-    website: `https://www.mtc-website-${v4()}.com`,
-    phone: '(111) 222-0000',
-    email: `mtc-email-${v4()}@gmail.com`,
-    address: `mtc-address-${v4()}`,
-    careers: [
-      CareerTypesEnum.EKG_TECHNICIAN,
-      CareerTypesEnum.PHLEBOTOMY_TECHNICIAN,
-      CareerTypesEnum.PATIENT_CARE_TECHNICIAN,
-      CareerTypesEnum.CERTIFIED_NURSE_AIDE,
-      CareerTypesEnum.PERSONAL_CARE_AIDE,
-      CareerTypesEnum.HOME_HEALTH_AIDE,
-      CareerTypesEnum.BLS_CPR,
-    ],
-    averageRating: 5,
-    averageCost: 1000,
-    photo: `mtc-photo-${v4()}.jpg`,
-    housing: true,
-    jobAssistance: true,
-    jobGuarantee: false,
-    acceptGiBill: true,
-  });
+  for (let i = 0; i < globalData.totalMtcsInDB; i++) {
+    const requestModel = new MtcRequestModel({
+      name: `mtc-name-${i}-${v4()}`,
+      slug: `mtc-slug-${i}-${v4()}`,
+      description: `mtc-description-${i}-${v4()}`,
+      website: `https://www.mtc-website-${i}-${v4()}.com`,
+      phone: '(111) 222-0000',
+      email: `mtc-email-${i}-${v4()}@gmail.com`,
+      address: `mtc-address-${i}-${v4()}`,
+      careers: [
+        CareerTypesEnum.EKG_TECHNICIAN,
+        CareerTypesEnum.PHLEBOTOMY_TECHNICIAN,
+        CareerTypesEnum.PATIENT_CARE_TECHNICIAN,
+        CareerTypesEnum.CERTIFIED_NURSE_AIDE,
+        CareerTypesEnum.PERSONAL_CARE_AIDE,
+        CareerTypesEnum.HOME_HEALTH_AIDE,
+        CareerTypesEnum.BLS_CPR,
+      ],
+      averageRating: 5,
+      averageCost: 1000,
+      photo: `mtc-photo-${i}-${v4()}.jpg`,
+      housing: true,
+      jobAssistance: true,
+      jobGuarantee: false,
+      acceptGiBill: true,
+    });
+
+    if (i !== globalData.totalMtcsInDB - 1) {
+      const mtc = new MtcModel(requestModel);
+
+      await mtc.save();
+    } else {
+      globalData.mtcRequestModel = requestModel;
+    }
+  }
 }
 
 async function clearData() {
