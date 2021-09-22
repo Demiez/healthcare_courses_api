@@ -38,7 +38,7 @@ interface IMtcModel extends Model<IMtcDocument> {}
 const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
   _id: {
     type: String,
-    default: v4(),
+    default: () => v4(),
   },
   name: {
     type: String,
