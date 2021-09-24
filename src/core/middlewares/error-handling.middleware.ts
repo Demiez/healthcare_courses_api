@@ -1,67 +1,55 @@
 import { Application, NextFunction, Request, Response } from 'express';
+import { BaseStatusesEnum } from '../enums';
 import { ErrorResponseTypes } from '../enums/error-response-types.enum';
 import {
   BaseErrorCodes,
   ErrorResponse,
-  InternalServerError,
   PostbackUniversalError,
 } from '../errors';
 
 export default (app: Application) => {
   app.use(
     (error: ErrorResponse, req: Request, res: Response, next: NextFunction) => {
-      if (error.type === ErrorResponseTypes.BAD_REQUEST) {
-        const errorMessage =
-          error.errorDetails && error.errorDetails.length > 0
-            ? error.message + ': ' + error.errorDetails[0]
-            : error.message;
+      switch (error.type) {
+        case ErrorResponseTypes.BAD_REQUEST:
+          return res.status(BaseStatusesEnum.BAD_REQUEST).send(error);
 
-        return res.status(400).send(error);
-      }
+        case ErrorResponseTypes.POSTBACK_UNIVERSAL_REQUEST: {
+          const universalError = error as PostbackUniversalError;
 
-      if (error.type === ErrorResponseTypes.POSTBACK_UNIVERSAL_REQUEST) {
-        const universalError = error as PostbackUniversalError;
+          return res
+            .status(BaseStatusesEnum.BAD_REQUEST)
+            .send(universalError.model);
+        }
 
-        return res.status(400).send(universalError.model);
-      }
+        case ErrorResponseTypes.UNAUTHORIZED:
+          return res.status(BaseStatusesEnum.UNAUTHORIZED).send(error);
 
-      if (error.type === ErrorResponseTypes.UNAUTHORIZED) {
-        const errorMessage =
-          error.errorDetails && error.errorDetails.length > 0
-            ? error.message + ': ' + error.errorDetails[0]
-            : error.message;
+        case ErrorResponseTypes.FORBIDDEN:
+          return res.status(BaseStatusesEnum.FORBIDDEN).send(error);
 
-        return res.status(401).json(error);
-      }
+        case ErrorResponseTypes.NOT_FOUND:
+          return res.status(BaseStatusesEnum.NOT_FOUND).send(error);
 
-      if (error.type === ErrorResponseTypes.FORBIDDEN) {
-        const errorMessage =
-          error.errorDetails && error.errorDetails.length > 0
-            ? error.message + ': ' + error.errorDetails[0]
-            : error.message;
+        case ErrorResponseTypes.INTERNAL_SERVER_ERROR:
+          return res.status(BaseStatusesEnum.INTERNAL_SERVER_ERROR).send(error);
 
-        return res.status(403).send(error);
-      }
-
-      if (error.type === ErrorResponseTypes.NOT_FOUND) {
-        const errorMessage =
-          error.errorDetails && error.errorDetails.length > 0
-            ? error.message + ': ' + error.errorDetails[0]
-            : error.message;
-
-        return res.status(404).send(error);
-      }
-
-      if (error.type === ErrorResponseTypes.INTERNAL_SERVER_ERROR) {
-        const errorMessage =
-          error.errorDetails && error.errorDetails.length > 0
-            ? error.message + ': ' + error.errorDetails[0]
-            : error.message;
-
-        return res.status(500).send(error);
+        default:
+          return res
+            .status(BaseStatusesEnum.INTERNAL_SERVER_ERROR)
+            .send(
+              new ErrorResponse(BaseErrorCodes.INTERNAL_SERVER_ERROR, [
+                { message: JSON.stringify(error) },
+              ])
+            );
       }
 
       // DB error handling - change according to used DB
+      // const errorMessage =
+      // error.errorDetails && error.errorDetails.length > 0
+      //   ? error.message + ': ' + error.errorDetails[0]
+      //   : error.message;
+
       // if (error.code) {
       //   const errorMessage = getErrorMessage(error);
 
@@ -72,14 +60,6 @@ export default (app: Application) => {
 
       //   return res.status(500).send(errorObject);
       // }
-
-      return res
-        .status(500)
-        .send(
-          new ErrorResponse(BaseErrorCodes.INTERNAL_SERVER_ERROR, [
-            { message: JSON.stringify(error) },
-          ])
-        );
     }
   );
 };
