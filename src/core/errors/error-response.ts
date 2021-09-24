@@ -1,4 +1,5 @@
 import { ErrorResponseTypes } from '../enums/error-response-types.enum';
+import { ErrorCodes } from './error.codes';
 
 type exportDetailsType = Array<any> | any;
 
@@ -58,5 +59,15 @@ export class PostbackUniversalError extends BadRequestError {
     super('', []);
     this.type = ErrorResponseTypes.POSTBACK_UNIVERSAL_REQUEST;
     this.model = model;
+  }
+}
+
+export class MongoDBError extends ErrorResponse {
+  constructor(code: number, errorDetails: Array<any> = []) {
+    super(ErrorCodes.MONGO_DB_ERROR);
+
+    this.code = code;
+    this.type = ErrorResponseTypes.BAD_REQUEST;
+    this.errorDetails = errorDetails;
   }
 }

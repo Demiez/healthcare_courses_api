@@ -6,10 +6,15 @@ import {
   ErrorResponse,
   PostbackUniversalError,
 } from '../errors';
+import { handleMongoDBError } from '../utils';
 
 export default (app: Application) => {
   app.use(
     (error: ErrorResponse, req: Request, res: Response, next: NextFunction) => {
+      if (error.code) {
+        return handleMongoDBError(error, res);
+      }
+
       switch (error.type) {
         case ErrorResponseTypes.BAD_REQUEST:
           return res.status(BaseStatusesEnum.BAD_REQUEST).send(error);
@@ -43,23 +48,6 @@ export default (app: Application) => {
               ])
             );
       }
-
-      // DB error handling - change according to used DB
-      // const errorMessage =
-      // error.errorDetails && error.errorDetails.length > 0
-      //   ? error.message + ': ' + error.errorDetails[0]
-      //   : error.message;
-
-      // if (error.code) {
-      //   const errorMessage = getErrorMessage(error);
-
-      //   const errorObject = new InternalServerError(
-      //     ErrorCodes.INTERNAL_SERVER_ERROR,
-      //     [`MongoError: ${errorMessage}`]
-      //   );
-
-      //   return res.status(500).send(errorObject);
-      // }
     }
   );
 };

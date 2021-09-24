@@ -25,6 +25,10 @@ export class ErrorCodes extends BaseErrorCodes {
     return 'RECORD_NOT_FOUND';
   }
 
+  public static get MONGO_DB_ERROR() {
+    return 'MONGO_DB_ERROR';
+  }
+
   public static get MTC_NAME_IS_ALREADY_REGISTERED() {
     return 'MTC_NAME_IS_ALREADY_REGISTERED';
   }
