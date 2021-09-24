@@ -45,7 +45,7 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     trim: true,
     required: true,
     unique: true,
-    maxlength: [50, 'Name cannot be more than 50 characters'],
+    maxlength: [100, 'Name cannot be more than 100 characters'],
   },
   slug: {
     type: String,
@@ -73,6 +73,7 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
   address: {
     type: String,
     required: true,
+    maxLength: [300, "Address can't be longer than 300 characters"],
   },
   location: {
     // GeoJson Point
