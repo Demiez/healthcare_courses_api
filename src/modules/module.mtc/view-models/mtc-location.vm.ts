@@ -4,7 +4,7 @@ import {
   ApiModelProperty,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
-import { IGeoJsonLocation } from '../data-models/mtc.dm';
+import { IGeoJsonLocation } from '../../../core/interfaces';
 
 @ApiModel({
   name: 'MtcLocationViewModel',

@@ -2,18 +2,9 @@ import { Document, Model, model, Schema } from 'mongoose';
 import slugify from 'slugify';
 import { v4 } from 'uuid';
 import { MongooseLocationTypesEnum } from '../../../core/enums';
+import { IGeoJsonLocation } from '../../../core/interfaces';
+import { geocoder } from '../../../core/utils';
 import { CareerTypesEnum } from '../enums/career-types.enum';
-
-export interface IGeoJsonLocation {
-  type: string;
-  coordinates: Array<number>;
-  formattedAddress?: string;
-  street?: string;
-  city?: string;
-  state?: string;
-  zipcode?: string;
-  country?: string;
-}
 
 export interface IMtcDocument extends Document {
   id: string;
@@ -23,6 +14,7 @@ export interface IMtcDocument extends Document {
   website: string;
   phone: string;
   email: string;
+  address: string;
   location: IGeoJsonLocation;
   careers: Array<string>;
   averageRating?: number;
@@ -81,11 +73,9 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     type: {
       type: String,
       enum: [MongooseLocationTypesEnum.POINT],
-      // required: true,
     },
     coordinates: {
       type: [Number],
-      // required: true,
       index: '2dsphere',
     },
     formattedAddress: String,
@@ -132,10 +122,18 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
   },
 });
 
-mtcSchema.pre('save', function (next) {
+mtcSchema.pre('save', async function (next) {
   const mtcData = this as IMtcDocument;
 
   mtcData.slug = slugify(mtcData.name, { lower: true, trim: true });
+
+  next();
+});
+
+mtcSchema.pre('save', async function (next) {
+  const mtcData = this as IMtcDocument;
+
+  mtcData.location = await geocoder.geocode(mtcData.address);
 
   next();
 });

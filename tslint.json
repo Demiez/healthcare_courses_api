@@ -13,7 +13,8 @@
     "ban-types": false,
     "object-literal-sort-keys": false,
     "variable-name": false,
-    "no-unused-expression": false
+    "no-unused-expression": false,
+    "member-ordering": false
   },
   "rulesDirectory": []
 }

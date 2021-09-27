@@ -32,4 +32,8 @@ export class ErrorCodes extends BaseErrorCodes {
   public static get MTC_NAME_IS_ALREADY_REGISTERED() {
     return 'MTC_NAME_IS_ALREADY_REGISTERED';
   }
+
+  public static get GEO_CODER_ERROR() {
+    return 'GEO_CODER_ERROR';
+  }
 }
