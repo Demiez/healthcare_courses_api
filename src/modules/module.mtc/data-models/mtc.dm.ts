@@ -1,4 +1,5 @@
 import { Document, Model, model, Schema } from 'mongoose';
+import slugify from 'slugify';
 import { v4 } from 'uuid';
 import { MongooseLocationTypesEnum } from '../../../core/enums';
 import { CareerTypesEnum } from '../enums/career-types.enum';
@@ -129,6 +130,14 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     type: Date,
     default: new Date(),
   },
+});
+
+mtcSchema.pre('save', function (next) {
+  const mtcData = this as IMtcDocument;
+
+  mtcData.slug = slugify(mtcData.name, { lower: true, trim: true });
+
+  next();
 });
 
 export const MtcModel: Model<IMtcDocument> = model<IMtcDocument>(

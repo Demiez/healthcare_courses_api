@@ -281,7 +281,6 @@ describe('MTC Controller', () => {
       const invalidRequestModel = Object.assign(
         cloneDeep(globalData.mtcForUpdate),
         {
-          slug: 1,
           email: v4(),
           averageRating: v4(),
         }
@@ -294,16 +293,12 @@ describe('MTC Controller', () => {
 
       checkBaseErrorResponse(res as Response, 403);
       res.body.errorCode.should.equal(ErrorCodes.INVALID_INPUT_PARAMS);
-      res.body.errorDetails.length.should.equal(3);
+      res.body.errorDetails.length.should.equal(2);
       res.body.errorDetails[0].should.deep.equal({
-        field: 'slug',
-        message: BaseValidationMessagesEnum.MUST_BE_STRING,
-      });
-      res.body.errorDetails[1].should.deep.equal({
         field: 'email',
         message: VALID_EMAIL_MESSAGE,
       });
-      res.body.errorDetails[2].should.deep.equal({
+      res.body.errorDetails[1].should.deep.equal({
         field: 'averageRating',
         message: BaseValidationMessagesEnum.MUST_BE_NUMBER,
       });
@@ -354,7 +349,6 @@ async function setupData() {
   for (let i = 0; i < globalData.totalMtcsInDB; i++) {
     const requestModel = new MtcRequestModel({
       name: `mtc-name-${i}-${v4()}`,
-      slug: `mtc-slug-${i}-${v4()}`,
       description: `mtc-description-${i}-${v4()}`,
       website: `https://www.mtc-website-${i}-${v4()}.com`,
       phone: `(111) 222-000${i}`,

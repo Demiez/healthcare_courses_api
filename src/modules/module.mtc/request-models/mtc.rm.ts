@@ -23,9 +23,6 @@ export class MtcRequestModel {
   public name: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
-  public slug: string = undefined;
-
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public description: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })

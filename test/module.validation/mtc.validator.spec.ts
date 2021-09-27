@@ -153,54 +153,6 @@ describe('UT - MtcRequestModelValidator', () => {
     });
   });
 
-  describe(':: slug validation', () => {
-    it('should process valid slug data', async () => {
-      testData = cloneDeep(globalData.MtcRequestModel);
-
-      MtcRequestModelValidatorTester.validate(testData);
-
-      expect(MtcRequestModelValidatorTester.validate).calledOnce;
-      expect(MtcRequestModelValidatorTester.validate).calledWithExactly(
-        testData
-      );
-      expect(MtcRequestModelValidatorTester.validate).returned(
-        globalData.defaultValidationResponse
-      );
-    });
-
-    it('should return FieldIsBadModel when no slug provided', async () => {
-      testData.slug = undefined;
-
-      MtcRequestModelValidatorTester.validate(testData);
-
-      testNoValueProvidedCase(
-        MtcRequestModelValidatorTester.validate,
-        testData,
-        'slug'
-      );
-    });
-
-    it('should return FieldIsBadModel when slug is not a string', async () => {
-      testData.slug = globalData.numberValue as any;
-
-      MtcRequestModelValidatorTester.validate(testData);
-
-      testValueProvidedCase(MtcRequestModelValidatorTester.validate, testData, [
-        new FieldIsBadModel('slug', BaseValidationMessagesEnum.MUST_BE_STRING),
-      ]);
-    });
-
-    it('should return FieldIsBadModel when slug is not a valid slug', async () => {
-      testData.slug = globalData.stringValue + '_';
-
-      MtcRequestModelValidatorTester.validate(testData);
-
-      testValueProvidedCase(MtcRequestModelValidatorTester.validate, testData, [
-        new FieldIsBadModel('slug', VALID_SLUG_MESSAGE),
-      ]);
-    });
-  });
-
   describe(':: description validation', () => {
     it('should process valid description data', async () => {
       testData = cloneDeep(globalData.MtcRequestModel);

@@ -33,7 +33,6 @@ export class MtcRequestModelValidator extends BaseValidator {
 
     const {
       name,
-      slug,
       description,
       website,
       email,
@@ -51,7 +50,6 @@ export class MtcRequestModelValidator extends BaseValidator {
     } = requestModel;
 
     this.validateName(name, convertVariableToString({ name }));
-    this.validateSlug(slug, convertVariableToString({ slug }));
     this.validateDescription(
       description,
       convertVariableToString({ description })
@@ -144,19 +142,6 @@ export class MtcRequestModelValidator extends BaseValidator {
 
     if (name.trim().length > MTC_NAME_LENGTH) {
       this.errors.push(new FieldIsBadModel(fieldName, NAME_LENGTH_MESSAGE));
-    }
-  }
-
-  private static validateSlug(slug: string, fieldName: string) {
-    const error = this.validateStringField(slug, fieldName);
-
-    if (error) {
-      this.errors.push(error);
-      return;
-    }
-
-    if (!validator.isSlug(slug)) {
-      this.errors.push(new FieldIsBadModel(fieldName, VALID_SLUG_MESSAGE));
     }
   }
 
