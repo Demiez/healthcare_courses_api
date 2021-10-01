@@ -42,7 +42,7 @@ class Geocoder {
       state: stateCode,
       zipcode,
       country: countryCode,
-    };
+    } as IGeoJsonLocation;
   }
 
   constructor() {

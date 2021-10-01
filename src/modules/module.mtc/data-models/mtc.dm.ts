@@ -134,6 +134,7 @@ mtcSchema.pre('save', async function (next) {
   const mtcData = this as IMtcDocument;
 
   mtcData.location = await geocoder.geocode(mtcData.address);
+  mtcData.address = undefined;
 
   next();
 });

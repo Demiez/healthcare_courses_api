@@ -38,9 +38,6 @@ export class MtcViewModel {
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public email: string = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
-  public address: string = undefined;
-
   @ApiModelProperty({ model: 'MtcLocationViewModel', required: true })
   public location: MtcLocationViewModel = undefined;
 

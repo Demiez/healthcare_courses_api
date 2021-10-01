@@ -3,14 +3,20 @@ import chaiHttp = require('chai-http');
 import { cloneDeep } from 'lodash';
 import 'mocha';
 import { Query } from 'mongoose';
+import * as sinon from 'sinon';
 import { v4 } from 'uuid';
 import app from '../../src/app';
 import { APP_ROOT } from '../../src/core/constants';
+import { MongooseLocationTypesEnum } from '../../src/core/enums';
 import { ErrorCodes } from '../../src/core/errors';
+import { generateRandomInteger, geocoder } from '../../src/core/utils';
 import { MtcModel } from '../../src/modules/module.mtc/data-models/mtc.dm';
 import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
 import { MtcRequestModel } from '../../src/modules/module.mtc/request-models';
-import { MtcViewModel } from '../../src/modules/module.mtc/view-models';
+import {
+  MtcLocationViewModel,
+  MtcViewModel,
+} from '../../src/modules/module.mtc/view-models';
 import { VALID_EMAIL_MESSAGE } from '../../src/modules/module.validation/constants';
 import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
 
@@ -46,9 +52,6 @@ const checkMtcResponseBody = (body: MtcViewModel) => {
 
   body.should.have.property('email');
   body.email.should.be.a('string');
-
-  body.should.have.property('address');
-  body.address.should.be.a('string');
 
   body.should.have.property('location');
   body.location.should.be.an('object');
@@ -119,10 +122,14 @@ const sendRequestUpdateMtc = (mtcId: string, mtcData: MtcViewModel) =>
 
 describe('MTC Controller', () => {
   before(async () => {
+    sinon
+      .stub(geocoder, 'geocode')
+      .callsFake(() => Promise.resolve(setupRandomMtcLocation()));
     await setupData();
   });
 
   after(async () => {
+    sinon.restore();
     await clearData();
   });
 
@@ -344,6 +351,22 @@ describe('MTC Controller', () => {
     });
   });
 });
+
+function setupRandomMtcLocation() {
+  return new MtcLocationViewModel({
+    type: MongooseLocationTypesEnum.POINT,
+    coordinates: [
+      -73.86954 + generateRandomInteger(0, 10),
+      40.733401 + generateRandomInteger(0, 10),
+    ],
+    formattedAddress: `formatted-address-${v4()}`,
+    street: `street-${v4()}`,
+    city: `city-${v4()}`,
+    state: 'NY',
+    zipcode: '11300-550' + generateRandomInteger(0, 10),
+    country: 'US',
+  });
+}
 
 async function setupData() {
   for (let i = 0; i < globalData.totalMtcsInDB; i++) {
