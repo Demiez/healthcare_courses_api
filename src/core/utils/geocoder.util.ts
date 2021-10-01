@@ -1,4 +1,3 @@
-import { trim } from 'lodash';
 import * as nodeGeocoder from 'node-geocoder';
 import { MongooseLocationTypesEnum } from '../enums';
 import { BadRequestError, ErrorCodes, InternalServerError } from '../errors';

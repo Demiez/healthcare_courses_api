@@ -29,6 +29,9 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
   - Owner only
 - Calculate the average cost of all courses provided by the MTC
 - Calculate the average rating from the reviews for MTC
+- Geolocation of MTC
+  - use package node-geocoder with MapQuest API
+  - implement handling not enough data response (400 status from MapQuest)
 
 ### Healthcare Courses
 
