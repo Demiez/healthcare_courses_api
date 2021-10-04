@@ -55,8 +55,7 @@ const checkMtcResponseBody = (body: MtcViewModel) => {
 
   body.should.have.property('location');
   body.location.should.be.an('object');
-  // TODO : Add indepth location check
-  body.location.should.be.empty;
+  checkLocationResponse(body.location);
 
   body.should.have.property('careers');
   body.careers.should.be.an('array');
@@ -84,6 +83,35 @@ const checkMtcResponseBody = (body: MtcViewModel) => {
 
   body.should.have.property('acceptGiBill');
   body.acceptGiBill.should.be.a('boolean');
+};
+
+const checkLocationResponse = (location: MtcLocationViewModel) => {
+  location.should.have.property('type');
+  location.type.should.be.equal(MongooseLocationTypesEnum.POINT);
+
+  location.should.have.property('coordinates');
+  location.coordinates.should.be.an('array');
+  location.coordinates.forEach((coordinate) =>
+    coordinate.should.be.a('number')
+  );
+
+  location.should.have.property('formattedAddress');
+  location.formattedAddress.should.be.a('string');
+
+  location.should.have.property('street');
+  location.street.should.be.a('string');
+
+  location.should.have.property('city');
+  location.city.should.be.a('string');
+
+  location.should.have.property('state');
+  location.state.should.be.a('string').that.has.lengthOf(2);
+
+  location.should.have.property('zipcode');
+  location.zipcode.should.be.a('string');
+
+  location.should.have.property('country');
+  location.country.should.be.a('string').that.has.lengthOf(2);
 };
 
 const checkBaseErrorResponse = (res: Response, resStatus: number) => {
