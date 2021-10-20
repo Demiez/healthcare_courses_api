@@ -53,6 +53,9 @@ const checkMtcResponseBody = (body: MtcViewModel) => {
   body.should.have.property('email');
   body.email.should.be.a('string');
 
+  body.should.have.property('address');
+  body.address.should.be.a('string');
+
   body.should.have.property('location');
   body.location.should.be.an('object');
   checkLocationResponse(body.location);
