@@ -1,18 +1,23 @@
 import * as nodeGeocoder from 'node-geocoder';
+import { LocationRequiredFieldsValidator } from '../../modules/module.validation';
 import { MongooseLocationTypesEnum } from '../enums';
-import { BadRequestError, ErrorCodes, InternalServerError } from '../errors';
+import {
+  BadRequestError,
+  ErrorCodes,
+  ForbiddenError,
+  InternalServerError,
+} from '../errors';
 import { IGeoJsonLocation } from '../interfaces';
 
 const { GEOCODER_PROVIDER, GEOCODER_API_KEY } = process.env;
 
 class Geocoder {
   private geocoder: nodeGeocoder.Geocoder;
+  private locationEntryData: Array<nodeGeocoder.Entry>;
 
   public async geocode(address: string): Promise<IGeoJsonLocation> {
-    let locationEntryData: Array<nodeGeocoder.Entry>;
-
     try {
-      locationEntryData = await this.geocoder.geocode(address);
+      this.locationEntryData = await this.geocoder.geocode(address);
     } catch (err) {
       if (err.message.includes('400')) {
         throw new BadRequestError(ErrorCodes.GEO_CODER_ERROR, [
@@ -21,6 +26,8 @@ class Geocoder {
       }
       throw new InternalServerError(ErrorCodes.GEO_CODER_ERROR);
     }
+
+    this.validateLocationEntryData();
 
     const {
       longitude,
@@ -31,7 +38,7 @@ class Geocoder {
       streetName,
       stateCode,
       zipcode,
-    } = locationEntryData[0];
+    } = this.locationEntryData[0];
 
     return {
       type: MongooseLocationTypesEnum.POINT,
@@ -52,6 +59,16 @@ class Geocoder {
       apiKey: GEOCODER_API_KEY,
       formatter: null,
     } as nodeGeocoder.Options);
+  }
+
+  private validateLocationEntryData() {
+    const errors = LocationRequiredFieldsValidator.validate(
+      this.locationEntryData[0]
+    );
+
+    if (errors.length) {
+      throw new ForbiddenError(ErrorCodes.GEO_CODER_ERROR, errors);
+    }
   }
 }
 

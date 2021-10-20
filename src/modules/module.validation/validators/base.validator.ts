@@ -1,15 +1,28 @@
-import { isBoolean, isInteger, isNil, isNumber, isString } from 'lodash';
-import { FieldIsBadModel } from '../../core/view-models';
-import { BaseValidationMessagesEnum } from './enums';
+import {
+  isBoolean,
+  isEmpty,
+  isInteger,
+  isNil,
+  isNumber,
+  isString,
+} from 'lodash';
+import { FieldIsBadModel } from '../../../core/view-models';
+import { BaseValidationMessagesEnum } from '../enums';
 
 export abstract class BaseValidator {
   protected static errors: Array<FieldIsBadModel>;
 
-  protected static validateStringField(value: string, fieldName: string) {
-    if (isNil(value)) {
+  protected static validateStringField(
+    value: string,
+    fieldName: string,
+    customProvideValueMessage?: string
+  ) {
+    if (isEmpty(value)) {
       return new FieldIsBadModel(
         fieldName,
-        BaseValidationMessagesEnum.PROVIDE_VALUE_MESSAGE
+        customProvideValueMessage
+          ? customProvideValueMessage
+          : BaseValidationMessagesEnum.PROVIDE_VALUE_MESSAGE
       );
     }
 
@@ -24,12 +37,15 @@ export abstract class BaseValidator {
   protected static validateNumberField(
     value: number,
     fieldName: string,
-    isIntegerValue?: boolean
+    isIntegerValue?: boolean,
+    customProvideValueMessage?: string
   ) {
     if (isNil(value)) {
       return new FieldIsBadModel(
         fieldName,
-        BaseValidationMessagesEnum.PROVIDE_VALUE_MESSAGE
+        customProvideValueMessage
+          ? customProvideValueMessage
+          : BaseValidationMessagesEnum.PROVIDE_VALUE_MESSAGE
       );
     }
 

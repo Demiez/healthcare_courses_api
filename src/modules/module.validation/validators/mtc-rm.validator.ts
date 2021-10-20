@@ -1,7 +1,7 @@
 import { isArray, isEmpty, isNil } from 'lodash';
 import validator from 'validator';
-import { convertVariableToString } from '../../core/utils';
-import { FieldIsBadModel } from '../../core/view-models';
+import { convertVariableToString } from '../../../core/utils';
+import { FieldIsBadModel } from '../../../core/view-models';
 import {
   MTC_ADDRESS_LENGTH,
   MTC_AVERAGE_RATING_MAX_VALUE,
@@ -9,10 +9,9 @@ import {
   MTC_DESCRIPTION_LENGTH,
   MTC_NAME_LENGTH,
   MTC_PHONE_LENGTH,
-} from '../module.mtc/constants';
-import { CareerTypesEnum } from '../module.mtc/enums/career-types.enum';
-import { MtcRequestModel } from '../module.mtc/request-models';
-import { BaseValidator } from './base.validator';
+} from '../../module.mtc/constants';
+import { CareerTypesEnum } from '../../module.mtc/enums/career-types.enum';
+import { MtcRequestModel } from '../../module.mtc/request-models';
 import {
   ADDRESS_LENGTH_MESSAGE,
   AVERAGE_COST_MESSAGE,
@@ -23,9 +22,9 @@ import {
   PHONE_LENGTH_MESSAGE,
   VALID_CAREER_MESSAGE,
   VALID_EMAIL_MESSAGE,
-  VALID_SLUG_MESSAGE,
   VALID_URL_MESSAGE,
-} from './constants';
+} from '../constants';
+import { BaseValidator } from './base.validator';
 
 export class MtcRequestModelValidator extends BaseValidator {
   public static validate(requestModel: MtcRequestModel) {
@@ -38,7 +37,6 @@ export class MtcRequestModelValidator extends BaseValidator {
       email,
       phone,
       address,
-      location,
       careers,
       averageRating,
       averageCost,
@@ -58,12 +56,6 @@ export class MtcRequestModelValidator extends BaseValidator {
     this.validatePhone(phone, convertVariableToString({ phone }));
     this.validateEmail(email, convertVariableToString({ email }));
     this.validateAddress(address, convertVariableToString({ address }));
-
-    // TODO : specific location validation (GeoJson)
-    // if (!location) {
-    //   this.errors.push(new FieldIsBadModel('location'));
-    // }
-
     this.validateCareers(careers, convertVariableToString({ careers }));
 
     // Optional fields
