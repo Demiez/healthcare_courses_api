@@ -32,6 +32,7 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 - Geolocation of MTC
   - use package node-geocoder with MapQuest API
   - implement handling not enough data response (400 status from MapQuest)
+  - check minimal required fields for geolocation entry data (longitude, latitude, formatted address)
 
 ### Healthcare Courses
 
