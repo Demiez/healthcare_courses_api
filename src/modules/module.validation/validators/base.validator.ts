@@ -1,11 +1,4 @@
-import {
-  isBoolean,
-  isEmpty,
-  isInteger,
-  isNil,
-  isNumber,
-  isString,
-} from 'lodash';
+import { isBoolean, isInteger, isNil, isNumber, isString } from 'lodash';
 import { FieldIsBadModel } from '../../../core/view-models';
 import { BaseValidationMessagesEnum } from '../enums';
 
@@ -17,7 +10,7 @@ export abstract class BaseValidator {
     fieldName: string,
     customProvideValueMessage?: string
   ) {
-    if (isEmpty(value)) {
+    if (!value) {
       return new FieldIsBadModel(
         fieldName,
         customProvideValueMessage
