@@ -44,16 +44,30 @@ describe('UT - BaseValidator', () => {
   const sandbox = sinon.createSandbox();
 
   class BaseValidatorTester extends BaseValidator {
-    public static testValidateStringField(value: string, fieldName: string) {
-      return this.validateStringField(value, fieldName);
+    public static testValidateStringField(
+      value: string,
+      fieldName: string,
+      customProvideValueMessage?: string
+    ) {
+      return this.validateStringField(
+        value,
+        fieldName,
+        customProvideValueMessage
+      );
     }
 
     public static testValidateNumberField(
       value: number,
       fieldName: string,
-      isIntegerValue?: boolean
+      isIntegerValue?: boolean,
+      customProvideValueMessage?: string
     ) {
-      return this.validateNumberField(value, fieldName, isIntegerValue);
+      return this.validateNumberField(
+        value,
+        fieldName,
+        isIntegerValue,
+        customProvideValueMessage
+      );
     }
 
     public static testValidateBooleanField(value: boolean, fieldName: string) {
@@ -119,6 +133,26 @@ describe('UT - BaseValidator', () => {
           globalData.fieldName,
           BaseValidationMessagesEnum.MUST_BE_STRING
         )
+      );
+    });
+
+    it('should return FieldIsBadModel with customProvideValueMessage if present for no value case', async () => {
+      const customProvideValueMessage = `custom-message-string-${v4()}`;
+
+      BaseValidatorTester.testValidateStringField(
+        undefined,
+        globalData.fieldName,
+        customProvideValueMessage
+      );
+
+      expect(BaseValidatorTester.testValidateStringField).calledOnce;
+      expect(BaseValidatorTester.testValidateStringField).calledWithExactly(
+        undefined,
+        globalData.fieldName,
+        customProvideValueMessage
+      );
+      expect(BaseValidatorTester.testValidateStringField).returned(
+        new FieldIsBadModel(globalData.fieldName, customProvideValueMessage)
       );
     });
   });
@@ -214,6 +248,28 @@ describe('UT - BaseValidator', () => {
           globalData.fieldName,
           BaseValidationMessagesEnum.MUST_BE_INTEGER
         )
+      );
+    });
+
+    it('should return FieldIsBadModel with customProvideValueMessage if present for no value case', async () => {
+      const customProvideValueMessage = `custom-message-number-${v4()}`;
+
+      BaseValidatorTester.testValidateNumberField(
+        undefined,
+        globalData.fieldName,
+        false,
+        customProvideValueMessage
+      );
+
+      expect(BaseValidatorTester.testValidateNumberField).calledOnce;
+      expect(BaseValidatorTester.testValidateNumberField).calledWithExactly(
+        undefined,
+        globalData.fieldName,
+        false,
+        customProvideValueMessage
+      );
+      expect(BaseValidatorTester.testValidateNumberField).returned(
+        new FieldIsBadModel(globalData.fieldName, customProvideValueMessage)
       );
     });
   });
