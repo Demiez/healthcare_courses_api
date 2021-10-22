@@ -32,7 +32,6 @@ import {
   PHONE_LENGTH_MESSAGE,
   VALID_CAREER_MESSAGE,
   VALID_EMAIL_MESSAGE,
-  VALID_SLUG_MESSAGE,
   VALID_URL_MESSAGE,
 } from '../../src/modules/module.validation/constants';
 import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
