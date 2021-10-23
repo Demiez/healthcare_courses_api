@@ -11,4 +11,9 @@ export default (app: Application) => {
     `${APP_ROOT}/seeder/mtcs`,
     wrapRouteAction((req, res, next) => seederController.seedMtcs(req, res))
   );
+
+  app.delete(
+    `${APP_ROOT}/seeder/mtcs`,
+    wrapRouteAction((req, res, next) => seederController.deleteMtcs(req, res))
+  );
 };

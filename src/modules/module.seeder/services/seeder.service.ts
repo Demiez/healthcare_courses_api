@@ -1,17 +1,7 @@
 import * as fs from 'fs';
-import { isEmpty } from 'lodash';
 import { Service } from 'typedi';
-import {
-  BaseErrorCodes,
-  ErrorCodes,
-  ForbiddenError,
-  NotFoundError,
-} from '../../../core/errors';
-import { IProjection, ISearchQuery } from '../../../core/interfaces';
 import { StandardResponseViewModel } from '../../../core/view-models';
 import { MtcModel } from '../../module.mtc/data-models/mtc.dm';
-import { MtcsViewModel } from '../../module.mtc/view-models';
-import { MtcRequestModelValidator } from '../../module.validation';
 
 @Service()
 export class SeederService {
@@ -25,6 +15,16 @@ export class SeederService {
     return new StandardResponseViewModel(
       undefined,
       'Mtc data imported',
+      'success'
+    );
+  }
+
+  public async deleteMtcs() {
+    await MtcModel.deleteMany();
+
+    return new StandardResponseViewModel(
+      undefined,
+      'Mtc data deleted',
       'success'
     );
   }
