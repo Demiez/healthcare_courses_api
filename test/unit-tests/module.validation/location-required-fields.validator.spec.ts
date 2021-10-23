@@ -9,17 +9,17 @@ import {
   generateRandomInteger,
   generateRandomNumber,
   generateStringOfLength,
-} from '../../src/core/utils';
-import { FieldIsBadModel } from '../../src/core/view-models';
-import { LocationRequiredFieldsValidator } from '../../src/modules/module.validation';
+} from '../../../src/core/utils';
+import { FieldIsBadModel } from '../../../src/core/view-models';
+import { LocationRequiredFieldsValidator } from '../../../src/modules/module.validation';
 import {
   FORMATTED_ADDRESS_PROVIDE_VALUE_MESSAGE,
   LATITUDE_INTERVAL_MESSAGE,
   LATITUDE_PROVIDE_VALUE_MESSAGE,
   LONGITUDE_INTERVAL_MESSAGE,
   LONGITUDE_PROVIDE_VALUE_MESSAGE,
-} from '../../src/modules/module.validation/constants';
-import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
+} from '../../../src/modules/module.validation/constants';
+import { BaseValidationMessagesEnum } from '../../../src/modules/module.validation/enums';
 
 chai.use(sinonChai);
 const expect = chai.expect;

@@ -7,10 +7,10 @@ import {
   generateRandomBoolean,
   generateRandomInteger,
   generateRandomNumber,
-} from '../../src/core/utils';
-import { FieldIsBadModel } from '../../src/core/view-models';
-import { BaseValidator } from '../../src/modules/module.validation';
-import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
+} from '../../../src/core/utils';
+import { FieldIsBadModel } from '../../../src/core/view-models';
+import { BaseValidator } from '../../../src/modules/module.validation';
+import { BaseValidationMessagesEnum } from '../../../src/modules/module.validation/enums';
 
 chai.use(sinonChai);
 const expect = chai.expect;

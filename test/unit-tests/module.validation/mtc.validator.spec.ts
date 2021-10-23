@@ -9,8 +9,8 @@ import {
   generateRandomInteger,
   generateRandomNumber,
   generateStringOfLength,
-} from '../../src/core/utils';
-import { FieldIsBadModel } from '../../src/core/view-models';
+} from '../../../src/core/utils';
+import { FieldIsBadModel } from '../../../src/core/view-models';
 import {
   MTC_ADDRESS_LENGTH,
   MTC_AVERAGE_RATING_MAX_VALUE,
@@ -18,10 +18,10 @@ import {
   MTC_DESCRIPTION_LENGTH,
   MTC_NAME_LENGTH,
   MTC_PHONE_LENGTH,
-} from '../../src/modules/module.mtc/constants';
-import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
-import { MtcRequestModel } from '../../src/modules/module.mtc/request-models';
-import { MtcRequestModelValidator } from '../../src/modules/module.validation';
+} from '../../../src/modules/module.mtc/constants';
+import { CareerTypesEnum } from '../../../src/modules/module.mtc/enums/career-types.enum';
+import { MtcRequestModel } from '../../../src/modules/module.mtc/request-models';
+import { MtcRequestModelValidator } from '../../../src/modules/module.validation';
 import {
   ADDRESS_LENGTH_MESSAGE,
   AVERAGE_COST_MESSAGE,
@@ -33,8 +33,8 @@ import {
   VALID_CAREER_MESSAGE,
   VALID_EMAIL_MESSAGE,
   VALID_URL_MESSAGE,
-} from '../../src/modules/module.validation/constants';
-import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
+} from '../../../src/modules/module.validation/constants';
+import { BaseValidationMessagesEnum } from '../../../src/modules/module.validation/enums';
 
 chai.use(sinonChai);
 const expect = chai.expect;

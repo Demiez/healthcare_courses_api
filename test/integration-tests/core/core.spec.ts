@@ -3,10 +3,10 @@ import chaiHttp = require('chai-http');
 import 'mocha';
 import * as mongoose from 'mongoose';
 import * as sinon from 'sinon';
-import app from '../../src/app';
-import { APP_ROOT, APP_ROOT_MESSAGE } from '../../src/core/constants';
-import { logger, MongoMockHelper } from '../../src/core/utils';
-import { StandardResponseViewModel } from '../../src/core/view-models';
+import app from '../../../src/app';
+import { APP_ROOT, APP_ROOT_MESSAGE } from '../../../src/core/constants';
+import { logger, MongoMockHelper } from '../../../src/core/utils';
+import { StandardResponseViewModel } from '../../../src/core/view-models';
 
 chai.use(chaiHttp);
 chai.should();
@@ -40,7 +40,7 @@ after(async () => {
   await mongo.closeConnection();
 });
 
-describe('Core Functionality', () => {
+describe('IT - Core Functionality', () => {
   describe(':: rootRoute', () => {
     it('should respond with HTTP 200 status', async () => {
       const res = await chai

@@ -5,20 +5,20 @@ import 'mocha';
 import { Query } from 'mongoose';
 import * as sinon from 'sinon';
 import { v4 } from 'uuid';
-import app from '../../src/app';
-import { APP_ROOT } from '../../src/core/constants';
-import { MongooseLocationTypesEnum } from '../../src/core/enums';
-import { ErrorCodes } from '../../src/core/errors';
-import { generateRandomInteger, geocoder } from '../../src/core/utils';
-import { MtcModel } from '../../src/modules/module.mtc/data-models/mtc.dm';
-import { CareerTypesEnum } from '../../src/modules/module.mtc/enums/career-types.enum';
-import { MtcRequestModel } from '../../src/modules/module.mtc/request-models';
+import app from '../../../src/app';
+import { APP_ROOT } from '../../../src/core/constants';
+import { MongooseLocationTypesEnum } from '../../../src/core/enums';
+import { ErrorCodes } from '../../../src/core/errors';
+import { generateRandomInteger, geocoder } from '../../../src/core/utils';
+import { MtcModel } from '../../../src/modules/module.mtc/data-models/mtc.dm';
+import { CareerTypesEnum } from '../../../src/modules/module.mtc/enums/career-types.enum';
+import { MtcRequestModel } from '../../../src/modules/module.mtc/request-models';
 import {
   MtcLocationViewModel,
   MtcViewModel,
-} from '../../src/modules/module.mtc/view-models';
-import { VALID_EMAIL_MESSAGE } from '../../src/modules/module.validation/constants';
-import { BaseValidationMessagesEnum } from '../../src/modules/module.validation/enums';
+} from '../../../src/modules/module.mtc/view-models';
+import { VALID_EMAIL_MESSAGE } from '../../../src/modules/module.validation/constants';
+import { BaseValidationMessagesEnum } from '../../../src/modules/module.validation/enums';
 
 chai.use(chaiHttp);
 chai.should();
@@ -151,7 +151,7 @@ const sendRequestUpdateMtc = (mtcId: string, mtcData: MtcViewModel) =>
       }
     });
 
-describe('MTC Controller', () => {
+describe('IT - MTC Controller', () => {
   before(async () => {
     sinon
       .stub(geocoder, 'geocode')
