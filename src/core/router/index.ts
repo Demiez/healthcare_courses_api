@@ -1,5 +1,6 @@
 import { Application, Request, Response } from 'express';
 import { ModuleMtc_MtcRoutes } from '../../modules/module.mtc';
+import { ModuleSeeder_SeederRoutes } from '../../modules/module.seeder';
 import { APP_ROOT, APP_ROOT_MESSAGE } from '../constants';
 import { StandardResponseViewModel } from '../view-models';
 
@@ -11,4 +12,5 @@ export default (app: Application) => {
   });
 
   ModuleMtc_MtcRoutes(app);
+  ModuleSeeder_SeederRoutes(app);
 };
