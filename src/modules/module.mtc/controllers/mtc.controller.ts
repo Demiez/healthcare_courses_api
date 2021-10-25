@@ -43,6 +43,46 @@ export class MtcController extends BaseController {
   }
 
   @ApiOperationGet({
+    path: '/radius/{zipcode}/{distance}/',
+    parameters: {
+      path: {
+        zipcode: {
+          name: 'zipcode',
+          required: true,
+          description: 'Zipcode of mtc location',
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+        distance: {
+          name: 'distance',
+          required: true,
+          description: 'Distance around specified address by zipcode',
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+    },
+    summary:
+      'Responds with info about mtcs, which can be found within specified radius',
+    responses: {
+      200: { model: 'MtcsViewModel' },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtcsWithinRadius`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async getMtcsWithinRadius(req: Request, res: Response) {
+    const { zipcode, distance } = req.params;
+
+    const result = await this.mtcService.getMtcsWithinRadius(zipcode, distance);
+
+    return super.sendSuccessResponse(res, result);
+  }
+
+  @ApiOperationGet({
     path: '/{mtcId}',
     summary: 'Responds with info about mtc by id',
     parameters: {

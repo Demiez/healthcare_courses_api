@@ -7,6 +7,7 @@ import {
   NotFoundError,
 } from '../../../core/errors';
 import { IProjection, ISearchQuery } from '../../../core/interfaces';
+import { geocoder } from '../../../core/utils';
 import { StandardResponseViewModel } from '../../../core/view-models';
 import { MtcRequestModelValidator } from '../../module.validation';
 import { IMtcDocument, MtcModel } from '../data-models/mtc.dm';
@@ -26,6 +27,13 @@ export class MtcService {
       mtcs.length,
       mtcs.map((mtc) => new MtcViewModel(mtc))
     );
+  }
+
+  public async getMtcsWithinRadius(
+    zipcode: string,
+    distance: string
+  ): Promise<MtcsViewModel> {
+    return {} as MtcsViewModel;
   }
 
   public async getMtc(mtcId: string): Promise<MtcViewModel> {

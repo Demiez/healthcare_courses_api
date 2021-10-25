@@ -13,6 +13,13 @@ export default (app: Application) => {
   );
 
   app.get(
+    `${APP_ROOT}/mtcs/:zipcode/:distance`,
+    wrapRouteAction((req, res, next) =>
+      mtcController.getMtcsWithinRadius(req, res)
+    )
+  );
+
+  app.get(
     `${APP_ROOT}/mtcs/:mtcId`,
     wrapRouteAction((req, res, next) => mtcController.getMtc(req, res))
   );

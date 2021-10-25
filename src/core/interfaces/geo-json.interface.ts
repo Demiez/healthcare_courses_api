@@ -11,3 +11,8 @@ export interface IGeoJsonLocation extends IGeoJson {
   zipcode?: string;
   country?: string;
 }
+
+export interface ICoordinates {
+  latitude: number;
+  longitude: number;
+}
