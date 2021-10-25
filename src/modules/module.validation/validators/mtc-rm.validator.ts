@@ -1,5 +1,6 @@
 import { isArray, isEmpty, isNil } from 'lodash';
 import validator from 'validator';
+import { baseAddressRegex } from '../../../core/regex/geo-location.regex';
 import { convertVariableToString } from '../../../core/utils';
 import { FieldIsBadModel } from '../../../core/view-models';
 import {
@@ -20,6 +21,7 @@ import {
   NAME_LENGTH_MESSAGE,
   ONE_CAREER_MESSAGE,
   PHONE_LENGTH_MESSAGE,
+  VALID_ADDRESS_MESSAGE,
   VALID_CAREER_MESSAGE,
   VALID_EMAIL_MESSAGE,
   VALID_URL_MESSAGE,
@@ -197,6 +199,10 @@ export class MtcRequestModelValidator extends BaseValidator {
     if (error) {
       this.errors.push(error);
       return;
+    }
+
+    if (!baseAddressRegex.test(address)) {
+      this.errors.push(new FieldIsBadModel(fieldName, VALID_ADDRESS_MESSAGE));
     }
 
     if (address.trim().length > MTC_ADDRESS_LENGTH) {
