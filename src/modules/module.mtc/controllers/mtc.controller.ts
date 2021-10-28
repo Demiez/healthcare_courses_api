@@ -61,6 +61,15 @@ export class MtcController extends BaseController {
           type: SwaggerDefinitionConstant.STRING,
         },
       },
+      query: {
+        unit: {
+          name: 'unit',
+          required: true,
+          description: 'Measurement unit: KM or MI',
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
     },
     summary:
       'Responds with info about mtcs, which can be found within specified radius',
@@ -76,8 +85,13 @@ export class MtcController extends BaseController {
   })
   public async getMtcsWithinRadius(req: Request, res: Response) {
     const { zipcode, distance } = req.params;
+    const unit = req.query.unit as string;
 
-    const result = await this.mtcService.getMtcsWithinRadius(zipcode, distance);
+    const result = await this.mtcService.getMtcsWithinRadius(
+      zipcode,
+      distance,
+      unit
+    );
 
     return super.sendSuccessResponse(res, result);
   }

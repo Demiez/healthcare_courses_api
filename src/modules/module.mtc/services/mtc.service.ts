@@ -8,9 +8,14 @@ import {
 } from '../../../core/errors';
 import { IProjection, ISearchQuery } from '../../../core/interfaces';
 import { geocoder } from '../../../core/utils';
-import { StandardResponseViewModel } from '../../../core/view-models';
+import {
+  FieldIsBadModel,
+  StandardResponseViewModel,
+} from '../../../core/view-models';
 import { MtcRequestModelValidator } from '../../module.validation';
+import { EARTH_RADIUS_IN_KM } from '../constants';
 import { IMtcDocument, MtcModel } from '../data-models/mtc.dm';
+import { MeasurementUnitsEnum } from '../enums';
 import { MtcRequestModel } from '../request-models';
 import { MtcsViewModel, MtcViewModel } from '../view-models';
 
@@ -31,8 +36,15 @@ export class MtcService {
 
   public async getMtcsWithinRadius(
     zipcode: string,
-    distance: string
+    distance: string,
+    unit: string
   ): Promise<MtcsViewModel> {
+    this.validateGetMtcsWithinRadiusParams(zipcode, distance, unit);
+
+    const { latitude, longitude } = await geocoder.geocodeCoordinates(zipcode);
+
+    const radiusInRadians = Number(distance) / EARTH_RADIUS_IN_KM;
+
     return {} as MtcsViewModel;
   }
 
@@ -115,6 +127,18 @@ export class MtcService {
 
   private validateMtcRequestModel(requestModel: MtcRequestModel) {
     const errors = MtcRequestModelValidator.validate(requestModel);
+
+    if (errors.length) {
+      throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
+    }
+  }
+
+  private validateGetMtcsWithinRadiusParams(
+    zipcode: string,
+    distance: string,
+    unit: string
+  ) {
+    let errors: Array<FieldIsBadModel>;
 
     if (errors.length) {
       throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
