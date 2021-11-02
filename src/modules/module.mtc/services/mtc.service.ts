@@ -13,6 +13,7 @@ import {
   StandardResponseViewModel,
 } from '../../../core/view-models';
 import { MtcRequestModelValidator } from '../../module.validation';
+import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
 import { EARTH_RADIUS_IN_KM } from '../constants';
 import { IMtcDocument, MtcModel } from '../data-models/mtc.dm';
 import { MeasurementUnitsEnum } from '../enums';
@@ -36,7 +37,7 @@ export class MtcService {
 
   public async getMtcsWithinRadius(
     zipcode: string,
-    distance: string,
+    distance: number,
     unit: string
   ): Promise<MtcsViewModel> {
     this.validateGetMtcsWithinRadiusParams(zipcode, distance, unit);
@@ -135,10 +136,10 @@ export class MtcService {
 
   private validateGetMtcsWithinRadiusParams(
     zipcode: string,
-    distance: string,
+    distance: number,
     unit: string
   ) {
-    let errors: Array<FieldIsBadModel>;
+    const errors = GetWithinRadiusValidator.validate(zipcode, distance, unit);
 
     if (errors.length) {
       throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);

@@ -7,3 +7,5 @@ export const LATITUDE_PROVIDE_VALUE_MESSAGE =
   'Could not process latitude, provide another address';
 export const FORMATTED_ADDRESS_PROVIDE_VALUE_MESSAGE =
   'Could not process address string, provide another address';
+export const UNIT_PROVIDE_VALUE_MESSAGE = 'Can only be KM or MI';
+export const DISTANCE_PROVIDE_VALUE_MESSAGE = 'Must be more than 0';

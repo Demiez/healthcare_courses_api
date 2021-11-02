@@ -43,7 +43,7 @@ export class MtcController extends BaseController {
   }
 
   @ApiOperationGet({
-    path: '/radius/{zipcode}/{distance}/',
+    path: '/radius/{zipcode}/{distance}',
     parameters: {
       path: {
         zipcode: {
@@ -89,7 +89,7 @@ export class MtcController extends BaseController {
 
     const result = await this.mtcService.getMtcsWithinRadius(
       zipcode,
-      distance,
+      Number(distance),
       unit
     );
 
