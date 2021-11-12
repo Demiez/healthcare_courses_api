@@ -145,3 +145,7 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 ## Dependencies updates
 
 - moved from "mongodb-memory-server": "^7.3.6" to "mongodb-memory-server-core": "^7.4.0"
+
+## Add coverage
+
+- MtcService.getMtcsWithinRadius + validation

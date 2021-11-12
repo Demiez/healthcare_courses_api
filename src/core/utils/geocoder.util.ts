@@ -15,6 +15,15 @@ class Geocoder {
   private geocoder: nodeGeocoder.Geocoder;
   private locationEntryData: Array<nodeGeocoder.Entry>;
 
+  constructor() {
+    this.geocoder = nodeGeocoder({
+      provider: GEOCODER_PROVIDER,
+      httpAdapter: 'https',
+      apiKey: GEOCODER_API_KEY,
+      formatter: null,
+    } as nodeGeocoder.Options);
+  }
+
   public async geocode(address: string): Promise<IGeoJsonLocation> {
     await this.getLocationEntryData(address);
 
@@ -49,15 +58,6 @@ class Geocoder {
     const { latitude, longitude } = this.locationEntryData[0];
 
     return { latitude, longitude };
-  }
-
-  constructor() {
-    this.geocoder = nodeGeocoder({
-      provider: GEOCODER_PROVIDER,
-      httpAdapter: 'https',
-      apiKey: GEOCODER_API_KEY,
-      formatter: null,
-    } as nodeGeocoder.Options);
   }
 
   private async getLocationEntryData(input: string): Promise<void> {

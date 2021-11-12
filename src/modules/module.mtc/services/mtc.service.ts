@@ -14,7 +14,7 @@ import {
 } from '../../../core/view-models';
 import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
-import { EARTH_RADIUS_IN_KM } from '../constants';
+import { EARTH_RADIUS_IN_KM, EARTH_RADIUS_IN_MI } from '../constants';
 import { IMtcDocument, MtcModel } from '../data-models/mtc.dm';
 import { MeasurementUnitsEnum } from '../enums';
 import { MtcRequestModel } from '../request-models';
@@ -43,10 +43,23 @@ export class MtcService {
     this.validateGetMtcsWithinRadiusParams(zipcode, distance, unit);
 
     const { latitude, longitude } = await geocoder.geocodeCoordinates(zipcode);
+    const earthRadius: number =
+      unit === MeasurementUnitsEnum.KM
+        ? EARTH_RADIUS_IN_KM
+        : EARTH_RADIUS_IN_MI;
 
-    const radiusInRadians = Number(distance) / EARTH_RADIUS_IN_KM;
+    const radiusInRadians = distance / earthRadius;
 
-    return {} as MtcsViewModel;
+    const mtcsWithinRadius = await MtcModel.find({
+      location: {
+        $geoWithin: { $centerSphere: [[longitude, latitude], radiusInRadians] },
+      },
+    });
+
+    return new MtcsViewModel(
+      mtcsWithinRadius.length,
+      mtcsWithinRadius.map((mtc) => new MtcViewModel(mtc))
+    );
   }
 
   public async getMtc(mtcId: string): Promise<MtcViewModel> {
