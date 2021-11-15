@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { Service } from 'typedi';
 import { StandardResponseViewModel } from '../../../core/view-models';
-import { MtcModel } from '../../module.mtc/data-models/mtc.dm';
+import { MtcModel } from '../../module.mtc/db-models/mtc.db';
 
 @Service()
 export class SeederService {

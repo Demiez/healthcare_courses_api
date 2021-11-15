@@ -5,7 +5,7 @@ import {
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
 import { MtcLocationViewModel } from '.';
-import { IMtcDocument } from '../data-models/mtc.dm';
+import { IMtcDocument } from '../db-models/mtc.db';
 import { CareerTypesEnum } from '../enums/career-types.enum';
 
 @ApiModel({

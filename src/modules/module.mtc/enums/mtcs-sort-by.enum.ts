@@ -1,0 +1,7 @@
+export enum MtcsSortByEnum {
+  CITY = 'CITY',
+  COUNTRY = 'COUNTRY',
+  CREATED = 'CREATED',
+  JOB_ASSISTANCE = 'JOB_ASSISTANCE',
+  MTC_NAME = 'MTC_NAME',
+}

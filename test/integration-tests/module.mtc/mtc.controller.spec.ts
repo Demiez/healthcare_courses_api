@@ -10,7 +10,7 @@ import { APP_ROOT } from '../../../src/core/constants';
 import { MongooseLocationTypesEnum } from '../../../src/core/enums';
 import { ErrorCodes } from '../../../src/core/errors';
 import { generateRandomInteger, geocoder } from '../../../src/core/utils';
-import { MtcModel } from '../../../src/modules/module.mtc/data-models/mtc.dm';
+import { MtcModel } from '../../../src/modules/module.mtc/db-models/mtc.db';
 import { CareerTypesEnum } from '../../../src/modules/module.mtc/enums/career-types.enum';
 import { MtcRequestModel } from '../../../src/modules/module.mtc/request-models';
 import {

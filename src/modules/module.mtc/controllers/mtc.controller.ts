@@ -10,6 +10,7 @@ import {
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
 import { MtcRequestModel } from '../request-models';
+import { MtcsSearchOptionsRequestModel } from '../request-models/mtcs-search-options.rm';
 import { MtcService } from '../services/mtc.service';
 
 @ApiPath({
@@ -25,6 +26,40 @@ export class MtcController extends BaseController {
 
   @ApiOperationGet({
     path: '',
+    parameters: {
+      query: {
+        take: {
+          name: 'take',
+          required: false,
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+        skip: {
+          name: 'skip',
+          required: false,
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+        searchInput: {
+          name: 'searchInput',
+          required: false,
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+        sortBy: {
+          name: 'sortBy',
+          required: false,
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+        sortOrder: {
+          name: 'sortOrder',
+          required: false,
+          allowEmptyValue: false,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+    },
     summary: 'Responds with info about all mtcs',
     responses: {
       200: { model: 'MtcsViewModel' },
@@ -37,6 +72,8 @@ export class MtcController extends BaseController {
     },
   })
   public async getAllMtcs(req: Request, res: Response) {
+    const searchOptionsModel = new MtcsSearchOptionsRequestModel(req.query);
+
     const result = await this.mtcService.getAllMtcs();
 
     return super.sendSuccessResponse(res, result);

@@ -15,7 +15,7 @@ import {
 import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
 import { EARTH_RADIUS_IN_KM, EARTH_RADIUS_IN_MI } from '../constants';
-import { IMtcDocument, MtcModel } from '../data-models/mtc.dm';
+import { IMtcDocument, MtcModel } from '../db-models/mtc.db';
 import { MeasurementUnitsEnum } from '../enums';
 import { MtcRequestModel } from '../request-models';
 import { MtcsViewModel, MtcViewModel } from '../view-models';
