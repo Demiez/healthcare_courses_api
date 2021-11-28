@@ -24,6 +24,10 @@ export interface IMtcDocument extends Document {
   jobAssistance?: boolean;
   jobGuarantee?: boolean;
   acceptGiBill?: boolean;
+
+  // Special fields
+  _created?: Date;
+  _updated?: Date;
 }
 
 interface IMtcModel extends Model<IMtcDocument> {}
@@ -116,7 +120,12 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     type: Boolean,
     default: false,
   },
-  createdAt: {
+  // Special fields
+  _created: {
+    type: Date,
+    default: new Date(),
+  },
+  _updated: {
     type: Date,
     default: new Date(),
   },
@@ -124,21 +133,24 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
 
 mtcSchema.pre('save', async function (next) {
   const mtcData = this as IMtcDocument;
+  const eventDate = new Date();
 
+  if (this.isNew) {
+    mtcData._created = eventDate;
+  } else {
+    if (this.isModified('_created')) {
+      return next(new Error('field _created not editable'));
+    }
+  }
+
+  mtcData._updated = eventDate;
   mtcData.slug = slugify(mtcData.name, { lower: true, trim: true });
-
-  next();
-});
-
-mtcSchema.pre('save', async function (next) {
-  const mtcData = this as IMtcDocument;
-
   mtcData.location = await geocoder.geocode(mtcData.address);
 
   next();
 });
 
-export const MtcModel: Model<IMtcDocument> = model<IMtcDocument>(
+export const MtcModel: IMtcModel = model<IMtcDocument>(
   'Mtc',
   mtcSchema,
   'mtcs'

@@ -1,5 +1,7 @@
 import { isEmpty } from 'lodash';
+import * as mongoose from 'mongoose';
 import { Service } from 'typedi';
+import { SortOrderEnum } from '../../../core/enums';
 import {
   BaseErrorCodes,
   ErrorCodes,
@@ -16,23 +18,38 @@ import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
 import { EARTH_RADIUS_IN_KM, EARTH_RADIUS_IN_MI } from '../constants';
 import { IMtcDocument, MtcModel } from '../db-models/mtc.db';
-import { MeasurementUnitsEnum } from '../enums';
+import { MeasurementUnitsEnum, MtcsSortByEnum } from '../enums';
 import { MtcRequestModel } from '../request-models';
+import { MtcsSearchOptionsRequestModel } from '../request-models/mtcs-search-options.rm';
 import { MtcsViewModel, MtcViewModel } from '../view-models';
 
 @Service()
 export class MtcService {
-  public async getAllMtcs(): Promise<MtcsViewModel> {
-    const mtcs = await MtcModel.find();
+  public async getAllMtcs(
+    searchOptionsModel: MtcsSearchOptionsRequestModel
+  ): Promise<MtcsViewModel> {
+    let mtcsList: Array<MtcViewModel> = [];
+    const { searchInput, sortBy, sortOrder, skip, take } = searchOptionsModel;
+    const mtcQuery = {
+      ...(searchInput && { name: new RegExp(`^${searchInput}`) }),
+    };
 
-    if (isEmpty(mtcs)) {
-      return new MtcsViewModel();
+    const total = await this.getCountOfMtcsByQuery(mtcQuery, skip, take);
+
+    if (total) {
+      const mtcsSortingOptions = this.getMtcsSortQuery(sortBy, sortOrder);
+
+      const mtcs = await this.getMtcsListWithLazyLoading(
+        mtcQuery,
+        mtcsSortingOptions,
+        skip,
+        take
+      );
+
+      mtcsList = mtcs.map((mtc) => new MtcViewModel(mtc));
     }
 
-    return new MtcsViewModel(
-      mtcs.length,
-      mtcs.map((mtc) => new MtcViewModel(mtc))
-    );
+    return new MtcsViewModel(total, mtcsList);
   }
 
   public async getMtcsWithinRadius(
@@ -139,6 +156,34 @@ export class MtcService {
     return mtc;
   }
 
+  public async getCountOfMtcsByQuery(
+    query: Record<string, unknown> = {},
+    skip?: number,
+    take?: number
+  ) {
+    if (!isNaN(take) && !isNaN(skip)) {
+      return await MtcModel.countDocuments(query).skip(skip).limit(take);
+    }
+
+    return await MtcModel.countDocuments(query);
+  }
+
+  public async getMtcsListWithLazyLoading(
+    searchQuery: Record<string, unknown> = {},
+    sortingOptions: Record<string, unknown> = {},
+    skip?: number,
+    take?: number
+  ) {
+    if (!isNaN(take) && !isNaN(skip)) {
+      return await MtcModel.find(searchQuery)
+        .sort(sortingOptions)
+        .skip(skip)
+        .limit(take);
+    }
+
+    return await MtcModel.find(searchQuery).sort(sortingOptions);
+  }
+
   private validateMtcRequestModel(requestModel: MtcRequestModel) {
     const errors = MtcRequestModelValidator.validate(requestModel);
 
@@ -172,5 +217,30 @@ export class MtcService {
     const mtc = await MtcModel.findOne(searchQuery, '_id name');
 
     return mtc !== null;
+  }
+
+  private getMtcsSortQuery(sortBy: MtcsSortByEnum, sortOrder: SortOrderEnum) {
+    const sortOrderValue = sortOrder === SortOrderEnum.ASC ? 1 : -1;
+    let sortQuery = {};
+
+    switch (sortBy) {
+      case MtcsSortByEnum.CITY:
+        sortQuery = { 'location.city': sortOrderValue };
+        break;
+      case MtcsSortByEnum.COUNTRY:
+        sortQuery = { 'location.city': sortOrderValue };
+        break;
+      case MtcsSortByEnum.CREATED:
+        sortQuery = { _created: sortOrderValue };
+        break;
+      case MtcsSortByEnum.JOB_ASSISTANCE:
+        sortQuery = { jobAssistance: sortOrderValue };
+        break;
+      case MtcsSortByEnum.MTC_NAME:
+      default:
+        sortQuery = { name: sortOrderValue };
+    }
+
+    return sortQuery;
   }
 }

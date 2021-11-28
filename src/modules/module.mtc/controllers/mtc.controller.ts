@@ -74,7 +74,7 @@ export class MtcController extends BaseController {
   public async getAllMtcs(req: Request, res: Response) {
     const searchOptionsModel = new MtcsSearchOptionsRequestModel(req.query);
 
-    const result = await this.mtcService.getAllMtcs();
+    const result = await this.mtcService.getAllMtcs(searchOptionsModel);
 
     return super.sendSuccessResponse(res, result);
   }
