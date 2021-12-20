@@ -149,3 +149,4 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 ## Add coverage
 
 - MtcService.getMtcsWithinRadius + validation
+- get mtcs filtering and sorting

@@ -42,6 +42,7 @@ export class MtcController extends BaseController {
         },
         searchInput: {
           name: 'searchInput',
+          description: 'seach is performed by name',
           required: false,
           allowEmptyValue: false,
           type: SwaggerDefinitionConstant.STRING,
