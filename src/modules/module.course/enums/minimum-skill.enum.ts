@@ -1,0 +1,5 @@
+export enum MinimumSkillEnum {
+  BEGINNER = 'BEGINNER',
+  INTERMEDIATE = 'INTERMEDIATE',
+  ADVANCED = 'ADVANCED',
+}

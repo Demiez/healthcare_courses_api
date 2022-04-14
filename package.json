@@ -35,7 +35,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mongodb-memory-server-core": "^7.4.0",
-    "mongoose": "^5.13.7",
+    "mongoose": "^6.0.8",
     "node-geocoder": "^3.27.0",
     "reflect-metadata": "^0.1.13",
     "slugify": "^1.6.0",

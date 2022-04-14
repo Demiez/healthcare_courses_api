@@ -16,13 +16,7 @@ export class MongoMockHelper {
 
       this.mongoUri = this.mongoMock.getUri();
 
-      const connectionOptions = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-      };
-
-      mongoose.connect(this.mongoUri, connectionOptions).catch((e) => {
+      mongoose.connect(this.mongoUri).catch((e) => {
         logger.error('Test DB connection error: ' + e);
         reject(e);
       });
