@@ -20,6 +20,28 @@ export class SeederController extends BaseController {
   }
 
   @ApiOperationGet({
+    path: '/all',
+    summary: 'Seeds all available data into DB',
+    responses: {
+      200: {
+        model: 'StandardResponseViewModel',
+        description: 'Success',
+      },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: SeederController:__seedAll`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async seedAll(req: Request, res: Response) {
+    const result = await this.seederService.seedAll();
+
+    return super.sendSuccessResponse(res, result);
+  }
+
+  @ApiOperationGet({
     path: '/mtcs',
     summary: 'Seeds mtcs into DB',
     responses: {
@@ -64,16 +86,16 @@ export class SeederController extends BaseController {
   }
 
   @ApiOperationDelete({
-    path: '/mtcs',
+    path: '/all',
     parameters: {},
-    summary: 'Deletes all mtcs from DB',
+    summary: 'Deletes all data from DB',
     responses: {
       200: {
         model: 'StandardResponseViewModel',
         description: 'Success',
       },
       500: {
-        description: `INTERNAL_SERVER_ERROR: SeederController:__seedMtcs`,
+        description: `INTERNAL_SERVER_ERROR: SeederController:__deleteAll`,
       },
     },
     security: {
@@ -81,7 +103,7 @@ export class SeederController extends BaseController {
     },
   })
   public async deleteMtcs(req: Request, res: Response) {
-    const result = await this.seederService.deleteMtcs();
+    const result = await this.seederService.deleteAll();
 
     return super.sendSuccessResponse(res, result);
   }

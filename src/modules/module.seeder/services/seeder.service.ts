@@ -6,6 +6,16 @@ import { IMtcDocument, MtcModel } from '../../module.mtc/db-models/mtc.db';
 
 @Service()
 export class SeederService {
+  public async seedAll() {
+    await Promise.all([this.seedMtcs(), this.seedCourses()]);
+
+    return new StandardResponseViewModel(
+      undefined,
+      'Mtcs/Courses data imported',
+      'success'
+    );
+  }
+
   public async seedMtcs() {
     const mtcs: IMtcDocument[] = JSON.parse(
       fs.readFileSync(`${process.cwd()}/data-examples/mtcs.json`, 'utf-8')
@@ -15,7 +25,7 @@ export class SeederService {
 
     return new StandardResponseViewModel(
       undefined,
-      'Mtc data imported',
+      'Mtcs data imported',
       'success'
     );
   }
@@ -34,12 +44,12 @@ export class SeederService {
     );
   }
 
-  public async deleteMtcs() {
-    await MtcModel.deleteMany();
+  public async deleteAll() {
+    await Promise.all([MtcModel.deleteMany(), CourseModel.deleteMany()]);
 
     return new StandardResponseViewModel(
       undefined,
-      'Mtc data deleted',
+      'All data removed',
       'success'
     );
   }

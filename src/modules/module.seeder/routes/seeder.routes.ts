@@ -8,6 +8,11 @@ export default (app: Application) => {
   const seederController = Container.get(SeederController);
 
   app.get(
+    `${APP_ROOT}/seeder/all`,
+    wrapRouteAction((req, res, next) => seederController.seedAll(req, res))
+  );
+
+  app.get(
     `${APP_ROOT}/seeder/mtcs`,
     wrapRouteAction((req, res, next) => seederController.seedMtcs(req, res))
   );
@@ -18,7 +23,7 @@ export default (app: Application) => {
   );
 
   app.delete(
-    `${APP_ROOT}/seeder/mtcs`,
+    `${APP_ROOT}/seeder/all`,
     wrapRouteAction((req, res, next) => seederController.deleteMtcs(req, res))
   );
 };
