@@ -52,7 +52,7 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>({
     type: String,
     trim: true,
     required: true,
-    maxlength: [500, 'Description cannot be more than 50 characters'],
+    maxlength: [1000, 'Description cannot be more than 50 characters'],
   },
   website: {
     type: String,

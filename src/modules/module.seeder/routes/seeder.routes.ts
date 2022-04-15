@@ -1,4 +1,4 @@
-import { Application, Request, Response } from 'express';
+import { Application } from 'express';
 import Container from 'typedi';
 import { APP_ROOT } from '../../../core/constants';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
@@ -10,6 +10,11 @@ export default (app: Application) => {
   app.get(
     `${APP_ROOT}/seeder/mtcs`,
     wrapRouteAction((req, res, next) => seederController.seedMtcs(req, res))
+  );
+
+  app.get(
+    `${APP_ROOT}/seeder/courses`,
+    wrapRouteAction((req, res, next) => seederController.seedCourses(req, res))
   );
 
   app.delete(

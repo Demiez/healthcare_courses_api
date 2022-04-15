@@ -41,6 +41,28 @@ export class SeederController extends BaseController {
     return super.sendSuccessResponse(res, result);
   }
 
+  @ApiOperationGet({
+    path: '/courses',
+    summary: 'Seeds courses into DB',
+    responses: {
+      200: {
+        model: 'StandardResponseViewModel',
+        description: 'Success',
+      },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: SeederController:__seedCourses`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async seedCourses(req: Request, res: Response) {
+    const result = await this.seederService.seedCourses();
+
+    return super.sendSuccessResponse(res, result);
+  }
+
   @ApiOperationDelete({
     path: '/mtcs',
     parameters: {},

@@ -1,0 +1,62 @@
+[
+  {
+    "_id": "d038d708-716e-4363-a1a7-88be18c57dd3",
+    "title": "Medical Assistant Certificate Program",
+    "description": "With the Medical Assistant Program at The New York Medical Career Training Center, you will be able to begin your new career as a dedicated health professional ready to join the in-demand healthcare field and help patients have a positive experience. A medical assistant completes administrative, procedural, and certain clinical tasks in a healthcare settings and serves as a liaison between patients, insurance companies, providers, and specialists.",
+    "weeksDuration": 36,
+    "tuitionCost": 2500,
+    "minimumSkill": "INTERMEDIATE",
+    "isScholarshipAvailable": false,
+    "mtc": "c27279fe-a299-4199-8b32-cb5166c3734e"
+  },
+  {
+    "_id": "f71e8620-af93-45af-9416-edcd3682ba04",
+    "title": "EKG Technician Program",
+    "description": "EKG Technician Program provides the skills needed to work as an EKG Technician, Monitor Technician, or a Telemetry Technician. EKG interpretation skills are critical in these health care career fields and properly trained and certified technicians are growing in demand. Our EKG Technician Program offers an in-depth, online training course at your pace that best prepares graduates to properly perform the duties required in the healthcare industry. Our online program covers the anatomy and physiology of the heart, medical disease processes and terminology, electrocardiography, and echocardiography.",
+    "weeksDuration": 24,
+    "tuitionCost": 4200,
+    "minimumSkill": "ADVANCED",
+    "isScholarshipAvailable": true,
+    "mtc": "c27279fe-a299-4199-8b32-cb5166c3734e"
+  },
+  {
+    "_id": "80719c8e-4d34-4a9a-ac3a-c540f2619774",
+    "title": "Home Health Aide Course",
+    "description": "The Home Health Aide (HHA) course trains students to work as home aides providing basic nursing & personal care for patients, elderly people and people with disabilities. Besides, HHAs are also trained to support nurses and other healthcare professionals. The HHA training lays emphasis on ensuring that the comfort and safety of the patient are kept in mind at all times.",
+    "weeksDuration": 16,
+    "tuitionCost": 1500,
+    "minimumSkill": "BEGINNER",
+    "isScholarshipAvailable": true,
+    "mtc": "672ce2db-9d9e-4632-ad78-677a41c57804"
+  },
+  {
+    "_id": "2bcbe2c8-9c15-4654-a905-e6f7637ee53d",
+    "title": "Phlebotomy Technician Technical Diploma Program",
+    "description": "The Phlebotomy Technician Technical Diploma program provides practical training in the collection of blood specimens by venipuncture and capillary puncture. Learners are also trained in non-blood specimen collection procedures, specimen processing and basic laboratory skills. Because phlebotomists work directly with patients, the program covers customer service training, ethics and communication. This program also includes a 100-hour clinical phlebotomy experience.",
+    "weeksDuration": 30,
+    "tuitionCost": 2900,
+    "minimumSkill": "ADVANCED",
+    "isScholarshipAvailable": false,
+    "mtc": "672ce2db-9d9e-4632-ad78-677a41c57804"
+  },
+  {
+    "_id": "78009af0-c8ab-4e4a-b623-08c518048de3",
+    "title": "Nurse Assistant Training Course",
+    "description": "Taught by credentialed nurse instructors with professional experience, our Nurse Assistant Training program delivers an engaging curriculum that meets state and federal education regulations. Theory and skills practice, including a clinical experience at a skilled nursing facility, is conducted under nursing supervision. The course content focuses on critical thinking, decision-making and team concepts while incorporating elements of care and communication/interpersonal skills.",
+    "weeksDuration": 8,
+    "tuitionCost": 1350,
+    "minimumSkill": "BEGINNER",
+    "isScholarshipAvailable": true,
+    "mtc": "296c11a7-d3c4-4f70-bc94-0d939b347f61"
+  },
+  {
+    "_id": "4ee0101c-e079-4bb4-877e-0052d4c82954",
+    "title": "Pharmacy Technician Training Program",
+    "description": "The brand new Pharmacy Technician Training Program enables learners, with relevant work experience, to apply for registration and certification. This programme will equip learners with the clinical knowledge, confidence, practical and professional skills to practise as pharmacy technicians.",
+    "weeksDuration": 24,
+    "tuitionCost": 3500,
+    "minimumSkill": "INTERMEDIATE",
+    "isScholarshipAvailable": false,
+    "mtc": "296c11a7-d3c4-4f70-bc94-0d939b347f61"
+  }
+]

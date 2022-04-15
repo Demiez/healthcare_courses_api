@@ -38,7 +38,7 @@ const courseSchema = new Schema<ICourseDocument, ICourseModel>({
     type: String,
     trim: true,
     required: true,
-    maxlength: [500, 'Description cannot be more than 500 characters'],
+    maxlength: [1000, 'Description cannot be more than 500 characters'],
   },
   weeksDuration: {
     type: Number,
