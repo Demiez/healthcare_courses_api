@@ -14,9 +14,16 @@ import {
   FieldIsBadModel,
   StandardResponseViewModel,
 } from '../../../core/view-models';
+import { CourseService } from '../../module.course/services/course.service';
+import { CoursesViewModel } from '../../module.course/view-models';
 import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
-import { EARTH_RADIUS_IN_KM, EARTH_RADIUS_IN_MI } from '../constants';
+import {
+  EARTH_RADIUS_IN_KM,
+  EARTH_RADIUS_IN_MI,
+  MTC_NAME_IS_ALREADY_REGISTERED_MESSAGE,
+  MTC_NOT_FOUND_MESSAGE,
+} from '../constants';
 import { IMtcDocument, MtcModel } from '../db-models/mtc.db';
 import { MeasurementUnitsEnum, MtcsSortByEnum } from '../enums';
 import { MtcRequestModel } from '../request-models';
@@ -25,6 +32,8 @@ import { MtcsViewModel, MtcViewModel } from '../view-models';
 
 @Service()
 export class MtcService {
+  constructor(private readonly courseService: CourseService) {}
+
   public async getAllMtcs(
     searchOptionsModel: MtcsSearchOptionsRequestModel
   ): Promise<MtcsViewModel> {
@@ -94,7 +103,7 @@ export class MtcService {
 
     if (isMtcRegistered) {
       throw new ForbiddenError(ErrorCodes.MTC_NAME_IS_ALREADY_REGISTERED, [
-        'MTC with such name is already registered',
+        MTC_NAME_IS_ALREADY_REGISTERED_MESSAGE,
       ]);
     }
 
@@ -121,7 +130,7 @@ export class MtcService {
 
       if (isAnotherMtcRegisteredWithName) {
         throw new ForbiddenError(ErrorCodes.MTC_NAME_IS_ALREADY_REGISTERED, [
-          'Another mtc with such name is already registered',
+          MTC_NAME_IS_ALREADY_REGISTERED_MESSAGE,
         ]);
       }
     }
@@ -150,7 +159,9 @@ export class MtcService {
     const mtc = await MtcModel.findById(mtcId, projection);
 
     if (!mtc) {
-      throw new NotFoundError(ErrorCodes.RECORD_NOT_FOUND, ['mtc not found']);
+      throw new NotFoundError(ErrorCodes.RECORD_NOT_FOUND, [
+        MTC_NOT_FOUND_MESSAGE,
+      ]);
     }
 
     return mtc;
@@ -182,6 +193,18 @@ export class MtcService {
     }
 
     return await MtcModel.find(searchQuery).sort(sortingOptions);
+  }
+
+  public async getMtcCourses(mtcId: string): Promise<CoursesViewModel> {
+    const doesMtcExist = await MtcModel.exists({ _id: mtcId });
+
+    if (!doesMtcExist) {
+      throw new NotFoundError(ErrorCodes.RECORD_NOT_FOUND, [
+        MTC_NOT_FOUND_MESSAGE,
+      ]);
+    }
+
+    return await this.courseService.getAllCourses({}, mtcId);
   }
 
   private validateMtcRequestModel(requestModel: MtcRequestModel) {

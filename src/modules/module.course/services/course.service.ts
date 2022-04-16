@@ -11,13 +11,20 @@ import { CoursesViewModel, CourseViewModel } from '../view-models';
 @Service()
 export class CourseService {
   public async getAllCourses(
-    searchOptionsModel: CoursesSearchOptionsRequestModel
+    searchOptionsModel: CoursesSearchOptionsRequestModel,
+    mtcId?: string
   ): Promise<CoursesViewModel> {
     let coursesList: Array<CourseViewModel> = [];
+    let populateMtcInfo = true;
     const { searchInput, sortBy, sortOrder, skip, take } = searchOptionsModel;
     const courseQuery: { title: RegExp } = {
       ...(searchInput && { title: new RegExp(`^${searchInput}`) }),
     };
+
+    if (mtcId) {
+      Object.assign(courseQuery, { mtc: mtcId });
+      populateMtcInfo = false;
+    }
 
     const total = await this.getCountOfCoursesByQuery(courseQuery, skip, take);
 
@@ -28,7 +35,8 @@ export class CourseService {
         courseQuery,
         coursesSortingOptions,
         skip,
-        take
+        take,
+        populateMtcInfo
       );
 
       coursesList = courses.map((course) => new CourseViewModel(course));
@@ -84,16 +92,23 @@ export class CourseService {
     searchQuery: Record<string, unknown> = {},
     sortingOptions: Record<string, unknown> = {},
     skip?: number,
-    take?: number
+    take?: number,
+    isPopulate?: boolean
   ) {
+    let queryCall = CourseModel.find(searchQuery).sort(sortingOptions);
+
     if (!isNaN(take) && !isNaN(skip)) {
-      return await CourseModel.find(searchQuery)
-        .sort(sortingOptions)
-        .skip(skip)
-        .limit(take);
+      queryCall = queryCall.skip(skip).limit(take);
     }
 
-    return await CourseModel.find(searchQuery).sort(sortingOptions);
+    if (isPopulate) {
+      queryCall = queryCall.populate({
+        path: 'mtc',
+        select: 'name description',
+      });
+    }
+
+    return await queryCall;
   }
 
   private getCoursesSortQuery(

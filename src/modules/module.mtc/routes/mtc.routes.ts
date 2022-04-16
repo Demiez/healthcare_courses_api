@@ -38,4 +38,9 @@ export default (app: Application) => {
     `${APP_ROOT}/mtcs/:mtcId`,
     wrapRouteAction((req, res, next) => mtcController.deleteMtc(req, res))
   );
+
+  app.get(
+    `${APP_ROOT}/mtcs/:mtcId/courses`,
+    wrapRouteAction((req, res, next) => mtcController.getMtcCourses(req, res))
+  );
 };

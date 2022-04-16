@@ -297,4 +297,38 @@ export class MtcController extends BaseController {
 
     return super.sendSuccessResponse(res, result);
   }
+
+  @ApiOperationGet({
+    path: '/{mtcId}/courses',
+    summary: 'Responds with info about all courses of mtc by id',
+    parameters: {
+      path: {
+        mtcId: {
+          name: 'mtcId',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+    },
+    responses: {
+      200: { model: 'CoursesViewModel' },
+      404: {
+        description: `
+        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['mtc not found'], "type": "NOT_FOUND" },
+        `,
+      },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtcCourses`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async getMtcCourses(req: Request, res: Response) {
+    const result = await this.mtcService.getMtcCourses(req.params.mtcId);
+
+    return super.sendSuccessResponse(res, result);
+  }
 }
