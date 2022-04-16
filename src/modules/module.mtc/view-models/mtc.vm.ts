@@ -5,6 +5,7 @@ import {
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
 import { MtcLocationViewModel } from '.';
+import { CourseViewModel } from '../../module.course/view-models';
 import { IMtcDocument } from '../db-models/mtc.db';
 import { CareerTypesEnum } from '../enums/career-types.enum';
 
@@ -72,6 +73,13 @@ export class MtcViewModel {
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN })
   public acceptGiBill?: boolean = undefined;
+
+  @ApiModelProperty({
+    type: SwaggerDefinitionConstant.ARRAY,
+    model: 'MtcViewModel',
+    required: true,
+  })
+  public courses?: Array<CourseViewModel> = undefined;
 
   constructor(body: IMtcDocument) {
     const pickedBody = pick(body, keys(this));

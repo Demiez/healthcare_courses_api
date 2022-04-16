@@ -185,14 +185,16 @@ export class MtcService {
     skip?: number,
     take?: number
   ) {
+    let queryCall = MtcModel.find(searchQuery).sort(sortingOptions).populate({
+      path: 'courses',
+      select: 'title description -mtc',
+    });
+
     if (!isNaN(take) && !isNaN(skip)) {
-      return await MtcModel.find(searchQuery)
-        .sort(sortingOptions)
-        .skip(skip)
-        .limit(take);
+      queryCall = queryCall.skip(skip).limit(take);
     }
 
-    return await MtcModel.find(searchQuery).sort(sortingOptions);
+    return await queryCall;
   }
 
   public async getMtcCourses(mtcId: string): Promise<CoursesViewModel> {
