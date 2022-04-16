@@ -9,6 +9,7 @@ import {
 } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
+import { CoursesSearchOptionsRequestModel } from '../request-models/courses-search-options.rm';
 import { CourseService } from '../services/course.service';
 
 @ApiPath({
@@ -40,7 +41,7 @@ export class CourseController extends BaseController {
         },
         searchInput: {
           name: 'searchInput',
-          description: 'seach is performed by name',
+          description: 'seach is performed by title',
           required: false,
           allowEmptyValue: false,
           type: SwaggerDefinitionConstant.STRING,
@@ -61,9 +62,9 @@ export class CourseController extends BaseController {
     },
     summary: 'Responds with info about all courses',
     responses: {
-      200: { model: 'MtcsViewModel' },
+      200: { model: 'CoursesViewModel' },
       500: {
-        description: `INTERNAL_SERVER_ERROR: MtcController:__getAllMtcs`,
+        description: `INTERNAL_SERVER_ERROR: CourseController:__getAllCourses`,
       },
     },
     security: {
@@ -71,74 +72,20 @@ export class CourseController extends BaseController {
     },
   })
   public async getAllCourses(req: Request, res: Response) {
-    const searchOptionsModel = new MtcsSearchOptionsRequestModel(req.query);
+    const searchOptionsModel = new CoursesSearchOptionsRequestModel(req.query);
 
-    const result = await this.mtcService.getAllMtcs(searchOptionsModel);
-
-    return super.sendSuccessResponse(res, result);
-  }
-
-  @ApiOperationGet({
-    path: '/radius/{zipcode}/{distance}',
-    parameters: {
-      path: {
-        zipcode: {
-          name: 'zipcode',
-          required: true,
-          description: 'Zipcode of mtc location',
-          allowEmptyValue: false,
-          type: SwaggerDefinitionConstant.STRING,
-        },
-        distance: {
-          name: 'distance',
-          required: true,
-          description: 'Distance around specified address by zipcode',
-          allowEmptyValue: false,
-          type: SwaggerDefinitionConstant.STRING,
-        },
-      },
-      query: {
-        unit: {
-          name: 'unit',
-          required: true,
-          description: 'Measurement unit: KM or MI',
-          allowEmptyValue: false,
-          type: SwaggerDefinitionConstant.STRING,
-        },
-      },
-    },
-    summary:
-      'Responds with info about mtcs, which can be found within specified radius',
-    responses: {
-      200: { model: 'MtcsViewModel' },
-      500: {
-        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtcsWithinRadius`,
-      },
-    },
-    security: {
-      basicAuth: [],
-    },
-  })
-  public async getMtcsWithinRadius(req: Request, res: Response) {
-    const { zipcode, distance } = req.params;
-    const unit = req.query.unit as string;
-
-    const result = await this.mtcService.getMtcsWithinRadius(
-      zipcode,
-      Number(distance),
-      unit
-    );
+    const result = await this.courseService.getAllCourses(searchOptionsModel);
 
     return super.sendSuccessResponse(res, result);
   }
 
   @ApiOperationGet({
-    path: '/{mtcId}',
-    summary: 'Responds with info about mtc by id',
+    path: '/{courseId}',
+    summary: 'Responds with info about course by id',
     parameters: {
       path: {
-        mtcId: {
-          name: 'mtcId',
+        courseId: {
+          name: 'courseId',
           allowEmptyValue: false,
           required: true,
           type: SwaggerDefinitionConstant.STRING,
@@ -146,129 +93,33 @@ export class CourseController extends BaseController {
       },
     },
     responses: {
-      200: { model: 'MtcViewModel' },
+      200: { model: 'CourseViewModel' },
       404: {
         description: `
-        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['mtc not found'], "type": "NOT_FOUND" },
+        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['course not found'], "type": "NOT_FOUND" },
         `,
       },
       500: {
-        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtc`,
+        description: `INTERNAL_SERVER_ERROR: CourseController:__getCourse`,
       },
     },
     security: {
       basicAuth: [],
     },
   })
-  public async getMtc(req: Request, res: Response) {
-    const result = await this.mtcService.getMtc(req.params.mtcId);
-
-    return super.sendSuccessResponse(res, result);
-  }
-
-  @ApiOperationPost({
-    path: '',
-    summary: 'Creates MTC in Database',
-    parameters: {
-      body: {
-        required: true,
-        model: 'MtcRequestModel',
-      },
-    },
-    responses: {
-      200: { model: 'MtcViewModel' },
-      403: {
-        description: `
-        { 
-          "errorCode": "INVALID_INPUT_PARAMS", 
-          "errorDetails": [ { "field": ["field_name"] } ], 
-          "type": "FORBIDDEN" 
-        },
-        { 
-          "errorCode": "MTC_NAME_IS_ALREADY_REGISTERED",
-          "errorDetails": ["MTC with such name is already registered"],
-          "type": "FORBIDDEN"
-        }
-        `,
-      },
-      500: {
-        description: `
-        INTERNAL_SERVER_ERROR: MtcController:__createMtc
-        `,
-      },
-    },
-    security: {
-      basicAuth: [],
-    },
-  })
-  public async createMtc(req: Request, res: Response) {
-    const requestModel = new MtcRequestModel(req.body);
-
-    const result = await this.mtcService.createMtc(requestModel);
-
-    return super.sendSuccessResponse(res, result);
-  }
-
-  @ApiOperationPut({
-    path: '/{mtcId}',
-    summary: 'Updates info about mtc by id',
-    parameters: {
-      path: {
-        mtcId: {
-          name: 'mtcId',
-          allowEmptyValue: false,
-          required: true,
-          type: SwaggerDefinitionConstant.STRING,
-        },
-      },
-    },
-    responses: {
-      200: { model: 'MtcViewModel' },
-      403: {
-        description: `
-        { 
-          "errorCode": "INVALID_INPUT_PARAMS", 
-          "errorDetails": [ { "field": ["field_name"] } ], 
-          "type": "FORBIDDEN" 
-        },
-        { 
-          "errorCode": "MTC_NAME_IS_ALREADY_REGISTERED",
-          "errorDetails": ["Another mtc with such name is already registered"],
-          "type": "FORBIDDEN"
-        }
-        `,
-      },
-      404: {
-        description: `
-        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['mtc not found'], "type": "NOT_FOUND" },
-        `,
-      },
-      500: {
-        description: `INTERNAL_SERVER_ERROR: MtcController:__updateMtc`,
-      },
-    },
-    security: {
-      basicAuth: [],
-    },
-  })
-  public async updateMtc(req: Request, res: Response) {
-    const requestModel = new MtcRequestModel(req.body);
-
-    const result = await this.mtcService.updateMtc(
-      req.params.mtcId,
-      requestModel
-    );
+  public async getCourse(req: Request, res: Response) {
+    const result = await this.courseService.getCourse(req.params.courseId);
 
     return super.sendSuccessResponse(res, result);
   }
 
   @ApiOperationDelete({
-    path: '/{mtcId}',
-    summary: 'Delete info about mtc by id',
+    path: '/{courseId}',
+    summary: 'Delete info about course by id',
     parameters: {
       path: {
-        mtcId: {
-          name: 'mtcId',
+        courseId: {
+          name: 'courseId',
           allowEmptyValue: false,
           required: true,
           type: SwaggerDefinitionConstant.STRING,
@@ -276,22 +127,22 @@ export class CourseController extends BaseController {
       },
     },
     responses: {
-      200: { model: 'MtcViewModel' },
+      200: { model: 'CourseViewModel' },
       404: {
         description: `
-        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['mtc not found'], "type": "NOT_FOUND" },
+        { "errorCode": "RECORD_NOT_FOUND", "errorDetails": ['course not found'], "type": "NOT_FOUND" },
         `,
       },
       500: {
-        description: `INTERNAL_SERVER_ERROR: MtcController:__getMtc`,
+        description: `INTERNAL_SERVER_ERROR: CourseController:__deleteCourse`,
       },
     },
     security: {
       basicAuth: [],
     },
   })
-  public async deleteMtc(req: Request, res: Response) {
-    const result = await this.mtcService.deleteMtc(req.params.mtcId);
+  public async deleteCourse(req: Request, res: Response) {
+    const result = await this.courseService.deleteCourse(req.params.courseId);
 
     return super.sendSuccessResponse(res, result);
   }
