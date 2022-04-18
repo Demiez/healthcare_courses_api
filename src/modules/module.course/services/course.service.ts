@@ -1,5 +1,7 @@
+import 'reflect-metadata';
+
 import { PopulateOptions } from 'mongoose';
-import { Service } from 'typedi';
+import { Service, Container } from 'typedi';
 import { SortOrderEnum } from '../../../core/enums';
 import { ErrorCodes, NotFoundError } from '../../../core/errors';
 import { IProjection } from '../../../core/interfaces';
@@ -20,7 +22,9 @@ const mtcPopulateOptions: PopulateOptions = {
 };
 @Service()
 export class CourseService {
-  constructor(private readonly mtcService: MtcService) {}
+  // private readonly mtcService = Container.get(MtcService);
+
+  // constructor(private readonly mtcService: MtcService) {}
 
   public async getAllCourses(
     searchOptionsModel: CoursesSearchOptionsRequestModel,
@@ -66,13 +70,10 @@ export class CourseService {
   public async createUpdateCourse(
     requestModel: CourseRequestModel
   ): Promise<void> {
-    const mtc = await this.mtcService.tryGetMtcById(requestModel.mtcId);
-
-    if (!requestModel.id) {
-    }
-
+    // const mtc = await this.mtcService.tryGetMtcById(requestModel.mtcId);
+    // if (!requestModel.id) {
+    // }
     // const course = await this.tryGetCourseById(courseId, {}, true);
-
     // return new CourseViewModel(course);
   }
 

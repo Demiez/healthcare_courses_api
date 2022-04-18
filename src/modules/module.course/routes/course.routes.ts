@@ -19,6 +19,13 @@ export default (app: Application) => {
     wrapRouteAction((req, res, next) => courseController.getCourse(req, res))
   );
 
+  app.post(
+    `${APP_ROOT}/courses`,
+    wrapRouteAction((req, res, next) =>
+      courseController.createUpdateCourse(req, res)
+    )
+  );
+
   app.delete(
     `${APP_ROOT}/courses/:courseId`,
     wrapRouteAction((req, res, next) => courseController.deleteCourse(req, res))

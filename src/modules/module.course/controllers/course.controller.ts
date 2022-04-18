@@ -145,7 +145,7 @@ export class CourseController extends BaseController {
       basicAuth: [],
     },
   })
-  public async createCourse(req: Request, res: Response) {
+  public async createUpdateCourse(req: Request, res: Response) {
     const requestModel = new CourseRequestModel(req.body);
 
     const result = await this.courseService.createUpdateCourse(requestModel);
