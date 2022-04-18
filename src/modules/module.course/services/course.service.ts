@@ -4,20 +4,23 @@ import { SortOrderEnum } from '../../../core/enums';
 import { ErrorCodes, NotFoundError } from '../../../core/errors';
 import { IProjection } from '../../../core/interfaces';
 import { StandardResponseViewModel } from '../../../core/view-models';
+import { MtcService } from '../../module.mtc/services/mtc.service';
 import { CourseModel, ICourseDocument } from '../db-models/course.db';
 import { CoursesSortByEnum } from '../enums';
 import {
+  CourseRequestModel,
   CoursesSearchOptionsRequestModel,
   CoursesViewModel,
   CourseViewModel,
 } from '../models';
 
+const mtcPopulateOptions: PopulateOptions = {
+  path: 'mtc',
+  select: 'name description',
+};
 @Service()
 export class CourseService {
-  private readonly mtcPopulateOptions: PopulateOptions = {
-    path: 'mtc',
-    select: 'name description',
-  };
+  constructor(private readonly mtcService: MtcService) {}
 
   public async getAllCourses(
     searchOptionsModel: CoursesSearchOptionsRequestModel,
@@ -60,6 +63,19 @@ export class CourseService {
     return new CourseViewModel(course);
   }
 
+  public async createUpdateCourse(
+    requestModel: CourseRequestModel
+  ): Promise<void> {
+    const mtc = await this.mtcService.tryGetMtcById(requestModel.mtcId);
+
+    if (!requestModel.id) {
+    }
+
+    // const course = await this.tryGetCourseById(courseId, {}, true);
+
+    // return new CourseViewModel(course);
+  }
+
   public async deleteCourse(
     courseId: string
   ): Promise<StandardResponseViewModel<{}>> {
@@ -76,9 +92,7 @@ export class CourseService {
     isPopulate: boolean = false
   ): Promise<ICourseDocument> {
     const course = await (isPopulate
-      ? CourseModel.findById(courseId, projection).populate(
-          this.mtcPopulateOptions
-        )
+      ? CourseModel.findById(courseId, projection).populate(mtcPopulateOptions)
       : CourseModel.findById(courseId, projection));
 
     if (!course) {

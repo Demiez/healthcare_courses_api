@@ -207,6 +207,12 @@ export class MtcService {
     return await this.courseService.getAllCourses({}, mtcId);
   }
 
+  // public async checkIsMtcExist(mtcId: string): Promise<boolean> {
+  //   const result: boolean = await MtcModel.exists({ _id: mtcId });
+
+  //   return result;
+  // }
+
   private validateMtcRequestModel(requestModel: MtcRequestModel) {
     const errors = MtcRequestModelValidator.validate(requestModel);
 

@@ -4,22 +4,23 @@ import {
   ApiModelProperty,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
-import { MtcViewModel } from '../../module.mtc/models';
 import { ICourseDocument } from '../db-models/course.db';
 import { MinimumSkillEnum } from '../enums';
-import { CourseViewModel } from './course.vm';
 
 @ApiModel({
   name: 'CourseRequestModel',
   description: 'Course Request Model',
 })
-export class CourseRequestModel implements Partial<CourseViewModel> {
+export class CourseRequestModel {
   @ApiModelProperty({
     type: SwaggerDefinitionConstant.STRING,
     example: '00000000-1234-abcd-0000-000000000000' as any,
     required: true,
   })
   public id?: string = undefined;
+
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
+  public mtcId: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public title: string = undefined;
@@ -42,9 +43,6 @@ export class CourseRequestModel implements Partial<CourseViewModel> {
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN, required: true })
   public isScholarshipAvailable: boolean = undefined;
-
-  @ApiModelProperty({ model: 'MtcViewModel', required: true })
-  public mtc: MtcViewModel = undefined;
 
   constructor(body: ICourseDocument) {
     const pickedBody = pick(body, keys(this));
