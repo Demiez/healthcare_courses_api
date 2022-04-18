@@ -4,23 +4,28 @@ import {
   ApiModelProperty,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
+import { MtcLocationViewModel } from '.';
+import { CourseViewModel } from '../../module.course/models';
+import { IMtcDocument } from '../db-models/mtc.db';
 import { CareerTypesEnum } from '../enums/career-types.enum';
-import { MtcLocationViewModel } from '../view-models';
 
 @ApiModel({
-  name: 'MtcRequestModel',
-  description: 'MTC Request Model',
+  name: 'MtcViewModel',
+  description: 'MTC View Model',
 })
-export class MtcRequestModel {
+export class MtcViewModel {
   @ApiModelProperty({
-    description: 'Id of mtc',
     type: SwaggerDefinitionConstant.STRING,
     example: '00000000-1234-abcd-0000-000000000000' as any,
+    required: true,
   })
-  public id?: string = undefined;
+  public id: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public name: string = undefined;
+
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
+  public slug: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public description: string = undefined;
@@ -69,7 +74,14 @@ export class MtcRequestModel {
   @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN })
   public acceptGiBill?: boolean = undefined;
 
-  constructor(body: any) {
+  @ApiModelProperty({
+    type: SwaggerDefinitionConstant.ARRAY,
+    model: 'MtcViewModel',
+    required: true,
+  })
+  public courses?: Array<CourseViewModel> = undefined;
+
+  constructor(body: IMtcDocument) {
     const pickedBody = pick(body, keys(this));
 
     Object.assign(this, pickedBody);

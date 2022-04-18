@@ -17,7 +17,7 @@ export class SeederService {
   }
 
   public async seedMtcs() {
-    const mtcs: IMtcDocument[] = JSON.parse(
+    const mtcs: Array<IMtcDocument> = JSON.parse(
       fs.readFileSync(`${process.cwd()}/data-examples/mtcs.json`, 'utf-8')
     );
 
@@ -31,7 +31,7 @@ export class SeederService {
   }
 
   public async seedCourses() {
-    const courses: ICourse[] = JSON.parse(
+    const courses: Array<ICourse> = JSON.parse(
       fs.readFileSync(`${process.cwd()}/data-examples/courses.json`, 'utf-8')
     );
 

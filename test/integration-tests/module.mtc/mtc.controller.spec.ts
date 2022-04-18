@@ -1,5 +1,4 @@
 import * as chai from 'chai';
-import chaiHttp = require('chai-http');
 import { cloneDeep } from 'lodash';
 import 'mocha';
 import { Query } from 'mongoose';
@@ -12,14 +11,15 @@ import { ErrorCodes } from '../../../src/core/errors';
 import { generateRandomInteger, geocoder } from '../../../src/core/utils';
 import { MtcModel } from '../../../src/modules/module.mtc/db-models/mtc.db';
 import { CareerTypesEnum } from '../../../src/modules/module.mtc/enums/career-types.enum';
-import { MtcRequestModel } from '../../../src/modules/module.mtc/request-models';
 import {
   MtcLocationViewModel,
+  MtcRequestModel,
   MtcViewModel,
-} from '../../../src/modules/module.mtc/view-models';
+} from '../../../src/modules/module.mtc/models';
 import { VALID_EMAIL_MESSAGE } from '../../../src/modules/module.validation/constants';
 import { BaseValidationMessagesEnum } from '../../../src/modules/module.validation/enums';
 
+const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 chai.should();
 
@@ -311,7 +311,7 @@ describe('IT - MTC Controller', () => {
         ErrorCodes.MTC_NAME_IS_ALREADY_REGISTERED
       );
       res.body.errorDetails[0].should.equal(
-        'Another mtc with such name is already registered'
+        'MTC with such name is already registered'
       );
     });
 

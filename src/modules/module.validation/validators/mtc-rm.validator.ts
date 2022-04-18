@@ -12,7 +12,7 @@ import {
   MTC_PHONE_LENGTH,
 } from '../../module.mtc/constants';
 import { CareerTypesEnum } from '../../module.mtc/enums/career-types.enum';
-import { MtcRequestModel } from '../../module.mtc/request-models';
+import { MtcRequestModel } from '../../module.mtc/models';
 import {
   ADDRESS_LENGTH_MESSAGE,
   AVERAGE_COST_MESSAGE,

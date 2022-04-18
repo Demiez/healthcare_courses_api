@@ -9,7 +9,7 @@ import {
 } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
-import { CoursesSearchOptionsRequestModel } from '../request-models/courses-search-options.rm';
+import { CoursesSearchOptionsRequestModel } from '../models';
 import { CourseService } from '../services/course.service';
 
 @ApiPath({

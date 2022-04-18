@@ -9,8 +9,7 @@ import {
 } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
-import { MtcRequestModel } from '../request-models';
-import { MtcsSearchOptionsRequestModel } from '../request-models/mtcs-search-options.rm';
+import { MtcRequestModel, MtcsSearchOptionsRequestModel } from '../models';
 import { MtcService } from '../services/mtc.service';
 
 @ApiPath({

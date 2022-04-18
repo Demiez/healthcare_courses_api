@@ -20,7 +20,7 @@ import {
   MTC_PHONE_LENGTH,
 } from '../../../src/modules/module.mtc/constants';
 import { CareerTypesEnum } from '../../../src/modules/module.mtc/enums/career-types.enum';
-import { MtcRequestModel } from '../../../src/modules/module.mtc/request-models';
+import { MtcRequestModel } from '../../../src/modules/module.mtc/models';
 import { MtcRequestModelValidator } from '../../../src/modules/module.validation';
 import {
   ADDRESS_LENGTH_MESSAGE,

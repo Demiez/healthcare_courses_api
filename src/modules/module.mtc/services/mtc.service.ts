@@ -1,5 +1,3 @@
-import { isEmpty } from 'lodash';
-import * as mongoose from 'mongoose';
 import { Service } from 'typedi';
 import { SortOrderEnum } from '../../../core/enums';
 import {
@@ -10,12 +8,9 @@ import {
 } from '../../../core/errors';
 import { IProjection, ISearchQuery } from '../../../core/interfaces';
 import { geocoder } from '../../../core/utils';
-import {
-  FieldIsBadModel,
-  StandardResponseViewModel,
-} from '../../../core/view-models';
+import { StandardResponseViewModel } from '../../../core/view-models';
+import { CoursesViewModel } from '../../module.course/models';
 import { CourseService } from '../../module.course/services/course.service';
-import { CoursesViewModel } from '../../module.course/view-models';
 import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
 import {
@@ -26,9 +21,12 @@ import {
 } from '../constants';
 import { IMtcDocument, MtcModel } from '../db-models/mtc.db';
 import { MeasurementUnitsEnum, MtcsSortByEnum } from '../enums';
-import { MtcRequestModel } from '../request-models';
-import { MtcsSearchOptionsRequestModel } from '../request-models/mtcs-search-options.rm';
-import { MtcsViewModel, MtcViewModel } from '../view-models';
+import {
+  MtcRequestModel,
+  MtcsSearchOptionsRequestModel,
+  MtcsViewModel,
+  MtcViewModel,
+} from '../models';
 
 @Service()
 export class MtcService {

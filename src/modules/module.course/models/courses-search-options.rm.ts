@@ -5,7 +5,7 @@ import {
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
 import { SortOrderEnum } from '../../../core/enums';
-import { CoursesSortByEnum } from '../enums/';
+import { CoursesSortByEnum } from '../enums';
 
 @ApiModel({
   name: 'CoursesSearchOptionsRequestModel',

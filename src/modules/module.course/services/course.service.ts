@@ -1,3 +1,4 @@
+import { PopulateOptions } from 'mongoose';
 import { Service } from 'typedi';
 import { SortOrderEnum } from '../../../core/enums';
 import { ErrorCodes, NotFoundError } from '../../../core/errors';
@@ -5,11 +6,19 @@ import { IProjection } from '../../../core/interfaces';
 import { StandardResponseViewModel } from '../../../core/view-models';
 import { CourseModel, ICourseDocument } from '../db-models/course.db';
 import { CoursesSortByEnum } from '../enums';
-import { CoursesSearchOptionsRequestModel } from '../request-models/courses-search-options.rm';
-import { CoursesViewModel, CourseViewModel } from '../view-models';
+import {
+  CoursesSearchOptionsRequestModel,
+  CoursesViewModel,
+  CourseViewModel,
+} from '../models';
 
 @Service()
 export class CourseService {
+  private readonly mtcPopulateOptions: PopulateOptions = {
+    path: 'mtc',
+    select: 'name description',
+  };
+
   public async getAllCourses(
     searchOptionsModel: CoursesSearchOptionsRequestModel,
     mtcId?: string
@@ -46,7 +55,7 @@ export class CourseService {
   }
 
   public async getCourse(courseId: string): Promise<CourseViewModel> {
-    const course = await this.tryGetCourseById(courseId);
+    const course = await this.tryGetCourseById(courseId, {}, true);
 
     return new CourseViewModel(course);
   }
@@ -63,9 +72,14 @@ export class CourseService {
 
   public async tryGetCourseById(
     courseId: String,
-    projection: string | IProjection = {}
+    projection: string | IProjection = {},
+    isPopulate: boolean = false
   ): Promise<ICourseDocument> {
-    const course = await CourseModel.findById(courseId, projection);
+    const course = await (isPopulate
+      ? CourseModel.findById(courseId, projection).populate(
+          this.mtcPopulateOptions
+        )
+      : CourseModel.findById(courseId, projection));
 
     if (!course) {
       throw new NotFoundError(ErrorCodes.RECORD_NOT_FOUND, [

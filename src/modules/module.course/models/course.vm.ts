@@ -4,7 +4,7 @@ import {
   ApiModelProperty,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
-import { MtcViewModel } from '../../module.mtc/view-models';
+import { MtcViewModel } from '../../module.mtc/models';
 import { ICourseDocument } from '../db-models/course.db';
 import { MinimumSkillEnum } from '../enums';
 
