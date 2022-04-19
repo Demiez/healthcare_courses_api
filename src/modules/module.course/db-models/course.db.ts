@@ -11,7 +11,7 @@ export interface ICourse {
   tuitionCost: number;
   minimumSkill: MinimumSkillEnum;
   isScholarshipAvailable: boolean;
-  mtc: IMtcDocument;
+  mtc: IMtcDocument | string;
 
   // Special fields
   _created?: Date;

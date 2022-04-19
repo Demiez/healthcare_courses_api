@@ -2,9 +2,14 @@ import { PopulateOptions } from 'mongoose';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 import { SortOrderEnum } from '../../../core/enums';
-import { ErrorCodes, NotFoundError } from '../../../core/errors';
+import {
+  ErrorCodes,
+  ForbiddenError,
+  NotFoundError,
+} from '../../../core/errors';
 import { IProjection } from '../../../core/interfaces';
 import { StandardResponseViewModel } from '../../../core/view-models';
+import { COURSE_MTC_EXCHANGE_MESSAGE } from '../constants/course-messages.constants';
 import { CourseModel, ICourseDocument } from '../db-models/course.db';
 import { CoursesSortByEnum } from '../enums';
 import {
@@ -64,8 +69,8 @@ export class CourseService {
   }
 
   public async createCourse(
-    mtcId: string,
-    requestModel: CourseRequestModel
+    requestModel: CourseRequestModel,
+    mtcId: string
   ): Promise<CourseViewModel> {
     const courseData = new CourseDataModel(requestModel, mtcId);
 
@@ -75,10 +80,22 @@ export class CourseService {
   }
 
   public async updateCourse(
-    mtcId: string,
-    requestModel: CourseRequestModel
+    requestModel: CourseRequestModel,
+    mtcId: string
   ): Promise<CourseViewModel> {
-    return {} as CourseViewModel;
+    const course = await this.tryGetCourseById(requestModel.id);
+
+    if (course.mtc !== mtcId) {
+      throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, [
+        COURSE_MTC_EXCHANGE_MESSAGE,
+      ]);
+    }
+
+    const courseData = new CourseDataModel(requestModel, mtcId);
+
+    await CourseModel.updateOne({ _id: course._id }, courseData);
+
+    return new CourseViewModel(courseData as ICourseDocument);
   }
 
   public async deleteCourse(

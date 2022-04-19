@@ -21,6 +21,7 @@ import {
   EARTH_RADIUS_IN_KM,
   EARTH_RADIUS_IN_MI,
   MTC_COURSE_CREATED_MESSAGE,
+  MTC_COURSE_UPDATED_MESSAGE,
   MTC_NAME_IS_ALREADY_REGISTERED_MESSAGE,
   MTC_NOT_FOUND_MESSAGE,
 } from '../constants';
@@ -213,12 +214,12 @@ export class MtcService {
     await this.checkDoesMtcExist(mtcId);
 
     const course = await (requestModel.id
-      ? this.courseService.updateCourse(mtcId, requestModel)
-      : this.courseService.createCourse(mtcId, requestModel));
+      ? this.courseService.updateCourse(requestModel, mtcId)
+      : this.courseService.createCourse(requestModel, mtcId));
 
     return new StandardResponseViewModel<CourseViewModel>(
       course,
-      MTC_COURSE_CREATED_MESSAGE,
+      requestModel.id ? MTC_COURSE_UPDATED_MESSAGE : MTC_COURSE_CREATED_MESSAGE,
       BaseStatusesEnum.OK
     );
   }

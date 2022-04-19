@@ -380,4 +380,53 @@ export class MtcController extends BaseController {
 
     return super.sendSuccessResponse(res, result);
   }
+
+  @ApiOperationPut({
+    path: '/{mtcId}/courses',
+    summary: 'Updates course for specific mtc',
+    parameters: {
+      path: {
+        mtcId: {
+          name: 'mtcId',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+      body: {
+        required: true,
+        model: 'CourseRequestModel',
+      },
+    },
+    responses: {
+      200: { model: 'CourseViewModel' },
+      403: {
+        description: `
+        { 
+          "errorCode": "INVALID_INPUT_PARAMS", 
+          "errorDetails": [ { "field": ["field_name"] } ], 
+          "type": "FORBIDDEN" 
+        },
+        `,
+      },
+      500: {
+        description: `
+        INTERNAL_SERVER_ERROR: MtcController:__updateMtcCourse
+        `,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async updateMtcCourse(req: Request, res: Response) {
+    const requestModel = new CourseRequestModel(req.body);
+
+    const result = await this.mtcService.createUpdateMtcCourse(
+      req.params.mtcId,
+      requestModel
+    );
+
+    return super.sendSuccessResponse(res, result);
+  }
 }
