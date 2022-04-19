@@ -1,4 +1,4 @@
-import { Application, Request, Response } from 'express';
+import { Application } from 'express';
 import Container from 'typedi';
 import { APP_ROOT } from '../../../core/constants';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
@@ -42,5 +42,10 @@ export default (app: Application) => {
   app.get(
     `${APP_ROOT}/mtcs/:mtcId/courses`,
     wrapRouteAction((req, res, next) => mtcController.getMtcCourses(req, res))
+  );
+
+  app.post(
+    `${APP_ROOT}/mtcs/:mtcId/courses`,
+    wrapRouteAction((req, res, next) => mtcController.createMtcCourse(req, res))
   );
 };

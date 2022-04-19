@@ -2,16 +2,12 @@ import { Request, Response } from 'express';
 import {
   ApiOperationDelete,
   ApiOperationGet,
-  ApiOperationPost,
   ApiPath,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
-import {
-  CourseRequestModel,
-  CoursesSearchOptionsRequestModel,
-} from '../models';
+import { CoursesSearchOptionsRequestModel } from '../models';
 import { CourseService } from '../services/course.service';
 
 @ApiPath({
@@ -111,44 +107,6 @@ export class CourseController extends BaseController {
   })
   public async getCourse(req: Request, res: Response) {
     const result = await this.courseService.getCourse(req.params.courseId);
-
-    return super.sendSuccessResponse(res, result);
-  }
-
-  @ApiOperationPost({
-    path: '',
-    summary: 'Creates Course in Database',
-    parameters: {
-      body: {
-        required: true,
-        model: 'CourseRequestModel',
-      },
-    },
-    responses: {
-      200: { model: 'CourseViewModel' },
-      403: {
-        description: `
-        { 
-          "errorCode": "INVALID_INPUT_PARAMS", 
-          "errorDetails": [ { "field": ["field_name"] } ], 
-          "type": "FORBIDDEN" 
-        },
-        `,
-      },
-      500: {
-        description: `
-        INTERNAL_SERVER_ERROR: CourseController:__createCourse
-        `,
-      },
-    },
-    security: {
-      basicAuth: [],
-    },
-  })
-  public async createUpdateCourse(req: Request, res: Response) {
-    const requestModel = new CourseRequestModel(req.body);
-
-    const result = await this.courseService.createUpdateCourse(requestModel);
 
     return super.sendSuccessResponse(res, result);
   }

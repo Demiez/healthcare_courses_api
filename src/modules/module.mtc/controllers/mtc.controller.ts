@@ -9,6 +9,7 @@ import {
 } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
+import { CourseRequestModel } from '../../module.course/models';
 import { MtcRequestModel, MtcsSearchOptionsRequestModel } from '../models';
 import { MtcService } from '../services/mtc.service';
 
@@ -327,6 +328,55 @@ export class MtcController extends BaseController {
   })
   public async getMtcCourses(req: Request, res: Response) {
     const result = await this.mtcService.getMtcCourses(req.params.mtcId);
+
+    return super.sendSuccessResponse(res, result);
+  }
+
+  @ApiOperationPost({
+    path: '/{mtcId}/courses',
+    summary: 'Creates course for specific mtc',
+    parameters: {
+      path: {
+        mtcId: {
+          name: 'mtcId',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+      body: {
+        required: true,
+        model: 'CourseRequestModel',
+      },
+    },
+    responses: {
+      200: { model: 'CourseViewModel' },
+      403: {
+        description: `
+        { 
+          "errorCode": "INVALID_INPUT_PARAMS", 
+          "errorDetails": [ { "field": ["field_name"] } ], 
+          "type": "FORBIDDEN" 
+        },
+        `,
+      },
+      500: {
+        description: `
+        INTERNAL_SERVER_ERROR: MtcController:__createMtcCourse
+        `,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async createMtcCourse(req: Request, res: Response) {
+    const requestModel = new CourseRequestModel(req.body);
+
+    const result = await this.mtcService.createUpdateMtcCourse(
+      req.params.mtcId,
+      requestModel
+    );
 
     return super.sendSuccessResponse(res, result);
   }

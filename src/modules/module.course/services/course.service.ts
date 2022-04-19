@@ -1,30 +1,26 @@
-import 'reflect-metadata';
-
 import { PopulateOptions } from 'mongoose';
-import { Service, Container } from 'typedi';
+import 'reflect-metadata';
+import { Service } from 'typedi';
 import { SortOrderEnum } from '../../../core/enums';
 import { ErrorCodes, NotFoundError } from '../../../core/errors';
 import { IProjection } from '../../../core/interfaces';
 import { StandardResponseViewModel } from '../../../core/view-models';
-import { MtcService } from '../../module.mtc/services/mtc.service';
 import { CourseModel, ICourseDocument } from '../db-models/course.db';
 import { CoursesSortByEnum } from '../enums';
 import {
+  CourseDataModel,
   CourseRequestModel,
   CoursesSearchOptionsRequestModel,
   CoursesViewModel,
   CourseViewModel,
 } from '../models';
 
-const mtcPopulateOptions: PopulateOptions = {
-  path: 'mtc',
-  select: 'name description',
-};
 @Service()
 export class CourseService {
-  // private readonly mtcService = Container.get(MtcService);
-
-  // constructor(private readonly mtcService: MtcService) {}
+  private readonly mtcPopulateOptions: PopulateOptions = {
+    path: 'mtc',
+    select: 'name description',
+  };
 
   public async getAllCourses(
     searchOptionsModel: CoursesSearchOptionsRequestModel,
@@ -67,14 +63,22 @@ export class CourseService {
     return new CourseViewModel(course);
   }
 
-  public async createUpdateCourse(
+  public async createCourse(
+    mtcId: string,
     requestModel: CourseRequestModel
-  ): Promise<void> {
-    // const mtc = await this.mtcService.tryGetMtcById(requestModel.mtcId);
-    // if (!requestModel.id) {
-    // }
-    // const course = await this.tryGetCourseById(courseId, {}, true);
-    // return new CourseViewModel(course);
+  ): Promise<CourseViewModel> {
+    const courseData = new CourseDataModel(requestModel, mtcId);
+
+    const course = await CourseModel.create(courseData);
+
+    return new CourseViewModel(course);
+  }
+
+  public async updateCourse(
+    mtcId: string,
+    requestModel: CourseRequestModel
+  ): Promise<CourseViewModel> {
+    return {} as CourseViewModel;
   }
 
   public async deleteCourse(
@@ -93,7 +97,9 @@ export class CourseService {
     isPopulate: boolean = false
   ): Promise<ICourseDocument> {
     const course = await (isPopulate
-      ? CourseModel.findById(courseId, projection).populate(mtcPopulateOptions)
+      ? CourseModel.findById(courseId, projection).populate(
+          this.mtcPopulateOptions
+        )
       : CourseModel.findById(courseId, projection));
 
     if (!course) {
@@ -131,10 +137,7 @@ export class CourseService {
     }
 
     if (isPopulate) {
-      queryCall = queryCall.populate({
-        path: 'mtc',
-        select: 'name description',
-      });
+      queryCall = queryCall.populate(this.mtcPopulateOptions);
     }
 
     return await queryCall;

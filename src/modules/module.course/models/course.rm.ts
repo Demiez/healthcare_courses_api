@@ -20,9 +20,6 @@ export class CourseRequestModel {
   public id?: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
-  public mtcId: string = undefined;
-
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public title: string = undefined;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })

@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { SortOrderEnum } from '../../../core/enums';
+import { BaseStatusesEnum, SortOrderEnum } from '../../../core/enums';
 import {
   BaseErrorCodes,
   ErrorCodes,
@@ -9,13 +9,18 @@ import {
 import { IProjection, ISearchQuery } from '../../../core/interfaces';
 import { geocoder } from '../../../core/utils';
 import { StandardResponseViewModel } from '../../../core/view-models';
-import { CoursesViewModel } from '../../module.course/models';
+import {
+  CourseRequestModel,
+  CoursesViewModel,
+  CourseViewModel,
+} from '../../module.course/models';
 import { CourseService } from '../../module.course/services/course.service';
 import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
 import {
   EARTH_RADIUS_IN_KM,
   EARTH_RADIUS_IN_MI,
+  MTC_COURSE_CREATED_MESSAGE,
   MTC_NAME_IS_ALREADY_REGISTERED_MESSAGE,
   MTC_NOT_FOUND_MESSAGE,
 } from '../constants';
@@ -196,22 +201,27 @@ export class MtcService {
   }
 
   public async getMtcCourses(mtcId: string): Promise<CoursesViewModel> {
-    const doesMtcExist = await MtcModel.exists({ _id: mtcId });
-
-    if (!doesMtcExist) {
-      throw new NotFoundError(ErrorCodes.RECORD_NOT_FOUND, [
-        MTC_NOT_FOUND_MESSAGE,
-      ]);
-    }
+    await this.checkDoesMtcExist(mtcId);
 
     return await this.courseService.getAllCourses({}, mtcId);
   }
 
-  // public async checkIsMtcExist(mtcId: string): Promise<boolean> {
-  //   const result: boolean = await MtcModel.exists({ _id: mtcId });
+  public async createUpdateMtcCourse(
+    mtcId: string,
+    requestModel: CourseRequestModel
+  ): Promise<StandardResponseViewModel<CourseViewModel>> {
+    await this.checkDoesMtcExist(mtcId);
 
-  //   return result;
-  // }
+    const course = await (requestModel.id
+      ? this.courseService.updateCourse(mtcId, requestModel)
+      : this.courseService.createCourse(mtcId, requestModel));
+
+    return new StandardResponseViewModel<CourseViewModel>(
+      course,
+      MTC_COURSE_CREATED_MESSAGE,
+      BaseStatusesEnum.OK
+    );
+  }
 
   private validateMtcRequestModel(requestModel: MtcRequestModel) {
     const errors = MtcRequestModelValidator.validate(requestModel);
@@ -246,6 +256,16 @@ export class MtcService {
     const mtc = await MtcModel.findOne(searchQuery, '_id name');
 
     return mtc !== null;
+  }
+
+  private async checkDoesMtcExist(mtcId: string): Promise<void> {
+    const doesMtcExist = await MtcModel.exists({ _id: mtcId });
+
+    if (!doesMtcExist) {
+      throw new NotFoundError(ErrorCodes.RECORD_NOT_FOUND, [
+        MTC_NOT_FOUND_MESSAGE,
+      ]);
+    }
   }
 
   private getMtcsSortQuery(sortBy: MtcsSortByEnum, sortOrder: SortOrderEnum) {

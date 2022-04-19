@@ -3,6 +3,7 @@ import {
   ApiModelProperty,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
+import { BaseStatusesEnum } from '../enums';
 import { BaseFieldResponseViewModel } from './base-field-response.vm';
 
 @ApiModel({
@@ -17,9 +18,13 @@ export class StandardResponseViewModel<T> extends BaseFieldResponseViewModel {
   public message: string;
 
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING })
-  public status: string;
+  public status: string | BaseStatusesEnum;
 
-  constructor(result?: T, message?: string, status?: string) {
+  constructor(
+    result?: T,
+    message?: string,
+    status?: string | BaseStatusesEnum
+  ) {
     super();
     this.result = result;
     this.message = message;

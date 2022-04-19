@@ -1,3 +1,4 @@
+export * from './course.dm';
 export * from './course.rm';
 export * from './course.vm';
 export * from './courses-search-options.rm';
