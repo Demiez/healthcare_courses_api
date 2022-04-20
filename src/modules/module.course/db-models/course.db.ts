@@ -1,5 +1,6 @@
 import { Document, Model, model, Schema } from 'mongoose';
 import { v4 } from 'uuid';
+import { logger } from '../../../core/utils';
 import { IMtcDocument } from '../../module.mtc/db-models/mtc.db';
 import { MinimumSkillEnum } from '../enums/minimum-skill.enum';
 
@@ -22,7 +23,9 @@ export interface ICourseDocument extends ICourse, Document {
   _id: string;
 }
 
-interface ICourseModel extends Model<ICourseDocument> {}
+interface ICourseModel extends Model<ICourseDocument> {
+  calculateAverageCost?: (mtcId: string) => Promise<void>;
+}
 
 const courseSchema = new Schema<ICourseDocument, ICourseModel>({
   _id: {
@@ -89,6 +92,44 @@ courseSchema.pre('save', async function (next) {
   courseData._updated = eventDate;
 
   next();
+});
+
+courseSchema.statics.calculateAverageCost = async function (mtcId: string) {
+  const aggregatedCostData = await this.aggregate([
+    {
+      $match: { mtc: mtcId },
+    },
+    {
+      $group: {
+        _id: '$mtc',
+        averageCost: { $avg: '$tuitionCost' },
+      },
+    },
+    {
+      $project: {
+        _id: '$_id',
+        averageCost: { $round: ['$averageCost', 2] },
+      },
+    },
+  ]);
+
+  await model('Mtc').findByIdAndUpdate(mtcId, {
+    averageCost: aggregatedCostData[0].averageCost,
+  });
+
+  logger.info(`Average cost calculation for mtc ${mtcId} is done`);
+};
+
+courseSchema.post('save', function () {
+  const courseData = this.constructor as ICourseModel;
+
+  courseData.calculateAverageCost(this.mtc as string);
+});
+
+courseSchema.pre('deleteOne', { document: true, query: false }, function () {
+  const courseData = this.constructor as ICourseModel;
+
+  courseData.calculateAverageCost(this.mtc as string);
 });
 
 export const CourseModel: ICourseModel = model<ICourseDocument>(

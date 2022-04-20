@@ -7,7 +7,8 @@ import { IMtcDocument, MtcModel } from '../../module.mtc/db-models/mtc.db';
 @Service()
 export class SeederService {
   public async seedAll() {
-    await Promise.all([this.seedMtcs(), this.seedCourses()]);
+    await this.seedMtcs();
+    await this.seedCourses(); // Must be executed after for cost calculation
 
     return new StandardResponseViewModel(
       undefined,
