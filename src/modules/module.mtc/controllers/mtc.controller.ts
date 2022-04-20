@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   ApiOperationDelete,
   ApiOperationGet,
+  ApiOperationPatch,
   ApiOperationPost,
   ApiOperationPut,
   ApiPath,
@@ -9,7 +10,9 @@ import {
 } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
+import { BadRequestError, ErrorCodes } from '../../../core/errors';
 import { CourseRequestModel } from '../../module.course/models';
+import { MTC_COURSE_ID_MESSAGE } from '../constants';
 import { MtcRequestModel, MtcsSearchOptionsRequestModel } from '../models';
 import { MtcService } from '../services/mtc.service';
 
@@ -381,7 +384,7 @@ export class MtcController extends BaseController {
     return super.sendSuccessResponse(res, result);
   }
 
-  @ApiOperationPut({
+  @ApiOperationPatch({
     path: '/{mtcId}/courses',
     summary: 'Updates course for specific mtc',
     parameters: {
@@ -400,12 +403,12 @@ export class MtcController extends BaseController {
     },
     responses: {
       200: { model: 'CourseViewModel' },
-      403: {
+      400: {
         description: `
         { 
           "errorCode": "INVALID_INPUT_PARAMS", 
-          "errorDetails": [ { "field": ["field_name"] } ], 
-          "type": "FORBIDDEN" 
+          "errorDetails": [ "Id of MTC course is required for update" ], 
+          "type": "BAD_REQUEST" 
         },
         `,
       },
@@ -421,6 +424,12 @@ export class MtcController extends BaseController {
   })
   public async updateMtcCourse(req: Request, res: Response) {
     const requestModel = new CourseRequestModel(req.body);
+
+    if (!requestModel.id) {
+      throw new BadRequestError(ErrorCodes.INVALID_INPUT_PARAMS, [
+        MTC_COURSE_ID_MESSAGE,
+      ]);
+    }
 
     const result = await this.mtcService.createUpdateMtcCourse(
       req.params.mtcId,

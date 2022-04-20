@@ -49,7 +49,7 @@ export default (app: Application) => {
     wrapRouteAction((req, res, next) => mtcController.createMtcCourse(req, res))
   );
 
-  app.put(
+  app.patch(
     `${APP_ROOT}/mtcs/:mtcId/courses`,
     wrapRouteAction((req, res, next) => mtcController.updateMtcCourse(req, res))
   );

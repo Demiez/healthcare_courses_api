@@ -83,7 +83,9 @@ export class CourseService {
     requestModel: CourseRequestModel,
     mtcId: string
   ): Promise<CourseViewModel> {
-    const course = await this.tryGetCourseById(requestModel.id);
+    const { id } = requestModel;
+
+    let course = await this.tryGetCourseById(id);
 
     if (course.mtc !== mtcId) {
       throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, [
@@ -93,7 +95,10 @@ export class CourseService {
 
     const courseData = new CourseDataModel(requestModel, mtcId);
 
-    await CourseModel.updateOne({ _id: course._id }, courseData);
+    course = await CourseModel.findByIdAndUpdate(id, courseData, {
+      new: true,
+      runValidators: true,
+    });
 
     return new CourseViewModel(courseData as ICourseDocument);
   }
