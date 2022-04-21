@@ -14,6 +14,7 @@ import { BadRequestError, ErrorCodes } from '../../../core/errors';
 import { CourseRequestModel } from '../../module.course/models';
 import { MTC_COURSE_ID_MESSAGE } from '../constants';
 import { MtcRequestModel, MtcsSearchOptionsRequestModel } from '../models';
+import { MtcPhotoDataModel } from '../models/mtc-photo.dm';
 import { MtcService } from '../services/mtc.service';
 
 @ApiPath({
@@ -437,5 +438,54 @@ export class MtcController extends BaseController {
     );
 
     return super.sendSuccessResponse(res, result);
+  }
+
+  @ApiOperationPost({
+    path: '/{mtcId}/photo',
+    summary: 'Uploads photo for specific mtc',
+    parameters: {
+      path: {
+        mtcId: {
+          name: 'mtcId',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+      formData: {
+        file: {
+          required: true,
+          name: 'photo_upload',
+          type: 'file',
+        },
+      },
+    },
+    responses: {
+      200: { model: 'CourseViewModel' },
+      400: {
+        description: `
+        { 
+          "errorCode": "INVALID_INPUT_PARAMS", 
+          "errorDetails": [ "Id of MTC course is required for update" ], 
+          "type": "BAD_REQUEST" 
+        },
+        `,
+      },
+      500: {
+        description: `
+        INTERNAL_SERVER_ERROR: MtcController:__uploadMtcPhoto
+        `,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async uploadMtcPhoto(req: Request, res: Response) {
+    console.log(req.file);
+
+    const mtcPhotoData = new MtcPhotoDataModel(req.file, req.params.mtcId);
+
+    return super.sendSuccessResponse(res, mtcPhotoData);
   }
 }

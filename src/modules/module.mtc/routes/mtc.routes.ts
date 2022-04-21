@@ -1,4 +1,5 @@
 import { Application } from 'express';
+import * as multer from 'multer';
 import Container from 'typedi';
 import { APP_ROOT } from '../../../core/constants';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
@@ -6,6 +7,7 @@ import { MtcController } from '../controllers/mtc.controller';
 
 export default (app: Application) => {
   const mtcController = Container.get(MtcController);
+  const upload = multer({ dest: './files/' });
 
   app.get(
     `${APP_ROOT}/mtcs`,
@@ -52,5 +54,11 @@ export default (app: Application) => {
   app.patch(
     `${APP_ROOT}/mtcs/:mtcId/courses`,
     wrapRouteAction((req, res, next) => mtcController.updateMtcCourse(req, res))
+  );
+
+  app.post(
+    `${APP_ROOT}/mtcs/:mtcId/photo`,
+    upload.single('photo_upload'),
+    wrapRouteAction((req, res, next) => mtcController.uploadMtcPhoto(req, res))
   );
 };
