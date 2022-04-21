@@ -5,6 +5,7 @@ import * as process from 'process';
 export class MtcPhotoDataModel {
   public encoding: string = undefined;
   public filename: string = undefined;
+  public mimetype: string = undefined;
   public size: string = undefined;
   public path: string = undefined;
   public mtcId: string = undefined;
@@ -14,7 +15,10 @@ export class MtcPhotoDataModel {
 
     Object.assign(this, pickedFile);
 
-    this.path = join(process.cwd(), `./files/${file.filename}`);
+    this.path = join(
+      process.cwd(),
+      `${process.env.FILE_UPLOAD_PATH}/${file.filename}`
+    );
     this.mtcId = mtcId;
   }
 }

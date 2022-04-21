@@ -12,7 +12,7 @@ import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
 import { BadRequestError, ErrorCodes } from '../../../core/errors';
 import { CourseRequestModel } from '../../module.course/models';
-import { MTC_COURSE_ID_MESSAGE } from '../constants';
+import { MTC_COURSE_ID_MESSAGE, MTC_PHOTO_UPLOAD_MESSAGE } from '../constants';
 import { MtcRequestModel, MtcsSearchOptionsRequestModel } from '../models';
 import { MtcPhotoDataModel } from '../models/mtc-photo.dm';
 import { MtcService } from '../services/mtc.service';
@@ -466,7 +466,7 @@ export class MtcController extends BaseController {
         description: `
         { 
           "errorCode": "INVALID_INPUT_PARAMS", 
-          "errorDetails": [ "Id of MTC course is required for update" ], 
+          "errorDetails": [ "Failed to upload MTC photo from request" ], 
           "type": "BAD_REQUEST" 
         },
         `,
@@ -482,10 +482,16 @@ export class MtcController extends BaseController {
     },
   })
   public async uploadMtcPhoto(req: Request, res: Response) {
-    console.log(req.file);
+    if (!req.file) {
+      throw new BadRequestError(ErrorCodes.INVALID_INPUT_PARAMS, [
+        MTC_PHOTO_UPLOAD_MESSAGE,
+      ]);
+    }
 
-    const mtcPhotoData = new MtcPhotoDataModel(req.file, req.params.mtcId);
+    await this.mtcService.uploadMtcPhoto(
+      new MtcPhotoDataModel(req.file, req.params.mtcId)
+    );
 
-    return super.sendSuccessResponse(res, mtcPhotoData);
+    return super.sendSuccessResponse(res, {});
   }
 }

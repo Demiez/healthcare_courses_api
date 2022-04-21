@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import { BaseStatusesEnum, SortOrderEnum } from '../../../core/enums';
 import {
+  BadRequestError,
   BaseErrorCodes,
   ErrorCodes,
   ForbiddenError,
@@ -17,6 +18,7 @@ import {
 import { CourseService } from '../../module.course/services/course.service';
 import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
+import { MtcPhotolValidator } from '../../module.validation/validators/mtc-photo.validator';
 import {
   EARTH_RADIUS_IN_KM,
   EARTH_RADIUS_IN_MI,
@@ -33,6 +35,7 @@ import {
   MtcsViewModel,
   MtcViewModel,
 } from '../models';
+import { MtcPhotoDataModel } from '../models/mtc-photo.dm';
 
 @Service()
 export class MtcService {
@@ -224,11 +227,21 @@ export class MtcService {
     );
   }
 
+  public async uploadMtcPhoto(mtcPhotoData: MtcPhotoDataModel): Promise<void> {
+    await this.checkDoesMtcExist(mtcPhotoData.mtcId);
+
+    const errors = MtcPhotolValidator.validate(mtcPhotoData);
+
+    if (errors.length) {
+      throw new BadRequestError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
+    }
+  }
+
   private validateMtcRequestModel(requestModel: MtcRequestModel) {
     const errors = MtcRequestModelValidator.validate(requestModel);
 
     if (errors.length) {
-      throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
+      throw new BadRequestError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
     }
   }
 
@@ -240,7 +253,7 @@ export class MtcService {
     const errors = GetWithinRadiusValidator.validate(zipcode, distance, unit);
 
     if (errors.length) {
-      throw new ForbiddenError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
+      throw new BadRequestError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
     }
   }
 

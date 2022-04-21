@@ -7,7 +7,7 @@ import { MtcController } from '../controllers/mtc.controller';
 
 export default (app: Application) => {
   const mtcController = Container.get(MtcController);
-  const upload = multer({ dest: './files/' });
+  const upload = multer({ dest: process.env.FILE_UPLOAD_PATH });
 
   app.get(
     `${APP_ROOT}/mtcs`,

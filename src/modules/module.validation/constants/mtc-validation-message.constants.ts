@@ -19,3 +19,4 @@ export const ONE_CAREER_MESSAGE = 'Please provide at least one career in list';
 export const VALID_CAREER_MESSAGE = 'There must be only valid careers';
 export const AVERAGE_RATING_INTERVAL_MESSAGE = `Must be from ${MTC_AVERAGE_RATING_MIN_VALUE} to ${MTC_AVERAGE_RATING_MAX_VALUE}`;
 export const AVERAGE_COST_MESSAGE = 'Cannot be less than 0';
+export const MAX_FILE_SIZE_MESSAGE = 'Max file size allowed is ';
