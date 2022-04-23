@@ -17,7 +17,7 @@ export class MtcPhotoDataModel {
 
     Object.assign(this, pickedFile);
 
-    this.saveFileName = `photo_${mtcId}`;
+    this.saveFileName = `photo_${mtcId}.${this.mimetype.split('/')[1]}`;
     this.path = join(
       process.cwd(),
       `${process.env.FILE_UPLOAD_PATH}/${file.filename}`

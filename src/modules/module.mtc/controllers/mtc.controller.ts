@@ -461,7 +461,7 @@ export class MtcController extends BaseController {
       },
     },
     responses: {
-      200: { model: 'CourseViewModel' },
+      200: { model: 'MtcPhotoViewModel' },
       400: {
         description: `
         { 
@@ -488,10 +488,10 @@ export class MtcController extends BaseController {
       ]);
     }
 
-    await this.mtcService.uploadMtcPhoto(
+    const result = await this.mtcService.uploadMtcPhoto(
       new MtcPhotoDataModel(req.file, req.params.mtcId)
     );
 
-    return super.sendSuccessResponse(res, {});
+    return super.sendSuccessResponse(res, result);
   }
 }

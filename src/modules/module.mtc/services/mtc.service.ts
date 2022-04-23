@@ -34,6 +34,7 @@ import {
 import { IMtcDocument, MtcModel } from '../db-models/mtc.db';
 import { MeasurementUnitsEnum, MtcsSortByEnum } from '../enums';
 import {
+  MtcPhotoViewModel,
   MtcRequestModel,
   MtcsSearchOptionsRequestModel,
   MtcsViewModel,
@@ -233,8 +234,8 @@ export class MtcService {
 
   public async uploadMtcPhoto(
     mtcPhotoData: MtcPhotoDataModel
-  ): Promise<StandardResponseViewModel<{}>> {
-    await this.checkDoesMtcExist(mtcPhotoData.mtcId);
+  ): Promise<StandardResponseViewModel<MtcPhotoViewModel>> {
+    const mtc = await this.tryGetMtcById(mtcPhotoData.mtcId);
 
     const { path, savePath, saveFileName } = mtcPhotoData;
 
@@ -257,8 +258,12 @@ export class MtcService {
       ]);
     }
 
+    mtc.photo = mtcPhotoData.saveFileName;
+
+    await mtc.save();
+
     return new StandardResponseViewModel(
-      {},
+      new MtcPhotoViewModel(mtcPhotoData),
       MTC_PHOTO_SAVE_MESSAGE,
       BaseStatusesEnum.OK
     );
