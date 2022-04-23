@@ -7,3 +7,4 @@ export const MTC_COURSE_ID_MESSAGE = 'Id of MTC course is required for update';
 export const MTC_PHOTO_UPLOAD_MESSAGE =
   'Failed to upload MTC photo from request';
 export const MTC_PHOTO_MIMETYPE_MESSAGE = 'MTC photo must be an image';
+export const MTC_PHOTO_SAVE_MESSAGE = 'MTC photo saved';

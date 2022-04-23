@@ -36,4 +36,8 @@ export class ErrorCodes extends BaseErrorCodes {
   public static get GEO_CODER_ERROR() {
     return 'GEO_CODER_ERROR';
   }
+
+  public static get FILE_OPERATION_ERROR() {
+    return 'FILE_OPERATION_ERROR';
+  }
 }

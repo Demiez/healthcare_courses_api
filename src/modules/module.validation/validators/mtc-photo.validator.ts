@@ -17,7 +17,7 @@ export class MtcPhotolValidator extends BaseValidator {
       );
     }
 
-    if (size > process.env.MAX_FILE_SIZE) {
+    if (size > Number(process.env.MAX_FILE_SIZE)) {
       this.errors.push(
         new FieldIsBadModel(
           'size',

@@ -1,3 +1,5 @@
+import { existsSync } from 'fs';
+import { mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { Service } from 'typedi';
 import { BaseStatusesEnum, SortOrderEnum } from '../../../core/enums';
 import {
@@ -5,6 +7,7 @@ import {
   BaseErrorCodes,
   ErrorCodes,
   ForbiddenError,
+  InternalServerError,
   NotFoundError,
 } from '../../../core/errors';
 import { IProjection, ISearchQuery } from '../../../core/interfaces';
@@ -26,6 +29,7 @@ import {
   MTC_COURSE_UPDATED_MESSAGE,
   MTC_NAME_IS_ALREADY_REGISTERED_MESSAGE,
   MTC_NOT_FOUND_MESSAGE,
+  MTC_PHOTO_SAVE_MESSAGE,
 } from '../constants';
 import { IMtcDocument, MtcModel } from '../db-models/mtc.db';
 import { MeasurementUnitsEnum, MtcsSortByEnum } from '../enums';
@@ -227,14 +231,37 @@ export class MtcService {
     );
   }
 
-  public async uploadMtcPhoto(mtcPhotoData: MtcPhotoDataModel): Promise<void> {
+  public async uploadMtcPhoto(
+    mtcPhotoData: MtcPhotoDataModel
+  ): Promise<StandardResponseViewModel<{}>> {
     await this.checkDoesMtcExist(mtcPhotoData.mtcId);
+
+    const { path, savePath, saveFileName } = mtcPhotoData;
 
     const errors = MtcPhotolValidator.validate(mtcPhotoData);
 
     if (errors.length) {
       throw new BadRequestError(BaseErrorCodes.INVALID_INPUT_PARAMS, errors);
     }
+
+    const [fileBinary] = await Promise.all([
+      readFile(path),
+      this.checkFileSaveDirectory(savePath, saveFileName),
+    ]);
+
+    try {
+      await Promise.all([writeFile(savePath, fileBinary), rm(path)]);
+    } catch (error) {
+      throw new InternalServerError(ErrorCodes.FILE_OPERATION_ERROR, [
+        error.message,
+      ]);
+    }
+
+    return new StandardResponseViewModel(
+      {},
+      MTC_PHOTO_SAVE_MESSAGE,
+      BaseStatusesEnum.OK
+    );
   }
 
   private validateMtcRequestModel(requestModel: MtcRequestModel) {
@@ -305,5 +332,16 @@ export class MtcService {
     }
 
     return sortQuery;
+  }
+
+  private async checkFileSaveDirectory(
+    savePath: string,
+    saveFileName: string
+  ): Promise<void> {
+    const dirPath = savePath.slice(0, -(saveFileName.length + 1));
+
+    if (!existsSync(dirPath)) {
+      await mkdir(dirPath);
+    }
   }
 }
