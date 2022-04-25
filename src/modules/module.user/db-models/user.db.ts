@@ -9,6 +9,7 @@ export interface IUser {
   email: string;
   role: UserRolesEnum;
   password: string;
+  salt: string;
   resetPasswordToken: string;
   resetPasswordExpiration: Date;
 
