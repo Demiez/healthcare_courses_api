@@ -1,6 +1,7 @@
 import { Document, Model, model, Schema } from 'mongoose';
 import { v4 } from 'uuid';
-import { emailValidationRegex } from '../../../core/regex/email-validation.regex';
+import { emailValidationRegex } from '../../../core/regex/validation.regex';
+import { ALLOWED_PASSWORD_LENGTH } from '../../module.auth/constants/auth.constants';
 import {
   generateSalt,
   getSignedJwtToken,
@@ -54,7 +55,7 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
   password: {
     type: String,
     required: [true, 'Please add password'],
-    minlength: 8,
+    minlength: ALLOWED_PASSWORD_LENGTH,
     select: false,
   },
   salt: {

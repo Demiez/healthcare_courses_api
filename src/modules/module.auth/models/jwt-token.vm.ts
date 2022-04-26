@@ -3,7 +3,6 @@ import {
   ApiModelProperty,
   SwaggerDefinitionConstant,
 } from 'swagger-express-ts';
-
 @ApiModel({
   name: 'JwtTokenViewModel',
   description: 'Generated token after registration',

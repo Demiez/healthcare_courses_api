@@ -11,4 +11,9 @@ export default (app: Application) => {
     `${APP_ROOT}/auth/register`,
     wrapRouteAction((req, res, next) => authController.registerUser(req, res))
   );
+
+  app.post(
+    `${APP_ROOT}/auth/login`,
+    wrapRouteAction((req, res, next) => authController.loginUser(req, res))
+  );
 };
