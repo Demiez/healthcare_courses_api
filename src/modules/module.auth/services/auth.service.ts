@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import { Service } from 'typedi';
 import { BaseStatusesEnum } from '../../../core/enums';
 import { StandardResponseViewModel } from '../../../core/view-models';
-import { IUserDocument } from '../../module.user/db-models/user.db';
 import { UserRequestModel } from '../../module.user/models/user.rm';
 import { UserService } from '../../module.user/services/course.service';
+import { JwtTokenViewModel } from '../models';
 
 @Service()
 export class AuthService {
@@ -12,11 +12,13 @@ export class AuthService {
 
   public async registerUser(
     requestModel: UserRequestModel
-  ): Promise<StandardResponseViewModel<IUserDocument>> {
+  ): Promise<StandardResponseViewModel<JwtTokenViewModel>> {
     const user = await this.userService.createUser(requestModel);
 
-    return new StandardResponseViewModel<IUserDocument>(
-      user,
+    const token = user.getSignedJwtToken();
+
+    return new StandardResponseViewModel<JwtTokenViewModel>(
+      new JwtTokenViewModel(token),
       'User registered',
       BaseStatusesEnum.OK
     );

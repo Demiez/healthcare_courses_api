@@ -1,6 +1,11 @@
 import { Document, Model, model, Schema } from 'mongoose';
 import { v4 } from 'uuid';
 import { emailValidationRegex } from '../../../core/regex/email-validation.regex';
+import {
+  generateSalt,
+  getSignedJwtToken,
+  hashPassword,
+} from '../../module.auth/util/auth.util';
 import { UserRolesEnum } from '../enums/user-roles.enum';
 
 export interface IUser {
@@ -20,6 +25,7 @@ export interface IUser {
 
 export interface IUserDocument extends IUser, Document {
   _id: string;
+  getSignedJwtToken(): string;
 }
 
 interface IUserModel extends Model<IUserDocument> {}
@@ -51,6 +57,9 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
     minlength: 8,
     select: false,
   },
+  salt: {
+    type: String,
+  },
   resetPasswordToken: {
     type: String,
   },
@@ -69,8 +78,11 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
   },
 });
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', function (next) {
   const userData = this as IUserDocument;
+  userData.salt = generateSalt();
+  userData.password = hashPassword(userData.password, userData.salt);
+
   const eventDate = new Date();
 
   if (this.isNew) {
@@ -87,6 +99,12 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.index({ email: 1 }, { unique: true });
+
+userSchema.methods.getSignedJwtToken = function () {
+  const userData = this as IUserDocument;
+
+  return getSignedJwtToken.call(userData);
+};
 
 export const UserModel: IUserModel = model<IUserDocument>(
   'User',
