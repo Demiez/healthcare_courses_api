@@ -23,7 +23,7 @@ export class UserLoginValidator extends BaseValidator {
     return this.errors;
   }
 
-  private static validateEmail(email: string, fieldName: string) {
+  protected static validateEmail(email: string, fieldName: string) {
     const error = this.validateStringField(email, fieldName);
 
     if (error) {
@@ -36,7 +36,7 @@ export class UserLoginValidator extends BaseValidator {
     }
   }
 
-  private static validatePassword(password: string, fieldName: string) {
+  protected static validatePassword(password: string, fieldName: string) {
     const error = this.validateStringField(password, fieldName);
 
     if (error) {
@@ -50,7 +50,7 @@ export class UserLoginValidator extends BaseValidator {
       regexSource.replace('(?=.{8,})', `(?=.{${ALLOWED_PASSWORD_LENGTH},})`)
     );
 
-    if (!validationRegex.test(password)) {
+    if (!validationRegex.test(password.trim())) {
       this.errors.push(
         new FieldIsBadModel(
           fieldName,

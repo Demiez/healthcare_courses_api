@@ -16,7 +16,7 @@ export class UserLoginRequestModel {
   public password: string = undefined;
 
   constructor(body: UserLoginRequestModel) {
-    this.email = body.email.trim();
-    this.password = body.password.trim();
+    this.email = body.email;
+    this.password = body.password;
   }
 }

@@ -1,4 +1,5 @@
 import { isBoolean, isInteger, isNil, isNumber, isString } from 'lodash';
+import { validate as validateUuid } from 'uuid';
 import { FieldIsBadModel } from '../../../core/view-models';
 import { BaseValidationMessagesEnum } from '../enums';
 
@@ -71,5 +72,9 @@ export abstract class BaseValidator {
         BaseValidationMessagesEnum.MUST_BE_BOOLEAN
       );
     }
+  }
+
+  protected static validateUuidString(uuid: string): boolean {
+    return validateUuid(uuid);
   }
 }

@@ -44,6 +44,7 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
   email: {
     type: String,
     required: [true, 'Please add email'],
+    trim: true,
     unique: true,
     match: [emailValidationRegex, 'Please add correct email'],
   },
@@ -54,6 +55,7 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
   },
   password: {
     type: String,
+    trim: true,
     required: [true, 'Please add password'],
     minlength: ALLOWED_PASSWORD_LENGTH,
     select: false,
