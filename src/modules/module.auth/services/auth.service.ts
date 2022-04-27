@@ -1,15 +1,18 @@
-import { isEmpty } from 'lodash';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 import { BaseStatusesEnum } from '../../../core/enums';
-import { ErrorCodes, ForbiddenError } from '../../../core/errors';
+import { ErrorCodes, UnauthorizedError } from '../../../core/errors';
 import { StandardResponseViewModel } from '../../../core/view-models';
 import {
   UserLoginRequestModel,
   UserRequestModel,
 } from '../../module.user/models';
 import { UserService } from '../../module.user/services/user.service';
-import { UserLoginValidator } from '../../module.validation/validators/user-login.validator';
+import {
+  INVALID_CREDENTIALS,
+  LOGIN_SUCCESSFUL,
+  USER_REGISTERED,
+} from '../constants/auth.messages';
 import { JwtTokenViewModel } from '../models';
 
 @Service()
@@ -25,23 +28,39 @@ export class AuthService {
 
     return new StandardResponseViewModel<JwtTokenViewModel>(
       new JwtTokenViewModel(token),
-      'User registered',
+      USER_REGISTERED,
       BaseStatusesEnum.OK
     );
   }
 
   public async loginUser(
     requestModel: UserLoginRequestModel
-  ): Promise<StandardResponseViewModel<JwtTokenViewModel | {}>> {
-    const errors = UserLoginValidator.validate(requestModel);
+  ): Promise<StandardResponseViewModel<JwtTokenViewModel>> {
+    this.userService.validateUserLoginData(requestModel);
 
-    if (!isEmpty(errors)) {
-      throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, errors);
+    const { email, password } = requestModel;
+
+    const user = await this.userService.getUserByEmailWithPassword(email);
+
+    if (!user) {
+      throw new UnauthorizedError(ErrorCodes.INVALID_AUTH_PARAMS, [
+        INVALID_CREDENTIALS,
+      ]);
     }
 
-    return new StandardResponseViewModel<{}>(
-      {},
-      'User registered',
+    const isPasswordMatch = user.matchPasswords(password);
+
+    if (!isPasswordMatch) {
+      throw new UnauthorizedError(ErrorCodes.INVALID_AUTH_PARAMS, [
+        INVALID_CREDENTIALS,
+      ]);
+    }
+
+    const token = user.getSignedJwtToken();
+
+    return new StandardResponseViewModel<JwtTokenViewModel>(
+      new JwtTokenViewModel(token),
+      LOGIN_SUCCESSFUL,
       BaseStatusesEnum.OK
     );
   }

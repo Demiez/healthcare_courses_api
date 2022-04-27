@@ -24,3 +24,9 @@ export function getSignedJwtToken(): string {
     expiresIn: JWT_EXPIRE,
   });
 }
+
+export function matchPasswords(password: string): boolean {
+  const hash = hashPassword(password, this.salt);
+
+  return hash === this.password;
+}

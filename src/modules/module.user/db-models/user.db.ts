@@ -6,6 +6,7 @@ import {
   generateSalt,
   getSignedJwtToken,
   hashPassword,
+  matchPasswords,
 } from '../../module.auth/util/auth.util';
 import { UserRolesEnum } from '../enums/user-roles.enum';
 
@@ -27,6 +28,7 @@ export interface IUser {
 export interface IUserDocument extends IUser, Document {
   _id: string;
   getSignedJwtToken(): string;
+  matchPasswords(password: string): boolean;
 }
 
 interface IUserModel extends Model<IUserDocument> {}
@@ -107,6 +109,12 @@ userSchema.methods.getSignedJwtToken = function () {
   const userData = this as IUserDocument;
 
   return getSignedJwtToken.call(userData);
+};
+
+userSchema.methods.matchPasswords = function (password: string) {
+  const userData = this as IUserDocument;
+
+  return matchPasswords.call(userData, password);
 };
 
 export const UserModel: IUserModel = model<IUserDocument>(

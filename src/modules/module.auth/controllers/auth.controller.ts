@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  ApiOperationPost,
-  ApiPath,
-  SwaggerDefinitionConstant,
-} from 'swagger-express-ts';
+import { ApiOperationPost, ApiPath } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
 import { UserLoginRequestModel } from '../../module.user/models';
@@ -31,7 +27,7 @@ export class AuthController extends BaseController {
       },
     },
     responses: {
-      200: { type: SwaggerDefinitionConstant.OBJECT },
+      200: { model: 'JwtTokenViewModel' },
       500: {
         description: `INTERNAL_SERVER_ERROR: AuthController:__registerUser`,
       },
@@ -58,7 +54,7 @@ export class AuthController extends BaseController {
       },
     },
     responses: {
-      200: { type: SwaggerDefinitionConstant.OBJECT },
+      200: { model: 'JwtTokenViewModel' },
       500: {
         description: `INTERNAL_SERVER_ERROR: AuthController:__loginUser`,
       },

@@ -165,7 +165,7 @@ export class MtcService {
   }
 
   public async tryGetMtcById(
-    mtcId: String,
+    mtcId: string,
     projection: string | IProjection = {}
   ): Promise<IMtcDocument> {
     const mtc = await MtcModel.findById(mtcId, projection);
