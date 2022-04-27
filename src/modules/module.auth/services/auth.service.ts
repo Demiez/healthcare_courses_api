@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { BaseStatusesEnum } from '../../../core/enums';
 import { ErrorCodes, UnauthorizedError } from '../../../core/errors';
 import { StandardResponseViewModel } from '../../../core/view-models';
+import { IUserDocument } from '../../module.user/db-models/user.db';
 import {
   UserLoginRequestModel,
   UserRequestModel,
@@ -21,21 +22,22 @@ export class AuthService {
 
   public async registerUser(
     requestModel: UserRequestModel
-  ): Promise<StandardResponseViewModel<JwtTokenViewModel>> {
+  ): Promise<[IUserDocument, StandardResponseViewModel<JwtTokenViewModel>]> {
     const user = await this.userService.createUser(requestModel);
 
-    const token = user.getSignedJwtToken();
-
-    return new StandardResponseViewModel<JwtTokenViewModel>(
-      new JwtTokenViewModel(token),
-      USER_REGISTERED,
-      BaseStatusesEnum.OK
-    );
+    return [
+      user,
+      new StandardResponseViewModel(
+        {} as JwtTokenViewModel,
+        USER_REGISTERED,
+        BaseStatusesEnum.OK
+      ),
+    ];
   }
 
   public async loginUser(
     requestModel: UserLoginRequestModel
-  ): Promise<StandardResponseViewModel<JwtTokenViewModel>> {
+  ): Promise<[IUserDocument, StandardResponseViewModel<JwtTokenViewModel>]> {
     this.userService.validateUserLoginData(requestModel);
 
     const { email, password } = requestModel;
@@ -56,12 +58,13 @@ export class AuthService {
       ]);
     }
 
-    const token = user.getSignedJwtToken();
-
-    return new StandardResponseViewModel<JwtTokenViewModel>(
-      new JwtTokenViewModel(token),
-      LOGIN_SUCCESSFUL,
-      BaseStatusesEnum.OK
-    );
+    return [
+      user,
+      new StandardResponseViewModel(
+        {} as JwtTokenViewModel,
+        LOGIN_SUCCESSFUL,
+        BaseStatusesEnum.OK
+      ),
+    ];
   }
 }

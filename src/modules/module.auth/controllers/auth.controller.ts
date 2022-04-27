@@ -2,8 +2,11 @@ import { Request, Response } from 'express';
 import { ApiOperationPost, ApiPath } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
+import { StandardResponseViewModel } from '../../../core/view-models';
+import { IUserDocument } from '../../module.user/db-models/user.db';
 import { UserLoginRequestModel } from '../../module.user/models';
 import { UserRequestModel } from '../../module.user/models/user.rm';
+import { JwtTokenViewModel } from '../models';
 import { AuthService } from '../services/auth.service';
 
 @ApiPath({
@@ -37,11 +40,14 @@ export class AuthController extends BaseController {
     },
   })
   public async registerUser(req: Request, res: Response) {
-    const result = await this.authService.registerUser(
+    const [user, data] = await this.authService.registerUser(
       new UserRequestModel(req.body)
     );
 
-    return super.sendSuccessResponse(res, result);
+    return super.sendTokenResponse<
+      IUserDocument,
+      StandardResponseViewModel<JwtTokenViewModel>
+    >(res, user, data);
   }
 
   @ApiOperationPost({
@@ -64,10 +70,13 @@ export class AuthController extends BaseController {
     },
   })
   public async loginUser(req: Request, res: Response) {
-    const result = await this.authService.loginUser(
+    const [user, data] = await this.authService.loginUser(
       new UserLoginRequestModel(req.body)
     );
 
-    return super.sendSuccessResponse(res, result);
+    return super.sendTokenResponse<
+      IUserDocument,
+      StandardResponseViewModel<JwtTokenViewModel>
+    >(res, user, data);
   }
 }

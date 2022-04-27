@@ -1,6 +1,7 @@
 import { Response } from 'express';
-
+import { DAY_DURATION_IN_MS } from '../constants';
 import { ErrorResponse } from '../errors/error-response';
+import { ICookieOptions } from '../interfaces';
 
 export default class BaseController {
   /**
@@ -42,7 +43,40 @@ export default class BaseController {
    * @param res
    * @param error
    */
-  public sendInternalServerError(res: Response, error: ErrorResponse): Response {
+  public sendInternalServerError(
+    res: Response,
+    error: ErrorResponse
+  ): Response {
     return res.status(500).send(error);
+  }
+
+  /**
+   * Send token response for auth requests
+   * @param res
+   * @param entity
+   */
+  public sendTokenResponse<T extends { getSignedJwtToken: () => string }, V>(
+    res: Response,
+    authEntity: T,
+    data: V
+  ): Response {
+    const token = authEntity.getSignedJwtToken();
+
+    const options: ICookieOptions = {
+      expires: new Date(
+        Date.now() + Number(process.env.JWT_COOKIE_EXPIRE) * DAY_DURATION_IN_MS
+      ),
+      httpOnly: true,
+      path: '/',
+    };
+
+    if (process.env.NODE_ENV === 'production') {
+      options.secure = true;
+    }
+
+    return res
+      .status(200)
+      .cookie('token', token, options)
+      .json(Object.assign(data, { result: { token } }));
   }
 }
