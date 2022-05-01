@@ -3,6 +3,7 @@ import Container from 'typedi';
 import { APP_ROOT } from '../../../core/constants';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
 import { AuthProvider } from '../../module.auth/providers/auth.provider';
+import { UserRolesEnum } from '../../module.user/enums/user-roles.enum';
 import { CourseController } from '../controllers/course.controller';
 
 export default (app: Application) => {
@@ -24,6 +25,7 @@ export default (app: Application) => {
   app.delete(
     `${APP_ROOT}/courses/:courseId`,
     authProvider.checkAuthentication,
+    authProvider.checkRoles([UserRolesEnum.ADMIN, UserRolesEnum.OWNER]),
     wrapRouteAction((req, res, next) => courseController.deleteCourse(req, res))
   );
 };

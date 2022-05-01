@@ -3,8 +3,12 @@ import * as jwt from 'jsonwebtoken';
 import { Service } from 'typedi';
 import { ErrorCodes, UnauthorizedError } from '../../../core/errors';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
+import { UserRolesEnum } from '../../module.user/enums/user-roles.enum';
 import { UserService } from '../../module.user/services/user.service';
-import { UNAUTHORIZED_ROUTE } from '../constants/auth.messages';
+import {
+  UNAUTHORIZED_ROUTE,
+  USER_ROLE_UNAUTHORIZED,
+} from '../constants/auth.messages';
 import { JwtPayloadDataModel } from '../models';
 
 @Service()
@@ -45,6 +49,22 @@ export class AuthProvider {
       }
     }
   );
+
+  public checkRoles(allowedRoles: UserRolesEnum[]) {
+    return wrapRouteAction(
+      async (req: Request, res: Response, next: NextFunction) => {
+        const { role } = req.user;
+
+        if (!allowedRoles.includes(role)) {
+          throw new UnauthorizedError(ErrorCodes.INVALID_AUTH_PARAMS, [
+            role + USER_ROLE_UNAUTHORIZED,
+          ]);
+        }
+
+        next();
+      }
+    );
+  }
 
   private throwUnauthorizedError() {
     throw new UnauthorizedError(ErrorCodes.INVALID_AUTH_PARAMS, [

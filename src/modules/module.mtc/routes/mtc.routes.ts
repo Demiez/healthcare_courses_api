@@ -4,6 +4,7 @@ import Container from 'typedi';
 import { APP_ROOT } from '../../../core/constants';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
 import { AuthProvider } from '../../module.auth/providers/auth.provider';
+import { UserRolesEnum } from '../../module.user/enums/user-roles.enum';
 import { MtcController } from '../controllers/mtc.controller';
 
 export default (app: Application) => {
@@ -31,18 +32,21 @@ export default (app: Application) => {
   app.post(
     `${APP_ROOT}/mtcs`,
     authProvider.checkAuthentication,
+    authProvider.checkRoles([UserRolesEnum.ADMIN, UserRolesEnum.OWNER]),
     wrapRouteAction((req, res, next) => mtcController.createMtc(req, res))
   );
 
   app.put(
     `${APP_ROOT}/mtcs/:mtcId`,
     authProvider.checkAuthentication,
+    authProvider.checkRoles([UserRolesEnum.ADMIN, UserRolesEnum.OWNER]),
     wrapRouteAction((req, res, next) => mtcController.updateMtc(req, res))
   );
 
   app.delete(
     `${APP_ROOT}/mtcs/:mtcId`,
     authProvider.checkAuthentication,
+    authProvider.checkRoles([UserRolesEnum.ADMIN, UserRolesEnum.OWNER]),
     wrapRouteAction((req, res, next) => mtcController.deleteMtc(req, res))
   );
 
@@ -54,18 +58,21 @@ export default (app: Application) => {
   app.post(
     `${APP_ROOT}/mtcs/:mtcId/courses`,
     authProvider.checkAuthentication,
+    authProvider.checkRoles([UserRolesEnum.ADMIN, UserRolesEnum.OWNER]),
     wrapRouteAction((req, res, next) => mtcController.createMtcCourse(req, res))
   );
 
   app.patch(
     `${APP_ROOT}/mtcs/:mtcId/courses`,
     authProvider.checkAuthentication,
+    authProvider.checkRoles([UserRolesEnum.ADMIN, UserRolesEnum.OWNER]),
     wrapRouteAction((req, res, next) => mtcController.updateMtcCourse(req, res))
   );
 
   app.post(
     `${APP_ROOT}/mtcs/:mtcId/photo`,
     authProvider.checkAuthentication,
+    authProvider.checkRoles([UserRolesEnum.ADMIN, UserRolesEnum.OWNER]),
     upload.single('photo_upload'),
     wrapRouteAction((req, res, next) => mtcController.uploadMtcPhoto(req, res))
   );
