@@ -7,9 +7,11 @@ import { IUserDocument } from '../../module.user/db-models/user.db';
 import {
   UserLoginRequestModel,
   UserRequestModel,
+  UserViewModel,
 } from '../../module.user/models';
 import { UserService } from '../../module.user/services/user.service';
 import {
+  CURRENT_USER,
   INVALID_CREDENTIALS,
   LOGIN_SUCCESSFUL,
   USER_REGISTERED,
@@ -66,5 +68,15 @@ export class AuthService {
         BaseStatusesEnum.OK
       ),
     ];
+  }
+
+  public getCurrentUser(
+    user: IUserDocument
+  ): StandardResponseViewModel<UserViewModel> {
+    return new StandardResponseViewModel(
+      new UserViewModel(user),
+      CURRENT_USER,
+      BaseStatusesEnum.OK
+    );
   }
 }

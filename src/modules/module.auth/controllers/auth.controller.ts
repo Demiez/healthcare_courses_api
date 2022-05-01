@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ApiOperationPost, ApiPath } from 'swagger-express-ts';
+import { ApiOperationGet, ApiOperationPost, ApiPath } from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
 import { StandardResponseViewModel } from '../../../core/view-models';
@@ -78,5 +78,24 @@ export class AuthController extends BaseController {
       IUserDocument,
       StandardResponseViewModel<JwtTokenViewModel>
     >(res, user, data);
+  }
+
+  @ApiOperationGet({
+    path: '/current-user',
+    summary: 'Responds with info about current logged in user',
+    responses: {
+      200: { model: 'UserViewModel' },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: authController:__getCurrentUser`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async getCurrentUser(req: Request, res: Response) {
+    const result = this.authService.getCurrentUser(req.user);
+
+    return super.sendSuccessResponse(res, result);
   }
 }
