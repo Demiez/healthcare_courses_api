@@ -2,10 +2,12 @@ import { Application } from 'express';
 import Container from 'typedi';
 import { APP_ROOT } from '../../../core/constants';
 import { wrapRouteAction } from '../../../core/router/route-wrapper';
+import { AuthProvider } from '../../module.auth/providers/auth.provider';
 import { CourseController } from '../controllers/course.controller';
 
 export default (app: Application) => {
   const courseController = Container.get(CourseController);
+  const authProvider = Container.get(AuthProvider);
 
   app.get(
     `${APP_ROOT}/courses`,
@@ -21,6 +23,7 @@ export default (app: Application) => {
 
   app.delete(
     `${APP_ROOT}/courses/:courseId`,
+    authProvider.checkAuthentication,
     wrapRouteAction((req, res, next) => courseController.deleteCourse(req, res))
   );
 };
