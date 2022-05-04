@@ -262,7 +262,8 @@ export class MtcController extends BaseController {
 
     const result = await this.mtcService.updateMtc(
       req.params.mtcId,
-      requestModel
+      requestModel,
+      req.user
     );
 
     return super.sendSuccessResponse(res, result);
@@ -297,7 +298,7 @@ export class MtcController extends BaseController {
     },
   })
   public async deleteMtc(req: Request, res: Response) {
-    const result = await this.mtcService.deleteMtc(req.params.mtcId);
+    const result = await this.mtcService.deleteMtc(req.params.mtcId, req.user);
 
     return super.sendSuccessResponse(res, result);
   }
@@ -489,7 +490,8 @@ export class MtcController extends BaseController {
     }
 
     const result = await this.mtcService.uploadMtcPhoto(
-      new MtcPhotoDataModel(req.file, req.params.mtcId)
+      new MtcPhotoDataModel(req.file, req.params.mtcId),
+      req.user
     );
 
     return super.sendSuccessResponse(res, result);

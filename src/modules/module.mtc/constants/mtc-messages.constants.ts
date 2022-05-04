@@ -8,3 +8,5 @@ export const MTC_PHOTO_UPLOAD_MESSAGE =
   'Failed to upload MTC photo from request';
 export const MTC_PHOTO_MIMETYPE_MESSAGE = 'MTC photo must be an image';
 export const MTC_PHOTO_SAVE_MESSAGE = 'MTC photo saved';
+export const MTC_UPDATE_AUTH_MESSAGE =
+  'This user is not authorized to updated this mtc';

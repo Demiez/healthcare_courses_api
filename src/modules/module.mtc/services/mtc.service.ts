@@ -9,6 +9,7 @@ import {
   ForbiddenError,
   InternalServerError,
   NotFoundError,
+  UnauthorizedError,
 } from '../../../core/errors';
 import { IProjection, ISearchQuery } from '../../../core/interfaces';
 import { geocoder } from '../../../core/utils';
@@ -19,6 +20,8 @@ import {
   CourseViewModel,
 } from '../../module.course/models';
 import { CourseService } from '../../module.course/services/course.service';
+import { IUserDocument } from '../../module.user/db-models/user.db';
+import { UserRolesEnum } from '../../module.user/enums/user-roles.enum';
 import { MtcRequestModelValidator } from '../../module.validation';
 import { GetWithinRadiusValidator } from '../../module.validation/validators/get-within-radius.validator';
 import { MtcPhotolValidator } from '../../module.validation/validators/mtc-photo.validator';
@@ -30,6 +33,7 @@ import {
   MTC_NAME_IS_ALREADY_REGISTERED_MESSAGE,
   MTC_NOT_FOUND_MESSAGE,
   MTC_PHOTO_SAVE_MESSAGE,
+  MTC_UPDATE_AUTH_MESSAGE,
 } from '../constants';
 import { IMtcDocument, MtcModel } from '../db-models/mtc.db';
 import { MeasurementUnitsEnum, MtcsSortByEnum } from '../enums';
@@ -128,11 +132,14 @@ export class MtcService {
 
   public async updateMtc(
     mtcId: string,
-    requestModel: MtcRequestModel
+    requestModel: MtcRequestModel,
+    user: IUserDocument
   ): Promise<MtcViewModel> {
     this.validateMtcRequestModel(requestModel);
 
     const mtc = await this.tryGetMtcById(mtcId);
+
+    this.checkMtcOwner(user, mtc);
 
     if (mtc.name !== requestModel.name) {
       const isAnotherMtcRegisteredWithName = await this.checkIsMtcNameRegistered(
@@ -155,9 +162,12 @@ export class MtcService {
   }
 
   public async deleteMtc(
-    mtcId: string
+    mtcId: string,
+    user: IUserDocument
   ): Promise<StandardResponseViewModel<{}>> {
     const mtc = await this.tryGetMtcById(mtcId);
+
+    this.checkMtcOwner(user, mtc);
 
     await mtc.deleteOne();
 
@@ -233,9 +243,12 @@ export class MtcService {
   }
 
   public async uploadMtcPhoto(
-    mtcPhotoData: MtcPhotoDataModel
+    mtcPhotoData: MtcPhotoDataModel,
+    user: IUserDocument
   ): Promise<StandardResponseViewModel<MtcPhotoViewModel>> {
     const mtc = await this.tryGetMtcById(mtcPhotoData.mtcId);
+
+    this.checkMtcOwner(user, mtc);
 
     const { path, savePath, saveFileName } = mtcPhotoData;
 
@@ -347,6 +360,14 @@ export class MtcService {
 
     if (!existsSync(dirPath)) {
       await mkdir(dirPath);
+    }
+  }
+
+  private checkMtcOwner(user: IUserDocument, mtc: IMtcDocument): void {
+    if (user.role !== UserRolesEnum.ADMIN && mtc.user !== user.id) {
+      throw new UnauthorizedError(ErrorCodes.UNAUTHORIZED, [
+        MTC_UPDATE_AUTH_MESSAGE,
+      ]);
     }
   }
 }
