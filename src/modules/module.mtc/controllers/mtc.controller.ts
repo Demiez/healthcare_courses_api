@@ -208,7 +208,7 @@ export class MtcController extends BaseController {
     },
   })
   public async createMtc(req: Request, res: Response) {
-    const requestModel = new MtcRequestModel(req.body);
+    const requestModel = new MtcRequestModel(req.body, req.user._id);
 
     const result = await this.mtcService.createMtc(requestModel);
 
@@ -258,7 +258,7 @@ export class MtcController extends BaseController {
     },
   })
   public async updateMtc(req: Request, res: Response) {
-    const requestModel = new MtcRequestModel(req.body);
+    const requestModel = new MtcRequestModel(req.body, req.user._id);
 
     const result = await this.mtcService.updateMtc(
       req.params.mtcId,

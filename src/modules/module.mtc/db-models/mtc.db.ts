@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { MongooseLocationTypesEnum } from '../../../core/enums';
 import { IGeoJsonLocation } from '../../../core/interfaces';
 import { geocoder, logger } from '../../../core/utils';
+import { IUserDocument } from '../../module.user/db-models/user.db';
 import { CareerTypesEnum } from '../enums/career-types.enum';
 
 export interface IMtcDocument extends Document {
@@ -17,6 +18,8 @@ export interface IMtcDocument extends Document {
   address: string;
   location: IGeoJsonLocation;
   careers: Array<string>;
+  user: IUserDocument | string;
+
   averageRating?: number;
   averageCost?: number;
   photo?: string;
@@ -120,6 +123,11 @@ const mtcSchema = new Schema<IMtcDocument, IMtcModel>(
     acceptGiBill: {
       type: Boolean,
       default: false,
+    },
+    user: {
+      type: String,
+      ref: 'User',
+      required: true,
     },
     // Special fields
     _created: {

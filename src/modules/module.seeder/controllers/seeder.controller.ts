@@ -36,7 +36,7 @@ export class SeederController extends BaseController {
     },
   })
   public async seedAll(req: Request, res: Response) {
-    const result = await this.seederService.seedAll();
+    const result = await this.seederService.seedAll(req.user._id);
 
     return super.sendSuccessResponse(res, result);
   }
@@ -58,7 +58,7 @@ export class SeederController extends BaseController {
     },
   })
   public async seedMtcs(req: Request, res: Response) {
-    const result = await this.seederService.seedMtcs();
+    const result = await this.seederService.seedMtcs(req.user._id);
 
     return super.sendSuccessResponse(res, result);
   }

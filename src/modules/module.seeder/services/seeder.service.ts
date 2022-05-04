@@ -6,8 +6,8 @@ import { IMtcDocument, MtcModel } from '../../module.mtc/db-models/mtc.db';
 
 @Service()
 export class SeederService {
-  public async seedAll() {
-    await this.seedMtcs();
+  public async seedAll(userId: string) {
+    await this.seedMtcs(userId);
     await this.seedCourses(); // Must be executed after for cost calculation
 
     return new StandardResponseViewModel(
@@ -17,10 +17,11 @@ export class SeederService {
     );
   }
 
-  public async seedMtcs() {
+  public async seedMtcs(userId: string) {
     const mtcs: Array<IMtcDocument> = JSON.parse(
       fs.readFileSync(`${process.cwd()}/data-examples/mtcs.json`, 'utf-8')
     );
+    this.setUser(mtcs, userId);
 
     await MtcModel.create(mtcs);
 
@@ -53,5 +54,11 @@ export class SeederService {
       'All data removed',
       'success'
     );
+  }
+
+  private setUser(mtcs: Array<IMtcDocument>, userId: string): void {
+    mtcs.forEach((mtc) => {
+      mtc.user = userId;
+    });
   }
 }

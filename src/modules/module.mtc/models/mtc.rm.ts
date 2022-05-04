@@ -48,6 +48,12 @@ export class MtcRequestModel {
   })
   public careers: Array<CareerTypesEnum> = undefined;
 
+  @ApiModelProperty({
+    type: SwaggerDefinitionConstant.STRING,
+    example: '00000000-1234-abcd-0000-000000000000' as any,
+  })
+  public user: string = undefined;
+
   @ApiModelProperty({ type: SwaggerDefinitionConstant.NUMBER })
   public averageRating?: number = undefined;
 
@@ -69,9 +75,11 @@ export class MtcRequestModel {
   @ApiModelProperty({ type: SwaggerDefinitionConstant.BOOLEAN })
   public acceptGiBill?: boolean = undefined;
 
-  constructor(body: any) {
+  constructor(body: MtcRequestModel, userId: string) {
     const pickedBody = pick(body, keys(this));
 
     Object.assign(this, pickedBody);
+
+    this.user = userId;
   }
 }

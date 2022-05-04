@@ -9,8 +9,12 @@ import {
 import { IProjection } from '../../../core/interfaces';
 import { UserLoginValidator } from '../../module.validation/validators/user-login.validator';
 import { UserRequestModelValidator } from '../../module.validation/validators/user-rm.validator';
-import { USER_NOT_FOUND_MESSAGE } from '../constants/user-messages.constants';
+import {
+  ADMIN_USER_REGISTRATION_MESSAGE,
+  USER_NOT_FOUND_MESSAGE,
+} from '../constants/user-messages.constants';
 import { IUserDocument, UserModel } from '../db-models/user.db';
+import { UserRolesEnum } from '../enums/user-roles.enum';
 import { UserLoginRequestModel } from '../models';
 import { UserRequestModel } from '../models/user.rm';
 
@@ -21,6 +25,12 @@ export class UserService {
 
     if (!isEmpty(errors)) {
       throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, errors);
+    }
+
+    if (userData.role === UserRolesEnum.ADMIN) {
+      throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, [
+        ADMIN_USER_REGISTRATION_MESSAGE,
+      ]);
     }
 
     return await UserModel.create(userData);
