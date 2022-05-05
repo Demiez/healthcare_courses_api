@@ -24,4 +24,11 @@ export default (app: Application) => {
     authProvider.checkAuthentication,
     wrapRouteAction((req, res, next) => authController.getCurrentUser(req, res))
   );
+
+  app.post(
+    `${APP_ROOT}/auth/forgot-password`,
+    wrapRouteAction((req, res, next) =>
+      authController.processForgotPassword(req, res)
+    )
+  );
 };

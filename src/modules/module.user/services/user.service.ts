@@ -43,6 +43,13 @@ export class UserService {
     return await UserModel.findOne({ email }, projection).select('+password');
   }
 
+  public async getUserByEmail(
+    email: string,
+    projection: string | IProjection = {}
+  ): Promise<IUserDocument> {
+    return await UserModel.findOne({ email }, projection);
+  }
+
   public async tryGetUserById(
     userId: string,
     projection: string | IProjection = {}
@@ -58,8 +65,14 @@ export class UserService {
     return user;
   }
 
-  public validateUserLoginData(requestModel: UserLoginRequestModel): void {
-    const errors = UserLoginValidator.validate(requestModel);
+  public validateUserLoginData(
+    requestModel: UserLoginRequestModel,
+    isEmailOnlyValidation?: boolean
+  ): void {
+    const errors = UserLoginValidator.validate(
+      requestModel,
+      isEmailOnlyValidation
+    );
 
     if (!isEmpty(errors)) {
       throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, errors);

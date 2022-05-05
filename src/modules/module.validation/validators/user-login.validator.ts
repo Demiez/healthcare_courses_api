@@ -12,13 +12,19 @@ import {
 import { BaseValidator } from './base.validator';
 
 export class UserLoginValidator extends BaseValidator {
-  public static validate(requestModel: UserLoginRequestModel) {
+  public static validate(
+    requestModel: UserLoginRequestModel,
+    isEmailOnlyValidation?: boolean
+  ) {
     this.errors = [];
 
     const { email, password } = requestModel;
 
     this.validateEmail(email, convertVariableToString({ email }));
-    this.validatePassword(password, convertVariableToString({ password }));
+
+    if (!isEmailOnlyValidation) {
+      this.validatePassword(password, convertVariableToString({ password }));
+    }
 
     return this.errors;
   }

@@ -150,3 +150,6 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 
 - MtcService.getMtcsWithinRadius + validation
 - get mtcs filtering and sorting
+
+### nice to have functionality
+- add mtc's cource/training program ownership

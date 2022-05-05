@@ -2,8 +2,10 @@ import { Document, Model, model, Schema } from 'mongoose';
 import { v4 } from 'uuid';
 import { emailValidationRegex } from '../../../core/regex/validation.regex';
 import { ALLOWED_PASSWORD_LENGTH } from '../../module.auth/constants/auth.constants';
+import { IResetPasswordTokenData } from '../../module.auth/interfaces/auth.interfaces';
 import {
   generateSalt,
+  getResetPasswordToken,
   getSignedJwtToken,
   hashPassword,
   matchPasswords,
@@ -28,6 +30,7 @@ export interface IUser {
 export interface IUserDocument extends IUser, Document {
   _id: string;
   getSignedJwtToken(): string;
+  getResetPasswordToken(): IResetPasswordTokenData;
   matchPasswords(password: string): boolean;
 }
 
@@ -85,8 +88,6 @@ const userSchema = new Schema<IUserDocument, IUserModel>({
 
 userSchema.pre('save', function (next) {
   const userData = this as IUserDocument;
-  userData.salt = generateSalt();
-  userData.password = hashPassword(userData.password, userData.salt);
 
   const eventDate = new Date();
 
@@ -97,8 +98,12 @@ userSchema.pre('save', function (next) {
       return next(new Error('field _created not editable'));
     }
   }
-
   userData._updated = eventDate;
+
+  if (userData.isModified('password')) {
+    userData.salt = generateSalt();
+    userData.password = hashPassword(userData.password, userData.salt);
+  }
 
   next();
 });
@@ -109,6 +114,12 @@ userSchema.methods.getSignedJwtToken = function () {
   const userData = this as IUserDocument;
 
   return getSignedJwtToken.call(userData);
+};
+
+userSchema.methods.getResetPasswordToken = function () {
+  const userData = this as IUserDocument;
+
+  return getResetPasswordToken.call(userData);
 };
 
 userSchema.methods.matchPasswords = function (password: string) {

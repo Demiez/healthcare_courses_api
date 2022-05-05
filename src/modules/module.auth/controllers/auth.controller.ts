@@ -98,4 +98,31 @@ export class AuthController extends BaseController {
 
     return super.sendSuccessResponse(res, result);
   }
+
+  @ApiOperationPost({
+    path: '/forgot-password',
+    summary: 'Sends restore password data to email',
+    parameters: {
+      body: {
+        required: true,
+        model: 'UserLoginRequestModel',
+      },
+    },
+    responses: {
+      200: { model: 'ResetPasswordTokenViewModel' },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: AuthController:__processForgotPassword`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async processForgotPassword(req: Request, res: Response) {
+    const result = await this.authService.processForgotPassword(
+      new UserLoginRequestModel(req.body)
+    );
+
+    return super.sendSuccessResponse(res, result);
+  }
 }

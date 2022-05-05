@@ -1,8 +1,13 @@
 import 'reflect-metadata';
 import { Service } from 'typedi';
 import { BaseStatusesEnum } from '../../../core/enums';
-import { ErrorCodes, UnauthorizedError } from '../../../core/errors';
+import {
+  ErrorCodes,
+  NotFoundError,
+  UnauthorizedError,
+} from '../../../core/errors';
 import { StandardResponseViewModel } from '../../../core/view-models';
+import { USER_NOT_FOUND_MESSAGE } from '../../module.user/constants/user-messages.constants';
 import { IUserDocument } from '../../module.user/db-models/user.db';
 import {
   UserLoginRequestModel,
@@ -17,6 +22,7 @@ import {
   USER_REGISTERED,
 } from '../constants/auth.messages';
 import { JwtTokenViewModel } from '../models';
+import { ResetPasswordTokenViewModel } from '../models/reset-password-token.vm';
 
 @Service()
 export class AuthService {
@@ -76,6 +82,32 @@ export class AuthService {
     return new StandardResponseViewModel(
       new UserViewModel(user),
       CURRENT_USER,
+      BaseStatusesEnum.OK
+    );
+  }
+
+  public async processForgotPassword(
+    requestModel: UserLoginRequestModel
+  ): Promise<StandardResponseViewModel<ResetPasswordTokenViewModel>> {
+    this.userService.validateUserLoginData(requestModel, true);
+
+    const { email } = requestModel;
+
+    const user = await this.userService.getUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundError(ErrorCodes.USER_NOT_FOUND, [
+        USER_NOT_FOUND_MESSAGE + ` by provided email: ${email}`,
+      ]);
+    }
+
+    const resetTokenData = user.getResetPasswordToken();
+
+    await user.save();
+
+    return new StandardResponseViewModel(
+      new ResetPasswordTokenViewModel(email, resetTokenData),
+      LOGIN_SUCCESSFUL,
       BaseStatusesEnum.OK
     );
   }

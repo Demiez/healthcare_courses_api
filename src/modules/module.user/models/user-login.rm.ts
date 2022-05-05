@@ -12,8 +12,8 @@ export class UserLoginRequestModel {
   @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
   public email: string = undefined;
 
-  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING, required: true })
-  public password: string = undefined;
+  @ApiModelProperty({ type: SwaggerDefinitionConstant.STRING })
+  public password?: string = undefined;
 
   constructor(body: UserLoginRequestModel) {
     this.email = body.email;
