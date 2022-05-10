@@ -16,17 +16,16 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 - Get single MTC
 - Create new MTC
   - Authenticated users only
-  - Must have the role "provider" or "admin"
-  - Only one MTC per healthcare provider (admins can create more)
-  - Field validation via Mongoose?
+  - Must have the role OWNER or ADMIN
+  - Field validation
 - Upload a photo for MTC
-  - Owner only
+  - OWNER only
   - Photo will be uploaded to local filesystem
 - Update MTC
-  - Owner only
+  - OWNER only
   - Validation on update
 - Delete MTC
-  - Owner only
+  - OWNER only
 - Calculate the average cost of all courses provided by the MTC
 - Calculate the average rating from the reviews for MTC
 - Geolocation of MTC
@@ -42,13 +41,13 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 - Get single healthcare course
 - Create new healthcare course
   - Authenticated users only
-  - Must have the role "provider" or "admin"
-  - Only the owner or an admin can create a course for MTC
-  - Providers can create multiple courses
+  - Must have the role OWNER or ADMIN
+  - Only the OWNER or an ADMIN can create a course for MTC
+  - OWNERs can create multiple courses
 - Update course
-  - Owner only
+  - OWNER only
 - Delete course
-  - Owner only
+  - OWNER only
 
 ### Reviews
 
@@ -58,11 +57,11 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
 - Get a single review
 - Create a review
   - Authenticated users only
-  - Must have the role "user" or "admin" (no providers)
+  - Must have the role USER or ADMIN (no providers)
 - Update review
-  - Owner only
+  - OWNER only
 - Delete review
-  - Owner only
+  - OWNER only
 
 ### Users & Authentication
 
@@ -72,6 +71,8 @@ Create the backend API for a healthcare courses directory website. Due to COVID-
   - Register as a "user" or "provider"
   - Once registered, a token will be sent along with a cookie (token = xxx)
   - Passwords must be hashed
+- RBAC (includes 3 roles USER, OWNER, ADMIN)
+- Email testing via mailtrap.io
 - User login
   - User can login with email and password
   - Plain text password will be compared with stored hashed password
