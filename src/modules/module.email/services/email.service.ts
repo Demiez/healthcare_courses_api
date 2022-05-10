@@ -2,8 +2,7 @@ import * as nodemailer from 'nodemailer';
 import { Service } from 'typedi';
 import { ErrorCodes, InternalServerError } from '../../../core/errors';
 import { logger } from '../../../core/utils';
-import { EMAIL_SENDING_FAILED_MESSAGE } from '../constants/email-messages.constants';
-import { NodemailerEmailOptions } from '../interfaces/email.interfaces';
+import { EMAIL_RESULT_FAILED_MESSAGE } from '../constants/email-messages.constants';
 import { TransportObjectDataModel } from '../models/transport-object.dm';
 
 @Service()
@@ -23,18 +22,20 @@ export class EmailService {
     });
   }
 
-  public async sendEmail(to: string, subject: string, text: string) {
+  public async sendEmail(
+    to: string,
+    subject: string,
+    text: string
+  ): Promise<void> {
     const transportObject = new TransportObjectDataModel(to, subject, text);
 
-    const result: NodemailerEmailOptions = await this.transporter.sendMail(
-      transportObject
-    );
+    const result = await this.transporter.sendMail(transportObject);
 
     if (result) {
       logger.info(`Email sent ${result.messageId}`);
     } else {
       throw new InternalServerError(ErrorCodes.EMAIL_SENDER_ERROR, [
-        EMAIL_SENDING_FAILED_MESSAGE,
+        EMAIL_RESULT_FAILED_MESSAGE,
       ]);
     }
   }

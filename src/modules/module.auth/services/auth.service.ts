@@ -1,8 +1,11 @@
+import { Request } from 'express';
 import 'reflect-metadata';
 import { Service } from 'typedi';
+import { APP_ROOT } from '../../../core/constants';
 import { BaseStatusesEnum } from '../../../core/enums';
 import {
   ErrorCodes,
+  InternalServerError,
   NotFoundError,
   UnauthorizedError,
 } from '../../../core/errors';
@@ -20,8 +23,11 @@ import {
   CURRENT_USER,
   INVALID_CREDENTIALS,
   LOGIN_SUCCESSFUL,
+  PASSWORD_RESET,
+  RESET_PASSWORD_EMAIL_SENT,
   USER_REGISTERED,
-} from '../constants/auth.messages';
+} from '../constants/auth-messages.constants';
+import { IResetPasswordTokenData } from '../interfaces/auth.interfaces';
 import { JwtTokenViewModel } from '../models';
 import { ResetPasswordTokenViewModel } from '../models/reset-password-token.vm';
 
@@ -91,7 +97,8 @@ export class AuthService {
   }
 
   public async processForgotPassword(
-    requestModel: UserLoginRequestModel
+    requestModel: UserLoginRequestModel,
+    req: Request
   ): Promise<StandardResponseViewModel<ResetPasswordTokenViewModel>> {
     this.userService.validateUserLoginData(requestModel, true);
 
@@ -106,13 +113,35 @@ export class AuthService {
     }
 
     const resetTokenData = user.getResetPasswordToken();
+    const message = this.createResetPasswordMessage(resetTokenData, req);
+
+    try {
+      await this.emailService.sendEmail(email, PASSWORD_RESET, message);
+    } catch (error) {
+      throw new InternalServerError(ErrorCodes.EMAIL_SENDER_ERROR, [
+        error.message,
+      ]);
+    }
 
     await user.save();
 
     return new StandardResponseViewModel(
       new ResetPasswordTokenViewModel(email, resetTokenData),
-      LOGIN_SUCCESSFUL,
+      RESET_PASSWORD_EMAIL_SENT,
       BaseStatusesEnum.OK
     );
+  }
+
+  private createResetPasswordMessage(
+    resetTokenData: IResetPasswordTokenData,
+    req: Request
+  ): string {
+    const resetPasswordUrl = `${req.protocol}://${req.get(
+      'host'
+    )}/${APP_ROOT}/resetpassword/${resetTokenData.resetPasswordToken}`;
+
+    const message = `You are receiving this email due to the fact that you have requested a password reset. Please make a request to: \n\n ${resetPasswordUrl}`;
+
+    return message;
   }
 }

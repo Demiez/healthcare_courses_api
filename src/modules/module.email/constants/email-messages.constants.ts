@@ -1,1 +1,1 @@
-export const EMAIL_SENDING_FAILED_MESSAGE = 'Email sending failed';
+export const EMAIL_RESULT_FAILED_MESSAGE = 'Failed to receive email result';

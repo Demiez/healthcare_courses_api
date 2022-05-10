@@ -8,7 +8,7 @@ import { UserService } from '../../module.user/services/user.service';
 import {
   UNAUTHORIZED_ROUTE,
   USER_ROLE_UNAUTHORIZED,
-} from '../constants/auth.messages';
+} from '../constants/auth-messages.constants';
 import { JwtPayloadDataModel } from '../models';
 
 @Service()

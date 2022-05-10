@@ -120,7 +120,8 @@ export class AuthController extends BaseController {
   })
   public async processForgotPassword(req: Request, res: Response) {
     const result = await this.authService.processForgotPassword(
-      new UserLoginRequestModel(req.body)
+      new UserLoginRequestModel(req.body),
+      req
     );
 
     return super.sendSuccessResponse(res, result);
