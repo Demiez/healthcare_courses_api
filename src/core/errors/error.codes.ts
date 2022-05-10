@@ -40,4 +40,8 @@ export class ErrorCodes extends BaseErrorCodes {
   public static get FILE_OPERATION_ERROR() {
     return 'FILE_OPERATION_ERROR';
   }
+
+  public static get EMAIL_SENDER_ERROR() {
+    return 'EMAIL_SENDER_ERROR';
+  }
 }

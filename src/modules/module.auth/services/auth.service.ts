@@ -7,6 +7,7 @@ import {
   UnauthorizedError,
 } from '../../../core/errors';
 import { StandardResponseViewModel } from '../../../core/view-models';
+import { EmailService } from '../../module.email/services/email.service';
 import { USER_NOT_FOUND_MESSAGE } from '../../module.user/constants/user-messages.constants';
 import { IUserDocument } from '../../module.user/db-models/user.db';
 import {
@@ -26,7 +27,10 @@ import { ResetPasswordTokenViewModel } from '../models/reset-password-token.vm';
 
 @Service()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly emailService: EmailService
+  ) {}
 
   public async registerUser(
     requestModel: UserRequestModel
