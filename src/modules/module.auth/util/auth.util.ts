@@ -37,7 +37,7 @@ export function getResetPasswordToken(): IResetPasswordTokenData {
     DEFAULT_ENCODING
   );
 
-  const resetPasswordToken = createHash(DEFAULT_ALGORITHM)
+  const hashedResetToken = createHash(DEFAULT_ALGORITHM)
     .update(resetToken)
     .digest(DEFAULT_ENCODING);
 
@@ -45,11 +45,11 @@ export function getResetPasswordToken(): IResetPasswordTokenData {
     Date.now() + RESET_PASSWORD_TOKEN_TIME
   );
 
-  userData.resetPasswordToken = resetPasswordToken;
+  userData.resetPasswordToken = hashedResetToken;
   userData.resetPasswordExpiration = resetPasswordExpiration;
 
   return {
-    resetPasswordToken,
+    resetPasswordToken: hashedResetToken,
     resetPasswordExpiration,
   } as IResetPasswordTokenData;
 }

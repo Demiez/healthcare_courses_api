@@ -29,6 +29,14 @@ export class UserLoginValidator extends BaseValidator {
     return this.errors;
   }
 
+  public static validatePasswordData(password: string) {
+    this.errors = [];
+
+    this.validatePassword(password, convertVariableToString({ password }));
+
+    return this.errors;
+  }
+
   protected static validateEmail(email: string, fieldName: string) {
     const error = this.validateStringField(email, fieldName);
 

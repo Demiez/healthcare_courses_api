@@ -1,10 +1,19 @@
 import { Request, Response } from 'express';
-import { ApiOperationGet, ApiOperationPost, ApiPath } from 'swagger-express-ts';
+import {
+  ApiOperationGet,
+  ApiOperationPost,
+  ApiOperationPut,
+  ApiPath,
+  SwaggerDefinitionConstant,
+} from 'swagger-express-ts';
 import { Service } from 'typedi';
 import BaseController from '../../../core/abstract/base-controller';
 import { StandardResponseViewModel } from '../../../core/view-models';
 import { IUserDocument } from '../../module.user/db-models/user.db';
-import { UserLoginRequestModel } from '../../module.user/models';
+import {
+  UserLoginRequestModel,
+  UserPasswordRequestModel,
+} from '../../module.user/models';
 import { UserRequestModel } from '../../module.user/models/user.rm';
 import { JwtTokenViewModel } from '../models';
 import { AuthService } from '../services/auth.service';
@@ -125,5 +134,44 @@ export class AuthController extends BaseController {
     );
 
     return super.sendSuccessResponse(res, result);
+  }
+
+  @ApiOperationPut({
+    path: '/reset-password/:resetToken',
+    summary: 'Resets password by request with token',
+    parameters: {
+      path: {
+        resetToken: {
+          name: 'resetToken',
+          allowEmptyValue: false,
+          required: true,
+          type: SwaggerDefinitionConstant.STRING,
+        },
+      },
+      body: {
+        required: true,
+        model: 'UserPasswordRequestModel',
+      },
+    },
+    responses: {
+      200: { type: SwaggerDefinitionConstant.OBJECT },
+      500: {
+        description: `INTERNAL_SERVER_ERROR: AuthController:__resetPassword`,
+      },
+    },
+    security: {
+      basicAuth: [],
+    },
+  })
+  public async resetPassword(req: Request, res: Response) {
+    const [user, data] = await this.authService.resetPassword(
+      req.params.resetToken,
+      new UserPasswordRequestModel(req.body)
+    );
+
+    return super.sendTokenResponse<
+      IUserDocument,
+      StandardResponseViewModel<JwtTokenViewModel>
+    >(res, user, data);
   }
 }

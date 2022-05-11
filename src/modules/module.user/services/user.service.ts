@@ -65,6 +65,13 @@ export class UserService {
     return user;
   }
 
+  public async getUserByResetToken(resetToken: string): Promise<IUserDocument> {
+    return await UserModel.findOne({
+      resetPasswordToken: resetToken,
+      resetPasswordExpiration: { $gte: Date.now() },
+    });
+  }
+
   public validateUserLoginData(
     requestModel: UserLoginRequestModel,
     isEmailOnlyValidation?: boolean
@@ -73,6 +80,14 @@ export class UserService {
       requestModel,
       isEmailOnlyValidation
     );
+
+    if (!isEmpty(errors)) {
+      throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, errors);
+    }
+  }
+
+  public validateUserPasswordData(password: string): void {
+    const errors = UserLoginValidator.validatePasswordData(password);
 
     if (!isEmpty(errors)) {
       throw new ForbiddenError(ErrorCodes.INVALID_INPUT_PARAMS, errors);

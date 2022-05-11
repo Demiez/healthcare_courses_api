@@ -31,4 +31,9 @@ export default (app: Application) => {
       authController.processForgotPassword(req, res)
     )
   );
+
+  app.put(
+    `${APP_ROOT}/auth/reset-password/:resetToken`,
+    wrapRouteAction((req, res, next) => authController.resetPassword(req, res))
+  );
 };

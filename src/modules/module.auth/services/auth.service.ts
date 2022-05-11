@@ -5,6 +5,7 @@ import { APP_ROOT } from '../../../core/constants';
 import { BaseStatusesEnum } from '../../../core/enums';
 import {
   ErrorCodes,
+  ForbiddenError,
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
@@ -15,6 +16,7 @@ import { USER_NOT_FOUND_MESSAGE } from '../../module.user/constants/user-message
 import { IUserDocument } from '../../module.user/db-models/user.db';
 import {
   UserLoginRequestModel,
+  UserPasswordRequestModel,
   UserRequestModel,
   UserViewModel,
 } from '../../module.user/models';
@@ -25,6 +27,8 @@ import {
   LOGIN_SUCCESSFUL,
   PASSWORD_RESET,
   RESET_PASSWORD_EMAIL_SENT,
+  RESET_PASSWORD_INVALID_TOKEN,
+  RESET_PASSWORD_SUCCESS,
   USER_REGISTERED,
 } from '../constants/auth-messages.constants';
 import { IResetPasswordTokenData } from '../interfaces/auth.interfaces';
@@ -132,13 +136,43 @@ export class AuthService {
     );
   }
 
+  public async resetPassword(
+    resetToken: string,
+    requestModel: UserPasswordRequestModel
+  ): Promise<[IUserDocument, StandardResponseViewModel<JwtTokenViewModel>]> {
+    const user = await this.userService.getUserByResetToken(resetToken);
+
+    if (!user) {
+      throw new ForbiddenError(ErrorCodes.INVALID_AUTH_PARAMS, [
+        RESET_PASSWORD_INVALID_TOKEN,
+      ]);
+    }
+
+    this.userService.validateUserPasswordData(requestModel.password);
+
+    user.password = requestModel.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiration = undefined;
+
+    await user.save();
+
+    return [
+      user,
+      new StandardResponseViewModel(
+        {} as JwtTokenViewModel,
+        RESET_PASSWORD_SUCCESS,
+        BaseStatusesEnum.OK
+      ),
+    ];
+  }
+
   private createResetPasswordMessage(
     resetTokenData: IResetPasswordTokenData,
     req: Request
   ): string {
     const resetPasswordUrl = `${req.protocol}://${req.get(
       'host'
-    )}/${APP_ROOT}/resetpassword/${resetTokenData.resetPasswordToken}`;
+    )}${APP_ROOT}/reset-password/${resetTokenData.resetPasswordToken}`;
 
     const message = `You are receiving this email due to the fact that you have requested a password reset. Please make a request to: \n\n ${resetPasswordUrl}`;
 
