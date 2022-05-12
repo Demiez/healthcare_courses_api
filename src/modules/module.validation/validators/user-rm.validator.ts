@@ -4,8 +4,11 @@ import { USER_NAME_LENGTH } from '../../module.user/constants/user.constants';
 import { UserRolesEnum } from '../../module.user/enums/user-roles.enum';
 import { UserRequestModel } from '../../module.user/models';
 import {
+  USER_ID_UPDATE_MESSAGE,
   USER_ID_VALID_VALUE_MESSAGE,
   USER_NAME_LENGTH_MESSAGE,
+  USER_PASSWORD_UPDATE_MESSAGE,
+  USER_ROLE_UPDATE_MESSAGE,
   USER_ROLE_VALID_VALUE_MESSAGE,
 } from '../constants/user-validation.message';
 import { UserLoginValidator } from './user-login.validator';
@@ -26,6 +29,64 @@ export class UserRequestModelValidator extends UserLoginValidator {
     }
 
     return this.errors;
+  }
+
+  public static validateForUpdate(
+    requestModel: UserRequestModel,
+    isAdmin: boolean
+  ) {
+    this.errors = [];
+
+    const { name, email } = requestModel;
+
+    this.checkAdminOnlyFieldsForUpdate(requestModel, isAdmin);
+
+    if (name) {
+      this.validateName(name, convertVariableToString({ name }));
+    }
+
+    if (email) {
+      this.validateEmail(email, convertVariableToString({ email }));
+    }
+
+    return this.errors;
+  }
+
+  private static checkAdminOnlyFieldsForUpdate(
+    requestModel: UserRequestModel,
+    isAdmin: boolean
+  ) {
+    const { id, password, role } = requestModel;
+
+    if (!isAdmin) {
+      if (id) {
+        this.errors.push(new FieldIsBadModel('id', USER_ID_UPDATE_MESSAGE));
+      }
+
+      if (password) {
+        this.errors.push(
+          new FieldIsBadModel('password', USER_PASSWORD_UPDATE_MESSAGE)
+        );
+      }
+
+      if (role) {
+        this.errors.push(new FieldIsBadModel('role', USER_ROLE_UPDATE_MESSAGE));
+      }
+
+      return;
+    }
+
+    if (id) {
+      this.validateId(id, convertVariableToString({ id }));
+    }
+
+    if (role) {
+      this.validateRole(role, convertVariableToString({ role }));
+    }
+
+    if (password) {
+      this.validatePassword(password, convertVariableToString({ password }));
+    }
   }
 
   private static validateName(name: string, fieldName: string) {

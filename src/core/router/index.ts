@@ -4,6 +4,7 @@ import {
   ModuleCourse_CourseRoutes,
   ModuleMtc_MtcRoutes,
   ModuleSeeder_SeederRoutes,
+  ModuleUser_UserRoutes,
 } from '../../modules';
 import { APP_ROOT, APP_ROOT_MESSAGE } from '../constants';
 import { StandardResponseViewModel } from '../view-models';
@@ -19,4 +20,5 @@ export default (app: Application) => {
   ModuleMtc_MtcRoutes(app);
   ModuleCourse_CourseRoutes(app);
   ModuleSeeder_SeederRoutes(app);
+  ModuleUser_UserRoutes(app);
 };
