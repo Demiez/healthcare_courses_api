@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import chaiHttp = require('chai-http');
+const chaiHttp = require('chai-http');
 import 'mocha';
 import * as mongoose from 'mongoose';
 import * as sinon from 'sinon';
